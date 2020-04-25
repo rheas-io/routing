@@ -1,3 +1,5 @@
+import { Str } from "@laress/support";
+
 export class Route {
 
     /**
@@ -8,11 +10,11 @@ export class Route {
     protected _name: string = "";
 
     /**
-     * Uri prefix of the child routes
+     * Uri path of this group of routes
      * 
      * @var string
      */
-    protected _prefix: string = "";
+    protected _path: string = "";
 
     /**
      * Flag to check whether route middlewares have to be skipped 
@@ -43,13 +45,9 @@ export class Route {
      */
     protected _childRoutes: Route[] = [];
 
-    constructor(path: string = "") {
-        this._prefix = path;
-    }
-
     /**
-     * Creates a new route group. The parent of this route
-     * will be set wherever is being registered.
+     * Creates a new route. The parent of this route
+     * will be set wherever this route gets registered.
      * 
      * For eg, say a new route group is created in api routes like 
      * 
@@ -66,8 +64,70 @@ export class Route {
      * 
      * @return Route
      */
+    constructor(path: string = "") {
+        this.prefix(path);
+    }
+
+    /**
+     * Creates a new route group.
+     * 
+     * @param prefix 
+     */
     public static group(prefix: string = ""): Route {
         return new Route(prefix);
+    }
+
+    /**
+     * Adds the child routes of this route. Also sets the child
+     * routes parent to this route.
+     * 
+     * @param routes 
+     */
+    public routes(...routes: Route[]) {
+        routes.forEach(route => {
+            route.setParent(this);
+        });
+
+        this._childRoutes = routes;
+
+        return this;
+    }
+
+    /**
+     * Middlewares to be used along with this route.
+     * 
+     * @return array
+     */
+    public routeMiddlewares(): string[] {
+        let fullMiddlewares: string[] = [];
+
+        if (this.hasParent()) {
+            //@ts-ignore
+            fullMiddlewares = [...this.getParent().routeMiddlewares()];
+        }
+
+        if (!this.shouldSkipMiddleware) {
+            fullMiddlewares = [...fullMiddlewares, ...this._middlewares];
+        }
+        return fullMiddlewares;
+    }
+
+    /**
+     * Returns the complete route path including prefixes and
+     * parent paths.
+     * 
+     * @return string
+     */
+    public routePath(): string {
+        let fullPath: string = "";
+
+        if (this.hasParent()) {
+            //@ts-ignore
+            fullPath = this.getParent().routePath() + "/";
+        }
+        fullPath += + this.getPath();
+
+        return Str.trim(fullPath, "/");
     }
 
     /**
@@ -82,12 +142,22 @@ export class Route {
     }
 
     /**
-     * Sets the route prefix
+     * Sets the route group prefix
      * 
-     * @param prefix 
+     * @param path
      */
-    public prefix(prefix: string) {
-        this._prefix = prefix;
+    public prefix(path: string) {
+        this._path = this.clearPath(path);
+    }
+
+    /**
+     * Clears the path, replacing multiple slashes with single slash and 
+     * removing any trailing or leading slashes.
+     * 
+     * @param path 
+     */
+    protected clearPath(path: string): string {
+        return Str.trim(Str.replaceWithOne(path.trim(), '/'), '/');
     }
 
     /**
@@ -95,7 +165,7 @@ export class Route {
      * 
      * @param middlewares 
      */
-    public middlewares(middlewares: string | string[]) {
+    public middleware(middlewares: string | string[]) {
 
         if (!Array.isArray(middlewares)) {
             middlewares = Array.from(arguments);
@@ -122,31 +192,12 @@ export class Route {
     }
 
     /**
-     * Returns the route prefix
+     * Returns the route path
      * 
      * @return string
      */
-    public getPrefix(): string {
-        return this._prefix;
-    }
-
-    /**
-     * Middlewares to be used along with this route.
-     * 
-     * @return array
-     */
-    public routeMiddlewares(): string[] {
-        let middlewares: string[] = [];
-        const parent = this.getParent();
-
-        if (parent instanceof Route) {
-            middlewares = [...parent.routeMiddlewares()];
-        }
-
-        if (!this.shouldSkipMiddleware) {
-            middlewares = [...middlewares, ...this._middlewares];
-        }
-        return middlewares;
+    public getPath(): string {
+        return this._path;
     }
 
     /**
@@ -165,21 +216,5 @@ export class Route {
      */
     public hasParent(): boolean {
         return this.getParent() instanceof Route;
-    }
-
-    /**
-     * Adds the child routes of this route. Also sets the child
-     * routes parent to this route.
-     * 
-     * @param routes 
-     */
-    public routes(...routes: Route[]) {
-        routes.forEach(route => {
-            route.setParent(this);
-        });
-
-        this._childRoutes = routes;
-
-        return this;
     }
 }
