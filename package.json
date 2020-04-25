@@ -39,5 +39,6 @@
   "bugs": {
     "url": "https://github.com/laress-io/routing/issues"
   },
-  "homepage": "https://github.com/laress-io/routing#readme"
+  "homepage": "https://github.com/laress-io/routing#readme",
+  "dependencies": {}
 }
