@@ -1,6 +1,7 @@
 import { Str } from "@laress/support";
+import { IRoute } from "./contracts/route";
 
-export class Route {
+export class Route implements IRoute {
 
     /**
      * Name of this route
@@ -22,7 +23,7 @@ export class Route {
      * 
      * @var boolean
      */
-    protected shouldSkipMiddleware: boolean = false;
+    protected _shouldSkipMiddleware: boolean = false;
 
     /**
      * Route specific middlewares
@@ -36,14 +37,14 @@ export class Route {
      * 
      * @var Route
      */
-    protected _parentRoute: Route | null = null;
+    protected _parentRoute: IRoute | null = null;
 
     /**
      * A collection of child routes
      * 
      * @var array
      */
-    protected _childRoutes: Route[] = [];
+    protected _childRoutes: IRoute[] = [];
 
     /**
      * Creates a new route. The parent of this route
@@ -83,7 +84,7 @@ export class Route {
      * 
      * @param routes 
      */
-    public routes(...routes: Route[]) {
+    public routes(...routes: IRoute[]) {
         routes.forEach(route => {
             route.setParent(this);
         });
@@ -106,7 +107,7 @@ export class Route {
             fullMiddlewares = [...this.getParent().routeMiddlewares()];
         }
 
-        if (!this.shouldSkipMiddleware) {
+        if (!this._shouldSkipMiddleware) {
             fullMiddlewares = [...fullMiddlewares, ...this._middlewares];
         }
         return fullMiddlewares;
@@ -135,7 +136,7 @@ export class Route {
      * 
      * @param name 
      */
-    public name(name: string): Route {
+    public name(name: string): IRoute {
         this._name = name;
 
         return this;
@@ -146,8 +147,10 @@ export class Route {
      * 
      * @param path
      */
-    public prefix(path: string) {
+    public prefix(path: string): IRoute {
         this._path = this.clearPath(path);
+
+        return this;
     }
 
     /**
@@ -156,7 +159,7 @@ export class Route {
      * 
      * @param path 
      */
-    protected clearPath(path: string): string {
+    private clearPath(path: string): string {
         return Str.trim(Str.replaceWithOne(path.trim(), '/'), '/');
     }
 
@@ -165,12 +168,14 @@ export class Route {
      * 
      * @param middlewares 
      */
-    public middleware(middlewares: string | string[]) {
+    public middleware(middlewares: string | string[]): IRoute {
 
         if (!Array.isArray(middlewares)) {
             middlewares = Array.from(arguments);
         }
         this._middlewares = middlewares;
+
+        return this;
     }
 
     /**
@@ -178,7 +183,7 @@ export class Route {
      * 
      * @param route 
      */
-    public setParent(route: Route) {
+    public setParent(route: IRoute) {
         this._parentRoute = route;
     }
 
@@ -205,7 +210,7 @@ export class Route {
      * 
      * @return Route|null
      */
-    public getParent(): Route | null {
+    public getParent(): IRoute | null {
         return this._parentRoute;
     }
 
