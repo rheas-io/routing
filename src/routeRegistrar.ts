@@ -1,5 +1,5 @@
 import { Route } from "./route";
-import { IRouteRegistrar } from "./contracts/routeregistrar";
+import { IRouteRegistrar } from "@laress/contracts/routes";
 
 export class RouteRegistrar extends Route implements IRouteRegistrar {
 

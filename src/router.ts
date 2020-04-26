@@ -1,8 +1,7 @@
 import { Route } from "./route";
-import { IRoute } from "./contracts/route";
 import { KeyValue } from "@laress/contracts";
 import { IMiddleware } from "@laress/contracts/middleware";
-import { IRouteRegistrar } from "./contracts/routeregistrar";
+import { IRoute, IRouteRegistrar } from "@laress/contracts/routes";
 
 export abstract class Router extends Route implements IRouteRegistrar {
 

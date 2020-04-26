@@ -1,5 +1,5 @@
 import { Str } from "@laress/support";
-import { IRoute } from "./contracts/route";
+import { IRoute } from "@laress/contracts/routes";
 
 export class Route implements IRoute {
 
