@@ -1,8 +1,9 @@
-import { ParamComponent } from "../src/uri/paramComponent";
+import { Route } from "../src";
+import { ParamComponent } from "../src/uri/routeParamComponent";
 import { ComponentFactory } from "../src/uri/uriComponentFactory";
 
 describe("Param components test", () => {
-    const uriComponents = ComponentFactory.createFromUri('/api/list/:id/subscriber/:id?');
+    const uriComponents = ComponentFactory.createFromRoute(new Route('/api/list/:id/subscriber/:id?'));
 
     it("component match test", () => {
         //api===api
