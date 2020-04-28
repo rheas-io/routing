@@ -1,8 +1,8 @@
 import { Str } from "@laress/support";
-import { UriComponent } from "./component";
-import { IParamComponent, IUriComponent } from "@laress/contracts/routes/uri";
+import { UriComponent } from "./baseComponent";
+import { IUriComponent } from "@laress/contracts/routes/uri";
 
-export class ParamComponent extends UriComponent implements IParamComponent {
+export class ParamComponent extends UriComponent {
 
     /**
      * @inheritdoc
