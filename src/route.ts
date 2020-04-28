@@ -1,5 +1,6 @@
 import { Str } from "@laress/support";
 import { IRoute } from "@laress/contracts/routes";
+import { IRequest } from "@laress/contracts";
 
 export class Route implements IRoute {
 
@@ -16,6 +17,13 @@ export class Route implements IRoute {
      * @var string
      */
     protected _path: string = "";
+
+    /**
+     * Sub domain/domain of this route
+     * 
+     * @var string
+     */
+    protected _domain: string = "";
 
     /**
      * Flag to check whether route middlewares have to be skipped 
@@ -114,6 +122,25 @@ export class Route implements IRoute {
     }
 
     /**
+     * Returns the domain of this route. If no domain is defined for the route, 
+     * parent routes are checked for a domain and if it exists on parent, that 
+     * value is returned.
+     * 
+     * @return string
+     */
+    public routeDomain(): string {
+        if (this._domain) {
+            return this._domain;
+        }
+
+        if (this.hasParent()) {
+            //@ts-ignore
+            return this.getParent().getDomain();
+        }
+        return this._domain;
+    }
+
+    /**
      * Returns the complete route path including prefixes and
      * parent paths.
      * 
@@ -126,9 +153,18 @@ export class Route implements IRoute {
             //@ts-ignore
             fullPath = this.getParent().routePath() + "/";
         }
-        fullPath += + this.getPath();
+        fullPath += this.getPath();
 
         return Str.trim(fullPath, "/");
+    }
+
+    /**
+     * Checks the status
+     * 
+     * @param request 
+     */
+    public matches(request: IRequest): boolean {
+        return false;
     }
 
     /**
@@ -151,6 +187,31 @@ export class Route implements IRoute {
         this._path = this.clearPath(path);
 
         return this;
+    }
+
+    /**
+     * Sets the domian of this route
+     * 
+     * @param domain
+     */
+    public domain(domain: string): IRoute {
+        this._domain = this.clearDomain(domain);
+
+        return this;
+    }
+
+    /**
+     * Removes the domain scheme, leading and trailing slashes
+     * 
+     * @param domain 
+     */
+    private clearDomain(domain: string): string {
+        domain = domain.trim();
+
+        domain = domain.replace("http://", "");
+        domain = domain.replace("https://", "");
+
+        return Str.trim(domain, "/");
     }
 
     /**
