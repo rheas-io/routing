@@ -1,19 +1,22 @@
-import { Str } from "@laress/support";
-import { UriComponent } from "./component";
-import { ParamComponent } from "./paramComponent";
+import { UriComponent } from "./baseComponent";
+import { IRoute } from "@laress/contracts/routes";
+import { IRequest } from "../../../contracts/build";
+import { FixedComponent } from "./routeFixedComponent";
+import { ParamComponent } from "./routeParamComponent";
 import { IUriComponent } from "@laress/contracts/routes/uri";
 
 export class ComponentFactory {
+
     /**
-     * Creates a Uri component from the uri
+     * Creates a Uri component from the uri string
      * 
      * @param uri 
      */
-    public static createFromComponent(component: string): IUriComponent {
+    private static createFromComponent(component: string): IUriComponent {
         if (component.startsWith(':')) {
             return new ParamComponent(component);
         }
-        return new UriComponent(component);
+        return new FixedComponent(component);
     }
 
     /**
@@ -21,11 +24,22 @@ export class ComponentFactory {
      * 
      * @param uri 
      */
-    public static createFromUri(uri: string): IUriComponent[] {
-        const clearUri = Str.trim(Str.replaceWithOne(uri.trim(), '/'), '/');
+    public static createFromRoute(route: IRoute): IUriComponent[] {
+        const uri = route.getPath();
 
-        return clearUri.split('/').map(
+        return uri.split('/').map(
             component => ComponentFactory.createFromComponent(component)
         );
+    }
+
+    /**
+     * Creates a uri components list from the request path.
+     * 
+     * @param request 
+     */
+    public static createFromRequest(request: IRequest): IUriComponent[] {
+        const uri = request.getPath();
+
+        return uri.split('/').map(component => new UriComponent(component));
     }
 }
