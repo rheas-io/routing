@@ -23,6 +23,10 @@ export class ParamComponent extends UriComponent {
     }
 
     /**
+     * Returns true if the argument components value is not
+     * empty. Emptiness is checked by char length. We won't be 
+     * trimming any characters, so even blank spaces are counted
+     * as valid.
      * 
      * @param uriComponent 
      */

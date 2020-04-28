@@ -30,6 +30,9 @@ export class FixedComponent extends UriComponent {
     }
 
     /**
+     * Returns true if the component values are matching. If it is not
+     * matching, we check for the need of decoding. If decoding is required,
+     * we decode the argument submitted and compare it with this value
      * 
      * @param uriComponent 
      */
