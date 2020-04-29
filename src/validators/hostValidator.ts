@@ -4,11 +4,12 @@ import { IRouteValidator, IRoute } from "@laress/contracts/routes"
 export class HostValidator implements IRouteValidator {
 
     /**
+     * Matches the route domain with the request domain.
      * 
      * @param route 
      * @param request 
      */
     public matches(route: IRoute, request: IRequest): boolean {
-        throw new Error("Method not implemented.");
+        return route.routeDomain() === request.getHost();
     }
 }
