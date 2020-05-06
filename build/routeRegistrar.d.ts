@@ -1,5 +1,5 @@
 import { Route } from "./route";
-import { IRouteRegistrar } from "@laress/contracts/routes";
+import { IRouteRegistrar, IRoute } from "@laress/contracts/routes";
 export declare class RouteRegistrar extends Route implements IRouteRegistrar {
     /**
      * List of middlewares to be used by this route
@@ -21,5 +21,5 @@ export declare class RouteRegistrar extends Route implements IRouteRegistrar {
      *
      * @return array
      */
-    routesList(): Route[];
+    routesList(): IRoute[];
 }

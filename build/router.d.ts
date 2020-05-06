@@ -2,7 +2,7 @@ import { Route } from "./route";
 import { KeyValue } from "@laress/contracts";
 import { IMiddleware } from "@laress/contracts/middleware";
 import { IRoute, IRouteRegistrar, IRouter } from "@laress/contracts/routes";
-export declare abstract class Router extends Route implements IRouter {
+export declare class Router extends Route implements IRouter {
     /**
      * List of all the middlewares used in the application
      *
@@ -16,6 +16,12 @@ export declare abstract class Router extends Route implements IRouter {
      */
     protected registrars: KeyValue<IRouteRegistrar>;
     /**
+     * Caches all the endpoint routes
+     *
+     * @var array
+     */
+    protected _allEndpoints: IRoute[];
+    /**
      * This is the parent route of the application or in general, the core
      * router of laress application. All the other routes are registered
      * under this route. This abstract router has to be extended in the
@@ -28,18 +34,21 @@ export declare abstract class Router extends Route implements IRouter {
      * router.
      */
     constructor();
+    processRequest(request: import("@laress/contracts").IRequest, response: import("@laress/contracts/core/response").IResponse): void;
+    matchingRoute(request: import("@laress/contracts").IRequest, response: import("@laress/contracts/core/response").IResponse): IRoute;
+    dispatchToRoute(route: IRoute, request: import("@laress/contracts").IRequest, response: import("@laress/contracts/core/response").IResponse): import("@laress/contracts/core/response").IResponse;
     /**
      * Retreives the api route registrar
      *
      * @return IRouteRegistrar
      */
-    protected abstract getApiRoutesRegistrar(): IRouteRegistrar;
+    protected getApiRoutesRegistrar(): IRouteRegistrar;
     /**
      * Registers all the web routes
      *
      * @return IRouteRegistrar
      */
-    protected abstract getWebRoutesRegistrar(): IRouteRegistrar;
+    protected getWebRoutesRegistrar(): IRouteRegistrar;
     /**
      * An exposed function that allows users to register their
      * routes
@@ -48,10 +57,12 @@ export declare abstract class Router extends Route implements IRouter {
      */
     routesList(): IRoute[];
     /**
-     * Caches the routes by name and request methods. All these cache
-     * contains only the final endpoint routes. Routes will traverse in
-     * reverse to match the request uri and to obtain the middlewares. Router
-     * will also cache
+     * Caches the routes by name and request methods. All these cache contains
+     * only the final endpoint routes. Each endpoint route will traverse in
+     * reverse to match the request uri and to obtain the middlewares.
+     *
+     * Router will also cache the endpoint routes by name and methods for faster
+     * route  matching.
      */
     cacheRoutes(): void;
     /**
@@ -60,13 +71,13 @@ export declare abstract class Router extends Route implements IRouter {
      */
     private cacheAllRoutes;
     /**
-     * Caches all the routes by names. This enables easy URl
-     * generation.
+     * Caches all the routes by names. This enables easy URl generation.
      */
     private cacheByNames;
     /**
      * Caches all the routes by methods. This allows further sorting down
-     * the
+     * the routes enabling quick retreival of request route by querying through
+     * the method.
      */
     private cacheByMethods;
     /**

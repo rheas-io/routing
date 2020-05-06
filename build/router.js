@@ -14,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var route_1 = require("./route");
+var routeRegistrar_1 = require("./routeRegistrar");
 var Router = /** @class */ (function (_super) {
     __extends(Router, _super);
     /**
@@ -42,10 +43,41 @@ var Router = /** @class */ (function (_super) {
          * @var array
          */
         _this.registrars = {};
+        /**
+         * Caches all the endpoint routes
+         *
+         * @var array
+         */
+        _this._allEndpoints = [];
         _this.addRegistrar("api", _this.getApiRoutesRegistrar());
         _this.addRegistrar("web", _this.getWebRoutesRegistrar());
         return _this;
     }
+    Router.prototype.processRequest = function (request, response) {
+        throw new Error("Method not implemented.");
+    };
+    Router.prototype.matchingRoute = function (request, response) {
+        throw new Error("Method not implemented.");
+    };
+    Router.prototype.dispatchToRoute = function (route, request, response) {
+        throw new Error("Method not implemented.");
+    };
+    /**
+     * Retreives the api route registrar
+     *
+     * @return IRouteRegistrar
+     */
+    Router.prototype.getApiRoutesRegistrar = function () {
+        return new routeRegistrar_1.RouteRegistrar('api');
+    };
+    /**
+     * Registers all the web routes
+     *
+     * @return IRouteRegistrar
+     */
+    Router.prototype.getWebRoutesRegistrar = function () {
+        return new routeRegistrar_1.RouteRegistrar();
+    };
     /**
      * An exposed function that allows users to register their
      * routes
@@ -61,10 +93,12 @@ var Router = /** @class */ (function (_super) {
         return routes;
     };
     /**
-     * Caches the routes by name and request methods. All these cache
-     * contains only the final endpoint routes. Routes will traverse in
-     * reverse to match the request uri and to obtain the middlewares. Router
-     * will also cache
+     * Caches the routes by name and request methods. All these cache contains
+     * only the final endpoint routes. Each endpoint route will traverse in
+     * reverse to match the request uri and to obtain the middlewares.
+     *
+     * Router will also cache the endpoint routes by name and methods for faster
+     * route  matching.
      */
     Router.prototype.cacheRoutes = function () {
         this.cacheAllRoutes();
@@ -76,16 +110,17 @@ var Router = /** @class */ (function (_super) {
      * route. This allows easy route match operations by the router.
      */
     Router.prototype.cacheAllRoutes = function () {
+        this._allEndpoints = this.routeEndpoints();
     };
     /**
-     * Caches all the routes by names. This enables easy URl
-     * generation.
+     * Caches all the routes by names. This enables easy URl generation.
      */
     Router.prototype.cacheByNames = function () {
     };
     /**
      * Caches all the routes by methods. This allows further sorting down
-     * the
+     * the routes enabling quick retreival of request route by querying through
+     * the method.
      */
     Router.prototype.cacheByMethods = function () {
     };
@@ -113,7 +148,7 @@ var Router = /** @class */ (function (_super) {
      */
     Router.prototype.deleteRegistrar = function (name) {
         if (["api", "web"].includes(name)) {
-            throw Error("You can't delete the default route registrars.");
+            throw Error("Unable to delete default route registrars [api, web].");
         }
         delete this.registrars[name];
     };

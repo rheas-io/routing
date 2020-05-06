@@ -4,12 +4,18 @@ var SchemeValidator = /** @class */ (function () {
     function SchemeValidator() {
     }
     /**
+     * Checks if the request came through a secure channel if the
+     * route accepts secure channel requests only. In all other cases,
+     * return true.
      *
      * @param route
      * @param request
      */
     SchemeValidator.prototype.matches = function (route, request) {
-        throw new Error("Method not implemented.");
+        if (route.routeSecure()) {
+            return request.isSecure();
+        }
+        return true;
     };
     return SchemeValidator;
 }());

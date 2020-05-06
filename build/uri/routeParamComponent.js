@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var support_1 = require("@laress/support");
-var component_1 = require("./component");
+var baseComponent_1 = require("./baseComponent");
 var ParamComponent = /** @class */ (function (_super) {
     __extends(ParamComponent, _super);
     function ParamComponent(component) {
@@ -29,6 +29,10 @@ var ParamComponent = /** @class */ (function (_super) {
         return support_1.Str.trimStart(this.component, ":");
     };
     /**
+     * Returns true if the argument components value is not
+     * empty. Emptiness is checked by char length. We won't be
+     * trimming any characters, so even blank spaces are counted
+     * as valid.
      *
      * @param uriComponent
      */
@@ -42,5 +46,5 @@ var ParamComponent = /** @class */ (function (_super) {
         return uriComponent.component.length > 0 || this.optional;
     };
     return ParamComponent;
-}(component_1.UriComponent));
+}(baseComponent_1.UriComponent));
 exports.ParamComponent = ParamComponent;

@@ -4,12 +4,13 @@ var MethodValidator = /** @class */ (function () {
     function MethodValidator() {
     }
     /**
+     * Validates the requested method with the route.
      *
      * @param route
      * @param request
      */
     MethodValidator.prototype.matches = function (route, request) {
-        throw new Error("Method not implemented.");
+        return route.getMethods().includes(request.getMethod());
     };
     return MethodValidator;
 }());
