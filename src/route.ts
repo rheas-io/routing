@@ -1,8 +1,30 @@
 import { Str } from "@laress/support";
 import { IRoute } from "@laress/contracts/routes";
-import { IRequest } from "@laress/contracts";
+import { IUriComponent } from "@laress/contracts/routes/uri";
+import { ComponentFactory } from "./uri/uriComponentFactory";
 
 export class Route implements IRoute {
+
+    /**
+     * All of the verbs supported by the route.
+     *
+     * @var array
+     */
+    public static verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+
+    /**
+     * Http methods this route handles.
+     * 
+     * @var array
+     */
+    protected _methods: string[] = [];
+
+    /**
+    * Route controller action
+    * 
+    * @var string
+    */
+    protected _action: string = "";
 
     /**
      * Name of this route
@@ -26,6 +48,21 @@ export class Route implements IRoute {
     protected _domain: string = "";
 
     /**
+     * Flag to set if this route or route group allows secure
+     * only connections.
+     * 
+     * @var boolean
+     */
+    protected _secureOnly: boolean = false;
+
+    /**
+     * Route specific middlewares
+     * 
+     * @var array
+     */
+    protected _middlewares: string[] = [];
+
+    /**
      * Flag to check whether route middlewares have to be skipped 
      * or not.
      * 
@@ -34,11 +71,11 @@ export class Route implements IRoute {
     protected _shouldSkipMiddleware: boolean = false;
 
     /**
-     * Route specific middlewares
+     * Returns the uri components of this route path
      * 
      * @var array
      */
-    protected _middlewares: string[] = [];
+    private _uriComponents: IUriComponent[] | null = null;
 
     /**
      * Reference to parent route, if any
@@ -87,6 +124,76 @@ export class Route implements IRoute {
     }
 
     /**
+     * Creates a new route for all methods
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static all(uri: string, controller: string) {
+        return new Route(uri).methods(Route.verbs).action(controller);
+    }
+
+    /**
+     * Creates a new route for GET and HEAD requests
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static get(uri: string, controller: string) {
+        return new Route(uri).methods(["GET", "HEAD"]).action(controller);
+    }
+
+    /**
+     * Creates a new route for PUT requests
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static put(uri: string, controller: string) {
+        return new Route(uri).methods(["PUT"]).action(controller);
+    }
+
+    /**
+     * Creates a new route for post requests
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static post(uri: string, controller: string) {
+        return new Route(uri).methods(["POST"]).action(controller);
+    }
+
+    /**
+     * Creates a new route for PATCH requests
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static patch(uri: string, controller: string) {
+        return new Route(uri).methods(["PATCH"]).action(controller);
+    }
+
+    /**
+     * Creates a new route for DELETE requests
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static delete(uri: string, controller: string) {
+        return new Route(uri).methods(["DELETE"]).action(controller);
+    }
+
+    /**
+     * Creates a new route for OPTIONS requests
+     * 
+     * @param uri 
+     * @param controller 
+     */
+    public static options(uri: string, controller: string) {
+        return new Route(uri).methods(["OPTIONS"]).action(controller);
+    }
+
+    /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
      * 
@@ -129,15 +236,13 @@ export class Route implements IRoute {
      * @return string
      */
     public routeDomain(): string {
-        if (this._domain) {
-            return this._domain;
-        }
+        let domain = this._domain;
 
-        if (this.hasParent()) {
+        if (domain.length <= 0 && this.hasParent()) {
             //@ts-ignore
-            return this.getParent().getDomain();
+            domain = this.getParent().routeDomain();
         }
-        return this._domain;
+        return domain;
     }
 
     /**
@@ -159,12 +264,68 @@ export class Route implements IRoute {
     }
 
     /**
-     * Checks the status
+     * Checks if this route accepts only secure connection requests. In todays
+     * standard https is the standard, so we won't be adding httpOnly checks.
      * 
-     * @param request 
+     * @return string
      */
-    public matches(request: IRequest): boolean {
-        return false;
+    public routeSecure(): boolean {
+        let secureOnly = this._secureOnly;
+
+        if (!secureOnly && this.hasParent()) {
+            //@ts-ignore
+            secureOnly = this.getParent().routeSecure();
+        }
+        return secureOnly;
+    }
+
+    /**
+     * Returns all the child endpoints of this route. Endpoint is a route
+     * with a valid method property.
+     * 
+     * @return array
+     */
+    public routeEndpoints(): IRoute[] {
+        let endpoints: IRoute[] = [];
+
+        this._childRoutes.forEach(route => {
+            endpoints.push(...route.routeEndpoints());
+        });
+
+        if (this.isEndpoint()) {
+            endpoints.unshift(this);
+        }
+        return endpoints;
+    }
+
+    /**
+     * Sets the methods of this route
+     * 
+     * @param methods 
+     */
+    public methods(methods: string | string[]): IRoute {
+        if (!Array.isArray(methods)) {
+            methods = Array.from(arguments);
+        }
+
+        if (!methods.every(method => Route.verbs.includes(method))) {
+            throw new Error(`Method not supported on route ${this._path}. Supported methods are: ` + Route.verbs);
+        }
+
+        this._methods = methods;
+
+        return this;
+    }
+
+    /**
+     * Sets the controller action of this route
+     * 
+     * @param action
+     */
+    public action(action: string): IRoute {
+        this._action = action;
+
+        return this;
     }
 
     /**
@@ -196,6 +357,17 @@ export class Route implements IRoute {
      */
     public domain(domain: string): IRoute {
         this._domain = this.clearDomain(domain);
+
+        return this;
+    }
+
+    /**
+     * Sets the route allows only secure connections flag.
+     * 
+     * @return this
+     */
+    public secure(): IRoute {
+        this._secureOnly = true;
 
         return this;
     }
@@ -249,6 +421,15 @@ export class Route implements IRoute {
     }
 
     /**
+     * Returns the methods of this route
+     * 
+     * @return string
+     */
+    public getMethods(): string[] {
+        return this._methods;
+    }
+
+    /**
      * Returns the name of this route
      * 
      * @return string
@@ -273,6 +454,27 @@ export class Route implements IRoute {
      */
     public getParent(): IRoute | null {
         return this._parentRoute;
+    }
+
+    /**
+     * Returns the uri components of this route.
+     * 
+     * @return array
+     */
+    public getUriComponents(): IUriComponent[] {
+        if (this._uriComponents === null) {
+            this._uriComponents = ComponentFactory.createFromRoute(this);
+        }
+        return this._uriComponents;
+    }
+
+    /**
+     * Checks if this is an endpoint
+     * 
+     * @return boolean
+     */
+    public isEndpoint(): boolean {
+        return this._methods.length > 0;
     }
 
     /**

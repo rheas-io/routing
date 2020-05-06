@@ -1,5 +1,5 @@
 import { Route } from "./route";
-import { IRouteRegistrar } from "@laress/contracts/routes";
+import { IRouteRegistrar, IRoute } from "@laress/contracts/routes";
 
 export class RouteRegistrar extends Route implements IRouteRegistrar {
 
@@ -25,7 +25,7 @@ export class RouteRegistrar extends Route implements IRouteRegistrar {
      * 
      * @return array
      */
-    public routesList(): Route[] {
+    public routesList(): IRoute[] {
         return [];
     }
 }
