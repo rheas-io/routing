@@ -1,6 +1,6 @@
-import { Str } from "@laress/support";
-import { IRoute } from "@laress/contracts/routes";
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { Str } from "@rheas/support";
+import { IRoute } from "@rheas/contracts/routes";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 import { ComponentFactory } from "./uri/uriComponentFactory";
 
 export class Route implements IRoute {

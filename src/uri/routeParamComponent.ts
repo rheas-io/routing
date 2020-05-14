@@ -1,6 +1,6 @@
-import { Str } from "@laress/support";
+import { Str } from "@rheas/support";
 import { UriComponent } from "./baseComponent";
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 
 export class ParamComponent extends UriComponent {
 

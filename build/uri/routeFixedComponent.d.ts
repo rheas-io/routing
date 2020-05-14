@@ -1,5 +1,5 @@
 import { UriComponent } from "./baseComponent";
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class FixedComponent extends UriComponent {
     /**
      * Caches the encoding required or not status of the component.

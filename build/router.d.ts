@@ -1,10 +1,10 @@
 import { Route } from "./route";
-import { KeyValue, IRequest } from "@laress/contracts";
-import { IMiddleware } from "@laress/contracts/middleware";
-import { IResponse } from "@laress/contracts/core/response";
-import { IContainer } from "@laress/contracts/container/container";
-import { IException } from "@laress/contracts/errors";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@laress/contracts/routes";
+import { KeyValue, IRequest } from "@rheas/contracts";
+import { IMiddleware } from "@rheas/contracts/middleware";
+import { IResponse } from "@rheas/contracts/core/response";
+import { IContainer } from "@rheas/contracts/container/container";
+import { IException } from "@rheas/contracts/errors";
+import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@rheas/contracts/routes";
 export declare class Router extends Route implements IRouter {
     /**
      * The container instance
@@ -44,14 +44,14 @@ export declare class Router extends Route implements IRouter {
     private _routeValidators;
     /**
      * This is the parent route of the application or in general, the core
-     * router of laress application. All the other routes are registered
+     * router of Rheas application. All the other routes are registered
      * under this route. This abstract router has to be extended in the
      * application routes folder or wherever the user finds it convenient.
      *
      * The derived route class has to register the apiRouteRegistrar and
      * webRouteRegistrar and set the router config to the derived class.
      *
-     * Laress will read the config and use the router as the application
+     * Rheas will read the config and use the router as the application
      * router.
      */
     constructor(app: IContainer);

@@ -1,6 +1,6 @@
-import { IRoute } from "@laress/contracts/routes";
-import { IRequest } from "../../../contracts/build";
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { IRequest } from "@rheas/contracts";
+import { IRoute } from "@rheas/contracts/routes";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class ComponentFactory {
     /**
      * Creates a Uri component from the uri string

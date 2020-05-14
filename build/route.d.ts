@@ -1,5 +1,5 @@
-import { IRoute } from "@laress/contracts/routes";
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { IRoute } from "@rheas/contracts/routes";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class Route implements IRoute {
     /**
      * All of the verbs supported by the route.

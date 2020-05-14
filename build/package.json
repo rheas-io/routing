@@ -1,10 +1,10 @@
 {
-  "name": "@laress/routing",
+  "name": "@rheas/routing",
   "version": "0.0.1",
-  "description": "Laress router and route handlers",
+  "description": "Rheas router and route handlers",
   "main": "index.js",
   "keywords": [
-    "laress",
+    "rheas",
     "express",
     "framework",
     "nodejs",
@@ -32,13 +32,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/laress-io/routing.git"
+    "url": "git+https://github.com/rheas-io/routing.git"
   },
   "author": "Kalesh Kaladharan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/laress-io/routing/issues"
+    "url": "https://github.com/rheas-io/routing/issues"
   },
-  "homepage": "https://github.com/laress-io/routing#readme",
+  "homepage": "https://github.com/rheas-io/routing#readme",
   "dependencies": {}
 }

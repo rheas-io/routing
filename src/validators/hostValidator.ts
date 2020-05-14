@@ -1,5 +1,5 @@
-import { IRequest } from "@laress/contracts";
-import { IRouteValidator, IRoute } from "@laress/contracts/routes"
+import { IRequest } from "@rheas/contracts";
+import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
 
 export class HostValidator implements IRouteValidator {
 

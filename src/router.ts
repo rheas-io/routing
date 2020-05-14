@@ -1,17 +1,17 @@
 import { Route } from "./route";
 import { RouteRegistrar } from "./routeRegistrar";
-import { KeyValue, IRequest } from "@laress/contracts";
+import { KeyValue, IRequest } from "@rheas/contracts";
 import { UriValidator } from "./validators/uriValidator";
-import { IMiddleware } from "@laress/contracts/middleware";
+import { IMiddleware } from "@rheas/contracts/middleware";
 import { HostValidator } from "./validators/hostValidator";
-import { IResponse } from "@laress/contracts/core/response";
-import { NotFoundException } from "@laress/errors/notFound";
+import { IResponse } from "@rheas/contracts/core/response";
+import { NotFoundException } from "@rheas/errors/notFound";
 import { MethodValidator } from "./validators/methodValidator";
 import { SchemeValidator } from "./validators/schemeValidator";
-import { IContainer } from "@laress/contracts/container/container";
-import { IExceptionHandler, IException } from "@laress/contracts/errors";
-import { MethodNotAllowedException } from "@laress/errors/methoNotAllowed";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@laress/contracts/routes";
+import { IContainer } from "@rheas/contracts/container/container";
+import { IExceptionHandler, IException } from "@rheas/contracts/errors";
+import { MethodNotAllowedException } from "@rheas/errors/methoNotAllowed";
+import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@rheas/contracts/routes";
 
 export class Router extends Route implements IRouter {
 
@@ -59,14 +59,14 @@ export class Router extends Route implements IRouter {
 
     /**
      * This is the parent route of the application or in general, the core
-     * router of laress application. All the other routes are registered 
+     * router of Rheas application. All the other routes are registered 
      * under this route. This abstract router has to be extended in the
      * application routes folder or wherever the user finds it convenient.
      * 
      * The derived route class has to register the apiRouteRegistrar and
      * webRouteRegistrar and set the router config to the derived class.
      * 
-     * Laress will read the config and use the router as the application
+     * Rheas will read the config and use the router as the application
      * router.
      */
     constructor(app: IContainer) {

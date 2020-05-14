@@ -7,7 +7,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var support_1 = require("@laress/support");
+var support_1 = require("@rheas/support");
 var uriComponentFactory_1 = require("./uri/uriComponentFactory");
 var Route = /** @class */ (function () {
     /**

@@ -1,5 +1,5 @@
 import { Route } from "./route";
-import { IRouteRegistrar, IRoute } from "@laress/contracts/routes";
+import { IRouteRegistrar, IRoute } from "@rheas/contracts/routes";
 export declare class RouteRegistrar extends Route implements IRouteRegistrar {
     /**
      * List of middlewares to be used by this route

@@ -17,22 +17,22 @@ var route_1 = require("./route");
 var routeRegistrar_1 = require("./routeRegistrar");
 var uriValidator_1 = require("./validators/uriValidator");
 var hostValidator_1 = require("./validators/hostValidator");
-var notFound_1 = require("@laress/errors/notFound");
+var notFound_1 = require("@rheas/errors/notFound");
 var methodValidator_1 = require("./validators/methodValidator");
 var schemeValidator_1 = require("./validators/schemeValidator");
-var methoNotAllowed_1 = require("@laress/errors/methoNotAllowed");
+var methoNotAllowed_1 = require("@rheas/errors/methoNotAllowed");
 var Router = /** @class */ (function (_super) {
     __extends(Router, _super);
     /**
      * This is the parent route of the application or in general, the core
-     * router of laress application. All the other routes are registered
+     * router of Rheas application. All the other routes are registered
      * under this route. This abstract router has to be extended in the
      * application routes folder or wherever the user finds it convenient.
      *
      * The derived route class has to register the apiRouteRegistrar and
      * webRouteRegistrar and set the router config to the derived class.
      *
-     * Laress will read the config and use the router as the application
+     * Rheas will read the config and use the router as the application
      * router.
      */
     function Router(app) {

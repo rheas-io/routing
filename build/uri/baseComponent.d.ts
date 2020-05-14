@@ -1,4 +1,4 @@
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class UriComponent implements IUriComponent {
     /**
      * @inheritdoc

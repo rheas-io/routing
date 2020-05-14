@@ -1,9 +1,9 @@
+import { IRequest } from "@rheas/contracts";
 import { UriComponent } from "./baseComponent";
-import { IRoute } from "@laress/contracts/routes";
-import { IRequest } from "../../../contracts/build";
+import { IRoute } from "@rheas/contracts/routes";
 import { FixedComponent } from "./routeFixedComponent";
 import { ParamComponent } from "./routeParamComponent";
-import { IUriComponent } from "@laress/contracts/routes/uri";
+import { IUriComponent } from "@rheas/contracts/routes/uri";
 
 export class ComponentFactory {
 
