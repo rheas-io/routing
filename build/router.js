@@ -15,6 +15,12 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var route_1 = require("./route");
 var routeRegistrar_1 = require("./routeRegistrar");
+var uriValidator_1 = require("./validators/uriValidator");
+var hostValidator_1 = require("./validators/hostValidator");
+var notFound_1 = require("@laress/errors/notFound");
+var methodValidator_1 = require("./validators/methodValidator");
+var schemeValidator_1 = require("./validators/schemeValidator");
+var methoNotAllowed_1 = require("@laress/errors/methoNotAllowed");
 var Router = /** @class */ (function (_super) {
     __extends(Router, _super);
     /**
@@ -29,7 +35,7 @@ var Router = /** @class */ (function (_super) {
      * Laress will read the config and use the router as the application
      * router.
      */
-    function Router() {
+    function Router(app) {
         var _this = _super.call(this) || this;
         /**
          * List of all the middlewares used in the application
@@ -44,24 +50,28 @@ var Router = /** @class */ (function (_super) {
          */
         _this.registrars = {};
         /**
-         * Caches all the endpoint routes
+         * Cache of route by names.
+         *
+         * @var object
+         */
+        _this._namedEndpoints = {};
+        /**
+         * Cache of routes grouped by methods.
+         *
+         * @var object
+         */
+        _this._methodEndpoints = {};
+        /**
+         * All the route validators.
          *
          * @var array
          */
-        _this._allEndpoints = [];
+        _this._routeValidators = [];
+        _this.app = app;
         _this.addRegistrar("api", _this.getApiRoutesRegistrar());
         _this.addRegistrar("web", _this.getWebRoutesRegistrar());
         return _this;
     }
-    Router.prototype.processRequest = function (request, response) {
-        throw new Error("Method not implemented.");
-    };
-    Router.prototype.matchingRoute = function (request, response) {
-        throw new Error("Method not implemented.");
-    };
-    Router.prototype.dispatchToRoute = function (route, request, response) {
-        throw new Error("Method not implemented.");
-    };
     /**
      * Retreives the api route registrar
      *
@@ -79,6 +89,195 @@ var Router = /** @class */ (function (_super) {
         return new routeRegistrar_1.RouteRegistrar();
     };
     /**
+     * Application requests are send here for processing. A route match is
+     * checked for the request. If a match is found, dispatches the same to
+     * controller via middlewares.
+     *
+     * @param request
+     * @param response
+     */
+    Router.prototype.processRequest = function (request, response) {
+        try {
+            var route = this.matchingRoute(request);
+        }
+        catch (err) {
+            response = this.handleError(err, request, response);
+        }
+        return response;
+    };
+    /**
+     * Handles the exceptions. Binds the exception to the response and logs the exception
+     * if it has to be logged.
+     *
+     * @param err
+     * @param req
+     * @param res
+     */
+    Router.prototype.handleError = function (err, req, res) {
+        var exceptionHandler = this.app.get('error');
+        if (exceptionHandler) {
+            err = exceptionHandler.prepareException(err);
+            exceptionHandler.report(err);
+            res = exceptionHandler.responseFromError(err, req, res);
+        }
+        return res;
+    };
+    /**
+     * Checks the request for a matching route.
+     *
+     * @param request
+     * @param response
+     */
+    Router.prototype.matchingRoute = function (request) {
+        var req_method = request.getMethod();
+        req_method = (req_method === 'HEAD' ? 'GET' : req_method);
+        var route = this.matchAgainstRoutes(this._methodEndpoints[req_method], request);
+        if (route !== null) {
+            return route;
+        }
+        var _methods = this.otherMethods(request, req_method);
+        if (_methods.length > 0) {
+            throw new methoNotAllowed_1.MethodNotAllowedException(_methods, "Url path does not support " + req_method + " method. Supported methods are: " + _methods.join(','));
+        }
+        throw new notFound_1.NotFoundException();
+    };
+    /**
+     * Checks if a request for any other verb is defined.
+     *
+     * @param request
+     * @param original_method
+     */
+    Router.prototype.otherMethods = function (request, original_method) {
+        var _methods = [];
+        var _endpoints = Object.assign({}, this._methodEndpoints);
+        delete _endpoints[original_method];
+        for (var method in _endpoints) {
+            if (this.matchAgainstRoutes(_endpoints[method], request) !== null) {
+                _methods.push(method);
+            }
+        }
+        return _methods;
+    };
+    /**
+     *
+     * @param routes
+     * @param request
+     */
+    Router.prototype.matchAgainstRoutes = function (routes, request) {
+        this._routeValidators = this.routeValidators();
+        for (var _i = 0, routes_1 = routes; _i < routes_1.length; _i++) {
+            var route = routes_1[_i];
+            if (this.routeMatches(route, request, this._routeValidators)) {
+                return route;
+            }
+        }
+        return null;
+    };
+    /**
+     * Checks if a route matches for the request. Match is done against the validators
+     * submitted.
+     *
+     * @param route
+     * @param request
+     * @param validators
+     */
+    Router.prototype.routeMatches = function (route, request, validators) {
+        for (var _i = 0, validators_1 = validators; _i < validators_1.length; _i++) {
+            var validator = validators_1[_i];
+            if (!validator.matches(route, request)) {
+                return false;
+            }
+        }
+        return true;
+    };
+    /**
+     * Returns the validators that each request has to run to find a
+     * route match.
+     *
+     * @return array of route validators.
+     */
+    Router.prototype.routeValidators = function () {
+        if (this._routeValidators.length === 0) {
+            this._routeValidators = [
+                this.getMethodValidator(), this.getUriValidator(),
+                this.getHostValidator(), this.getSchemeValidator(),
+            ];
+        }
+        return this._routeValidators;
+    };
+    /**
+     * New host validator. Domain/subdomain checks.
+     *
+     * @return
+     */
+    Router.prototype.getHostValidator = function () {
+        return new hostValidator_1.HostValidator();
+    };
+    /**
+     * New scheme validator. http or https check
+     *
+     * @return
+     */
+    Router.prototype.getSchemeValidator = function () {
+        return new schemeValidator_1.SchemeValidator();
+    };
+    /**
+     * New route method validator.
+     *
+     * @return
+     */
+    Router.prototype.getMethodValidator = function () {
+        return new methodValidator_1.MethodValidator();
+    };
+    /**
+     * New uri validator. Checks if the request url and route path matches.
+     *
+     * @return
+     */
+    Router.prototype.getUriValidator = function () {
+        return new uriValidator_1.UriValidator();
+    };
+    /**
+     * Caches the routes by name and request methods. All these cache contains
+     * only the final endpoint routes. Each endpoint route will traverse in
+     * reverse to match the request uri and to obtain the middlewares.
+     *
+     * Router will cache the endpoint routes by name and methods for faster
+     * route  matching.
+     */
+    Router.prototype.cacheRoutes = function () {
+        var _this = this;
+        this.routes.apply(this, this.routesList());
+        this.routeEndpoints().forEach(function (route) {
+            _this.cacheNamedRoute(route);
+            _this.cacheMethodRoute(route);
+        });
+    };
+    /**
+     * Caches the route by name if it has a non-empty name.
+     *
+     * @param route
+     */
+    Router.prototype.cacheNamedRoute = function (route) {
+        var name = route.getName().trim();
+        if (name.length > 0) {
+            this._namedEndpoints[name] = route;
+        }
+    };
+    /**
+     * Sorts the route method and cache them into the appropriate array. This allows
+     * quick retreival of request route by querying through the method array.
+     *
+     * @param route
+     */
+    Router.prototype.cacheMethodRoute = function (route) {
+        var _this = this;
+        route.getMethods().filter(function (method) { return method !== 'HEAD'; }).forEach(function (method) {
+            _this._methodEndpoints[method] = _this._methodEndpoints[method] || [];
+            _this._methodEndpoints[method].push(route);
+        });
+    };
+    /**
      * An exposed function that allows users to register their
      * routes
      *
@@ -91,38 +290,6 @@ var Router = /** @class */ (function (_super) {
             routes.push(registrar.routes.apply(registrar, registrar.routesList()));
         }
         return routes;
-    };
-    /**
-     * Caches the routes by name and request methods. All these cache contains
-     * only the final endpoint routes. Each endpoint route will traverse in
-     * reverse to match the request uri and to obtain the middlewares.
-     *
-     * Router will also cache the endpoint routes by name and methods for faster
-     * route  matching.
-     */
-    Router.prototype.cacheRoutes = function () {
-        this.cacheAllRoutes();
-        this.cacheByNames();
-        this.cacheByMethods();
-    };
-    /**
-     * Caches all the routes by storing the whole uri to a
-     * route. This allows easy route match operations by the router.
-     */
-    Router.prototype.cacheAllRoutes = function () {
-        this._allEndpoints = this.routeEndpoints();
-    };
-    /**
-     * Caches all the routes by names. This enables easy URl generation.
-     */
-    Router.prototype.cacheByNames = function () {
-    };
-    /**
-     * Caches all the routes by methods. This allows further sorting down
-     * the routes enabling quick retreival of request route by querying through
-     * the method.
-     */
-    Router.prototype.cacheByMethods = function () {
     };
     /**
      * Adds a custom route registrar to the router. This allows adding more

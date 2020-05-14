@@ -1,10 +1,26 @@
 import { Route } from "./route";
-import { KeyValue } from "@laress/contracts";
 import { RouteRegistrar } from "./routeRegistrar";
+import { KeyValue, IRequest } from "@laress/contracts";
+import { UriValidator } from "./validators/uriValidator";
 import { IMiddleware } from "@laress/contracts/middleware";
-import { IRoute, IRouteRegistrar, IRouter } from "@laress/contracts/routes";
+import { HostValidator } from "./validators/hostValidator";
+import { IResponse } from "@laress/contracts/core/response";
+import { NotFoundException } from "@laress/errors/notFound";
+import { MethodValidator } from "./validators/methodValidator";
+import { SchemeValidator } from "./validators/schemeValidator";
+import { IContainer } from "@laress/contracts/container/container";
+import { IExceptionHandler, IException } from "@laress/contracts/errors";
+import { MethodNotAllowedException } from "@laress/errors/methoNotAllowed";
+import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@laress/contracts/routes";
 
 export class Router extends Route implements IRouter {
+
+    /**
+     * The container instance
+     * 
+     * @var IContainer
+     */
+    protected app: IContainer;
 
     /**
      * List of all the middlewares used in the application
@@ -21,11 +37,25 @@ export class Router extends Route implements IRouter {
     protected registrars: KeyValue<IRouteRegistrar> = {};
 
     /**
-     * Caches all the endpoint routes
+     * Cache of route by names.
+     * 
+     * @var object
+     */
+    protected _namedEndpoints: KeyValue<IRoute> = {};
+
+    /**
+     * Cache of routes grouped by methods.
+     * 
+     * @var object
+     */
+    protected _methodEndpoints: KeyValue<IRoute[]> = {};
+
+    /**
+     * All the route validators.
      * 
      * @var array
      */
-    protected _allEndpoints: IRoute[] = [];
+    private _routeValidators: IRouteValidator[] = [];
 
     /**
      * This is the parent route of the application or in general, the core
@@ -39,20 +69,13 @@ export class Router extends Route implements IRouter {
      * Laress will read the config and use the router as the application
      * router.
      */
-    constructor() {
+    constructor(app: IContainer) {
         super();
+
+        this.app = app;
 
         this.addRegistrar("api", this.getApiRoutesRegistrar());
         this.addRegistrar("web", this.getWebRoutesRegistrar());
-    }
-    processRequest(request: import("@laress/contracts").IRequest, response: import("@laress/contracts/core/response").IResponse): void {
-        throw new Error("Method not implemented.");
-    }
-    matchingRoute(request: import("@laress/contracts").IRequest, response: import("@laress/contracts/core/response").IResponse): IRoute {
-        throw new Error("Method not implemented.");
-    }
-    dispatchToRoute(route: IRoute, request: import("@laress/contracts").IRequest, response: import("@laress/contracts/core/response").IResponse): import("@laress/contracts/core/response").IResponse {
-        throw new Error("Method not implemented.");
     }
 
     /**
@@ -74,6 +97,229 @@ export class Router extends Route implements IRouter {
     }
 
     /**
+     * Application requests are send here for processing. A route match is
+     * checked for the request. If a match is found, dispatches the same to 
+     * controller via middlewares.
+     * 
+     * @param request 
+     * @param response 
+     */
+    public processRequest(request: IRequest, response: IResponse): IResponse {
+
+        try {
+            const route = this.matchingRoute(request);
+
+        } catch (err) {
+            response = this.handleError(err, request, response);
+        }
+        return response;
+    }
+
+    /**
+     * Handles the exceptions. Binds the exception to the response and logs the exception
+     * if it has to be logged.
+     * 
+     * @param err 
+     * @param req 
+     * @param res 
+     */
+    protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse {
+        const exceptionHandler = this.app.get<IExceptionHandler>('error');
+
+        if (exceptionHandler) {
+            err = exceptionHandler.prepareException(err);
+
+            exceptionHandler.report(err);
+
+            res = exceptionHandler.responseFromError(err, req, res);
+        }
+        return res;
+    }
+
+    /**
+     * Checks the request for a matching route.
+     * 
+     * @param request 
+     * @param response 
+     */
+    public matchingRoute(request: IRequest): IRoute {
+
+        let req_method = request.getMethod();
+        req_method = (req_method === 'HEAD' ? 'GET' : req_method);
+
+        const route = this.matchAgainstRoutes(this._methodEndpoints[req_method], request);
+
+        if (route !== null) {
+            return route;
+        }
+
+        const _methods = this.otherMethods(request, req_method);
+
+        if (_methods.length > 0) {
+            throw new MethodNotAllowedException(
+                _methods,
+                `Url path does not support ${req_method} method. Supported methods are: ${_methods.join(',')}`
+            );
+        }
+
+        throw new NotFoundException();
+    }
+
+    /**
+     * Checks if a request for any other verb is defined.
+     * 
+     * @param request 
+     * @param original_method 
+     */
+    private otherMethods(request: IRequest, original_method: string): string[] {
+
+        const _methods = [];
+        const _endpoints = Object.assign({}, this._methodEndpoints);
+
+        delete _endpoints[original_method];
+
+        for (let method in _endpoints) {
+            if (this.matchAgainstRoutes(_endpoints[method], request) !== null) {
+                _methods.push(method);
+            }
+        }
+        return _methods;
+    }
+
+    /**
+     * 
+     * @param routes 
+     * @param request 
+     */
+    protected matchAgainstRoutes(routes: IRoute[], request: IRequest): IRoute | null {
+
+        this._routeValidators = this.routeValidators();
+
+        for (let route of routes) {
+            if (this.routeMatches(route, request, this._routeValidators)) {
+                return route;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if a route matches for the request. Match is done against the validators
+     * submitted.
+     * 
+     * @param route 
+     * @param request 
+     * @param validators 
+     */
+    protected routeMatches(route: IRoute, request: IRequest, validators: IRouteValidator[]): boolean {
+
+        for (let validator of validators) {
+            if (!validator.matches(route, request)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns the validators that each request has to run to find a
+     * route match.
+     * 
+     * @return array of route validators. 
+     */
+    protected routeValidators(): IRouteValidator[] {
+
+        if (this._routeValidators.length === 0) {
+            this._routeValidators = [
+                this.getMethodValidator(), this.getUriValidator(),
+                this.getHostValidator(), this.getSchemeValidator(),
+            ];
+        }
+        return this._routeValidators;
+    }
+
+    /**
+     * New host validator. Domain/subdomain checks.
+     * 
+     * @return
+     */
+    protected getHostValidator(): IRouteValidator {
+        return new HostValidator();
+    }
+
+    /**
+     * New scheme validator. http or https check
+     * 
+     * @return 
+     */
+    protected getSchemeValidator(): IRouteValidator {
+        return new SchemeValidator();
+    }
+
+    /**
+     * New route method validator.
+     * 
+     * @return
+     */
+    protected getMethodValidator(): IRouteValidator {
+        return new MethodValidator();
+    }
+
+    /**
+     * New uri validator. Checks if the request url and route path matches.
+     * 
+     * @return
+     */
+    protected getUriValidator(): IRouteValidator {
+        return new UriValidator();
+    }
+
+    /**
+     * Caches the routes by name and request methods. All these cache contains 
+     * only the final endpoint routes. Each endpoint route will traverse in
+     * reverse to match the request uri and to obtain the middlewares. 
+     * 
+     * Router will cache the endpoint routes by name and methods for faster 
+     * route  matching.
+     */
+    public cacheRoutes(): void {
+
+        this.routes(...this.routesList());
+
+        this.routeEndpoints().forEach(route => {
+            this.cacheNamedRoute(route);
+            this.cacheMethodRoute(route);
+        });
+    }
+
+    /**
+     * Caches the route by name if it has a non-empty name.
+     * 
+     * @param route 
+     */
+    protected cacheNamedRoute(route: IRoute): void {
+        const name = route.getName().trim();
+
+        if (name.length > 0) {
+            this._namedEndpoints[name] = route;
+        }
+    }
+
+    /**
+     * Sorts the route method and cache them into the appropriate array. This allows 
+     * quick retreival of request route by querying through the method array.
+     * 
+     * @param route 
+     */
+    protected cacheMethodRoute(route: IRoute): void {
+        route.getMethods().filter(method => method !== 'HEAD').forEach(method => {
+            this._methodEndpoints[method] = this._methodEndpoints[method] || [];
+
+            this._methodEndpoints[method].push(route);
+        });
+    }
+
+    /**
      * An exposed function that allows users to register their
      * routes
      * 
@@ -86,48 +332,8 @@ export class Router extends Route implements IRouter {
             const registrar = this.registrars[name];
             routes.push(registrar.routes(...registrar.routesList()));
         }
+
         return routes;
-    }
-
-    /**
-     * Caches the routes by name and request methods. All these cache contains 
-     * only the final endpoint routes. Each endpoint route will traverse in
-     * reverse to match the request uri and to obtain the middlewares. 
-     * 
-     * Router will also cache the endpoint routes by name and methods for faster 
-     * route  matching.
-     */
-    public cacheRoutes(): void {
-
-        this.cacheAllRoutes();
-
-        this.cacheByNames();
-
-        this.cacheByMethods();
-    }
-
-    /**
-     * Caches all the routes by storing the whole uri to a 
-     * route. This allows easy route match operations by the router.
-     */
-    private cacheAllRoutes(): void {
-        this._allEndpoints = this.routeEndpoints();
-    }
-
-    /**
-     * Caches all the routes by names. This enables easy URl generation.
-     */
-    private cacheByNames(): void {
-
-    }
-
-    /**
-     * Caches all the routes by methods. This allows further sorting down
-     * the routes enabling quick retreival of request route by querying through
-     * the method.
-     */
-    private cacheByMethods(): void {
-
     }
 
     /**
