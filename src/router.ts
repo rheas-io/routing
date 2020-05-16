@@ -1,8 +1,10 @@
+import path from "path";
 import { Route } from "./route";
+import { Str } from "@rheas/support";
+import { Pipeline } from "./pipeline";
 import { RouteRegistrar } from "./routeRegistrar";
 import { KeyValue, IRequest } from "@rheas/contracts";
 import { UriValidator } from "./validators/uriValidator";
-import { IMiddleware } from "@rheas/contracts/middleware";
 import { HostValidator } from "./validators/hostValidator";
 import { IResponse } from "@rheas/contracts/core/response";
 import { NotFoundException } from "@rheas/errors/notFound";
@@ -11,7 +13,7 @@ import { SchemeValidator } from "./validators/schemeValidator";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IExceptionHandler, IException } from "@rheas/contracts/errors";
 import { MethodNotAllowedException } from "@rheas/errors/methoNotAllowed";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@rheas/contracts/routes";
+import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler } from "@rheas/contracts/routes";
 
 export class Router extends Route implements IRouter {
 
@@ -23,11 +25,19 @@ export class Router extends Route implements IRouter {
     protected app: IContainer;
 
     /**
+     * The folder where controller files are located. The location
+     * is respective to the root path.
+     * 
+     * @var string
+     */
+    protected controllerPath: string = "app/controllers";
+
+    /**
      * List of all the middlewares used in the application
      * 
      * @var array
      */
-    protected middlewares_list: KeyValue<IMiddleware> = {};
+    protected middlewares_list: KeyValue<IRequestHandler> = {};
 
     /**
      * Route registrars of this route.
@@ -104,15 +114,86 @@ export class Router extends Route implements IRouter {
      * @param request 
      * @param response 
      */
-    public processRequest(request: IRequest, response: IResponse): IResponse {
+    public async processRequest(request: IRequest, response: IResponse): Promise<IResponse> {
 
         try {
             const route = this.matchingRoute(request);
 
-        } catch (err) {
+            response = await this.dispatchToRoute(route, request, response);
+        }
+        // Catch any exception occured when processing the request and
+        // create a response from the exception. This error response should
+        // be returned.
+        catch (err) {
             response = this.handleError(err, request, response);
         }
         return response;
+    }
+
+    /**
+     * Dispatches thee request to the route through middleware pipeline.
+     * 
+     * @param route 
+     * @param req 
+     * @param res 
+     */
+    protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse> {
+
+        const middlewares: IRequestHandler[] = route.routeMiddlewares().map(name => this.middlewares_list[name]);
+
+        const destination = this.resolveDestination(route, req);
+
+        return await new Pipeline().through(middlewares).sendTo(destination, req, res);
+    }
+
+    /**
+     * Returns the final request handler of the route which is a request handler
+     * executing the route action/controller method.
+     * 
+     * @param route 
+     * @param req 
+     */
+    protected resolveDestination(route: IRoute, request: IRequest): IRequestHandler {
+
+        let controllerAction: string | IRequestHandler = route.getAction();
+
+        if (typeof controllerAction !== 'function') {
+            controllerAction = this.resolveController(controllerAction);
+        }
+        const params = request.params();
+
+        return async (req, res) => {
+            return await (<IRequestHandler>controllerAction)(req, res, ...params);
+        }
+    }
+
+    /**
+     * Resolves controller from route action string.
+     * 
+     * @param controller 
+     */
+    protected resolveController(controller: string): IRequestHandler {
+
+        let [className, method] = controller.trim().split('@');
+
+        const controllerClass = require(this.controllerScript(className)).default;
+
+        return (new controllerClass)[method];
+    }
+
+    /**
+     * Returns path to the script. The path is respective to the root
+     * path.
+     * 
+     * @param filename 
+     */
+    private controllerScript(filename: string) {
+        const rootPath: string = this.app.get('rootPath') || '';
+
+        const controllerFolders = Str.path(this.controllerPath).split('/');
+        const fileFolders = Str.path(filename).split('/');
+
+        return path.resolve(rootPath, ...controllerFolders, ...fileFolders);
     }
 
     /**
@@ -187,6 +268,8 @@ export class Router extends Route implements IRouter {
     }
 
     /**
+     * Checks if a request matches against a set of routes. First match is 
+     * returned if one exists and null otherwise.
      * 
      * @param routes 
      * @param request 

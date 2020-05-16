@@ -1,10 +1,9 @@
 import { Route } from "./route";
 import { KeyValue, IRequest } from "@rheas/contracts";
-import { IMiddleware } from "@rheas/contracts/middleware";
 import { IResponse } from "@rheas/contracts/core/response";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IException } from "@rheas/contracts/errors";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator } from "@rheas/contracts/routes";
+import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler } from "@rheas/contracts/routes";
 export declare class Router extends Route implements IRouter {
     /**
      * The container instance
@@ -13,11 +12,18 @@ export declare class Router extends Route implements IRouter {
      */
     protected app: IContainer;
     /**
+     * The folder where controller files are located. The location
+     * is respective to the root path.
+     *
+     * @var string
+     */
+    protected controllerPath: string;
+    /**
      * List of all the middlewares used in the application
      *
      * @var array
      */
-    protected middlewares_list: KeyValue<IMiddleware>;
+    protected middlewares_list: KeyValue<IRequestHandler>;
     /**
      * Route registrars of this route.
      *
@@ -75,7 +81,36 @@ export declare class Router extends Route implements IRouter {
      * @param request
      * @param response
      */
-    processRequest(request: IRequest, response: IResponse): IResponse;
+    processRequest(request: IRequest, response: IResponse): Promise<IResponse>;
+    /**
+     * Dispatches thee request to the route through middleware pipeline.
+     *
+     * @param route
+     * @param req
+     * @param res
+     */
+    protected dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse>;
+    /**
+     * Returns the final request handler of the route which is a request handler
+     * executing the route action/controller method.
+     *
+     * @param route
+     * @param req
+     */
+    protected resolveDestination(route: IRoute, request: IRequest): IRequestHandler;
+    /**
+     * Resolves controller from route action string.
+     *
+     * @param controller
+     */
+    protected resolveController(controller: string): IRequestHandler;
+    /**
+     * Returns path to the script. The path is respective to the root
+     * path.
+     *
+     * @param filename
+     */
+    private controllerScript;
     /**
      * Handles the exceptions. Binds the exception to the response and logs the exception
      * if it has to be logged.
@@ -100,6 +135,8 @@ export declare class Router extends Route implements IRouter {
      */
     private otherMethods;
     /**
+     * Checks if a request matches against a set of routes. First match is
+     * returned if one exists and null otherwise.
      *
      * @param routes
      * @param request
