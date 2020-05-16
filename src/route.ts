@@ -1,7 +1,7 @@
 import { Str } from "@rheas/support";
-import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
 import { IUriComponent } from "@rheas/contracts/routes/uri";
 import { ComponentFactory } from "./uri/uriComponentFactory";
+import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
 
 export class Route implements IRoute {
 
@@ -61,6 +61,13 @@ export class Route implements IRoute {
      * @var array
      */
     protected _middlewares: string[] = [];
+
+    /**
+     * Middlewares that doesn't have to be run on this route.
+     * 
+     * @var array
+     */
+    protected _excludedMiddlewares: string[] = [];
 
     /**
      * Flag to check whether route middlewares have to be skipped 
@@ -373,6 +380,36 @@ export class Route implements IRoute {
     }
 
     /**
+     * Sets the middlewares to be used by this route or route group.
+     * 
+     * @param middlewares 
+     */
+    public middleware(middlewares: string | string[]): IRoute {
+
+        if (!Array.isArray(middlewares)) {
+            middlewares = Array.from(arguments);
+        }
+        this._middlewares = middlewares;
+
+        return this;
+    }
+
+    /**
+     * Sets the excluded middlewares of this route.
+     * 
+     * @param middlewares 
+     */
+    public withoutMiddleware(middlewares: string | string[]): IRoute {
+
+        if (!Array.isArray(middlewares)) {
+            middlewares = Array.from(arguments);
+        }
+        this._excludedMiddlewares = middlewares;
+
+        return this;
+    }
+
+    /**
      * Removes the domain scheme, leading and trailing slashes
      * 
      * @param domain 
@@ -394,21 +431,6 @@ export class Route implements IRoute {
      */
     private clearPath(path: string): string {
         return Str.trim(Str.replaceWithOne(path.trim(), '/'), '/');
-    }
-
-    /**
-     * Sets the middlewares to be used by this route or route group.
-     * 
-     * @param middlewares 
-     */
-    public middleware(middlewares: string | string[]): IRoute {
-
-        if (!Array.isArray(middlewares)) {
-            middlewares = Array.from(arguments);
-        }
-        this._middlewares = middlewares;
-
-        return this;
     }
 
     /**
@@ -475,6 +497,15 @@ export class Route implements IRoute {
             this._uriComponents = ComponentFactory.createFromRoute(this);
         }
         return this._uriComponents;
+    }
+
+    /**
+     * Returns the excluded route middlewares.
+     * 
+     * @returns array
+     */
+    public getExcludedMiddlewares(): string[] {
+        return this._excludedMiddlewares;
     }
 
     /**

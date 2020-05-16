@@ -75,6 +75,12 @@ var Route = /** @class */ (function () {
          */
         this._middlewares = [];
         /**
+         * Middlewares that doesn't have to be run on this route.
+         *
+         * @var array
+         */
+        this._excludedMiddlewares = [];
+        /**
          * Flag to check whether route middlewares have to be skipped
          * or not.
          *
@@ -328,6 +334,30 @@ var Route = /** @class */ (function () {
         return this;
     };
     /**
+     * Sets the middlewares to be used by this route or route group.
+     *
+     * @param middlewares
+     */
+    Route.prototype.middleware = function (middlewares) {
+        if (!Array.isArray(middlewares)) {
+            middlewares = Array.from(arguments);
+        }
+        this._middlewares = middlewares;
+        return this;
+    };
+    /**
+     * Sets the excluded middlewares of this route.
+     *
+     * @param middlewares
+     */
+    Route.prototype.withoutMiddleware = function (middlewares) {
+        if (!Array.isArray(middlewares)) {
+            middlewares = Array.from(arguments);
+        }
+        this._excludedMiddlewares = middlewares;
+        return this;
+    };
+    /**
      * Removes the domain scheme, leading and trailing slashes
      *
      * @param domain
@@ -346,18 +376,6 @@ var Route = /** @class */ (function () {
      */
     Route.prototype.clearPath = function (path) {
         return support_1.Str.trim(support_1.Str.replaceWithOne(path.trim(), '/'), '/');
-    };
-    /**
-     * Sets the middlewares to be used by this route or route group.
-     *
-     * @param middlewares
-     */
-    Route.prototype.middleware = function (middlewares) {
-        if (!Array.isArray(middlewares)) {
-            middlewares = Array.from(arguments);
-        }
-        this._middlewares = middlewares;
-        return this;
     };
     /**
      * Sets the parent route of this route
@@ -417,6 +435,14 @@ var Route = /** @class */ (function () {
             this._uriComponents = uriComponentFactory_1.ComponentFactory.createFromRoute(this);
         }
         return this._uriComponents;
+    };
+    /**
+     * Returns the excluded route middlewares.
+     *
+     * @returns array
+     */
+    Route.prototype.getExcludedMiddlewares = function () {
+        return this._excludedMiddlewares;
     };
     /**
      * Checks if this is an endpoint

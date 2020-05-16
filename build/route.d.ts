@@ -1,5 +1,5 @@
-import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
 import { IUriComponent } from "@rheas/contracts/routes/uri";
+import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
 export declare class Route implements IRoute {
     /**
      * All of the verbs supported by the route.
@@ -50,6 +50,12 @@ export declare class Route implements IRoute {
      * @var array
      */
     protected _middlewares: string[];
+    /**
+     * Middlewares that doesn't have to be run on this route.
+     *
+     * @var array
+     */
+    protected _excludedMiddlewares: string[];
     /**
      * Flag to check whether route middlewares have to be skipped
      * or not.
@@ -229,6 +235,18 @@ export declare class Route implements IRoute {
      */
     secure(): IRoute;
     /**
+     * Sets the middlewares to be used by this route or route group.
+     *
+     * @param middlewares
+     */
+    middleware(middlewares: string | string[]): IRoute;
+    /**
+     * Sets the excluded middlewares of this route.
+     *
+     * @param middlewares
+     */
+    withoutMiddleware(middlewares: string | string[]): IRoute;
+    /**
      * Removes the domain scheme, leading and trailing slashes
      *
      * @param domain
@@ -241,12 +259,6 @@ export declare class Route implements IRoute {
      * @param path
      */
     private clearPath;
-    /**
-     * Sets the middlewares to be used by this route or route group.
-     *
-     * @param middlewares
-     */
-    middleware(middlewares: string | string[]): IRoute;
     /**
      * Sets the parent route of this route
      *
@@ -289,6 +301,12 @@ export declare class Route implements IRoute {
      * @return array
      */
     getUriComponents(): IUriComponent[];
+    /**
+     * Returns the excluded route middlewares.
+     *
+     * @returns array
+     */
+    getExcludedMiddlewares(): string[];
     /**
      * Checks if this is an endpoint
      *
