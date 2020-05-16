@@ -1,5 +1,4 @@
 import { IRequest } from "@rheas/contracts";
-import { ParamComponent } from "../uri/routeParamComponent";
 import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
 
 export class UriValidator implements IRouteValidator {
