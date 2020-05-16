@@ -392,6 +392,14 @@ var Route = /** @class */ (function () {
         return this._path;
     };
     /**
+     * Returns the route request handler.
+     *
+     * @return IRequestHandler
+     */
+    Route.prototype.getAction = function () {
+        return this._action;
+    };
+    /**
      * Returns the parent route.
      *
      * @return Route|null

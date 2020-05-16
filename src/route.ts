@@ -1,5 +1,5 @@
 import { Str } from "@rheas/support";
-import { IRoute } from "@rheas/contracts/routes";
+import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
 import { IUriComponent } from "@rheas/contracts/routes/uri";
 import { ComponentFactory } from "./uri/uriComponentFactory";
 
@@ -24,7 +24,7 @@ export class Route implements IRoute {
     * 
     * @var string
     */
-    protected _action: string = "";
+    protected _action: string | IRequestHandler = "";
 
     /**
      * Name of this route
@@ -129,7 +129,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static all(uri: string, controller: string) {
+    public static all(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(Route.verbs).action(controller);
     }
 
@@ -139,7 +139,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static get(uri: string, controller: string) {
+    public static get(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(["GET", "HEAD"]).action(controller);
     }
 
@@ -149,7 +149,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static put(uri: string, controller: string) {
+    public static put(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(["PUT"]).action(controller);
     }
 
@@ -159,7 +159,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static post(uri: string, controller: string) {
+    public static post(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(["POST"]).action(controller);
     }
 
@@ -169,7 +169,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static patch(uri: string, controller: string) {
+    public static patch(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(["PATCH"]).action(controller);
     }
 
@@ -179,7 +179,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static delete(uri: string, controller: string) {
+    public static delete(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(["DELETE"]).action(controller);
     }
 
@@ -189,7 +189,7 @@ export class Route implements IRoute {
      * @param uri 
      * @param controller 
      */
-    public static options(uri: string, controller: string) {
+    public static options(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods(["OPTIONS"]).action(controller);
     }
 
@@ -322,7 +322,7 @@ export class Route implements IRoute {
      * 
      * @param action
      */
-    public action(action: string): IRoute {
+    public action(action: string | IRequestHandler): IRoute {
         this._action = action;
 
         return this;
@@ -445,6 +445,15 @@ export class Route implements IRoute {
      */
     public getPath(): string {
         return this._path;
+    }
+
+    /**
+     * Returns the route request handler.
+     * 
+     * @return IRequestHandler
+     */
+    public getAction(): string | IRequestHandler {
+        return this._action;
     }
 
     /**

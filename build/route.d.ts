@@ -1,4 +1,4 @@
-import { IRoute } from "@rheas/contracts/routes";
+import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
 import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class Route implements IRoute {
     /**
@@ -18,7 +18,7 @@ export declare class Route implements IRoute {
     *
     * @var string
     */
-    protected _action: string;
+    protected _action: string | IRequestHandler;
     /**
      * Name of this route
      *
@@ -107,49 +107,49 @@ export declare class Route implements IRoute {
      * @param uri
      * @param controller
      */
-    static all(uri: string, controller: string): IRoute;
+    static all(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Creates a new route for GET and HEAD requests
      *
      * @param uri
      * @param controller
      */
-    static get(uri: string, controller: string): IRoute;
+    static get(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Creates a new route for PUT requests
      *
      * @param uri
      * @param controller
      */
-    static put(uri: string, controller: string): IRoute;
+    static put(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Creates a new route for post requests
      *
      * @param uri
      * @param controller
      */
-    static post(uri: string, controller: string): IRoute;
+    static post(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Creates a new route for PATCH requests
      *
      * @param uri
      * @param controller
      */
-    static patch(uri: string, controller: string): IRoute;
+    static patch(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Creates a new route for DELETE requests
      *
      * @param uri
      * @param controller
      */
-    static delete(uri: string, controller: string): IRoute;
+    static delete(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Creates a new route for OPTIONS requests
      *
      * @param uri
      * @param controller
      */
-    static options(uri: string, controller: string): IRoute;
+    static options(uri: string, controller: string | IRequestHandler): IRoute;
     /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
@@ -203,7 +203,7 @@ export declare class Route implements IRoute {
      *
      * @param action
      */
-    action(action: string): IRoute;
+    action(action: string | IRequestHandler): IRoute;
     /**
      * Sets the name of this route
      *
@@ -271,6 +271,12 @@ export declare class Route implements IRoute {
      * @return string
      */
     getPath(): string;
+    /**
+     * Returns the route request handler.
+     *
+     * @return IRequestHandler
+     */
+    getAction(): string | IRequestHandler;
     /**
      * Returns the parent route.
      *
