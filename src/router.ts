@@ -139,11 +139,21 @@ export class Router extends Route implements IRouter {
      */
     protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse> {
 
-        const middlewares: IRequestHandler[] = route.routeMiddlewares().map(name => this.middlewares_list[name]);
+        let middleware_names: string[] = route.routeMiddlewares();
+        let excluded_middlewares: string[] = route.getExcludedMiddlewares();
+
+        // Remove excluded middlewares from the route middleware list.
+        // A middleware is removed only if it is a route middleware. The router
+        // middleware/global middlewares can't be excluded.
+        middleware_names = middleware_names.filter(
+            name => this._middlewares.includes(name) || !excluded_middlewares.includes(name)
+        );
 
         const destination = this.resolveDestination(route, req);
 
-        return await new Pipeline().through(middlewares).sendTo(destination, req, res);
+        return await new Pipeline()
+            .through(middleware_names.map(name => this.middlewares_list[name]))
+            .sendTo(destination, req, res);
     }
 
     /**

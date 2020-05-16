@@ -182,14 +182,21 @@ var Router = /** @class */ (function (_super) {
      */
     Router.prototype.dispatchToRoute = function (route, req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var middlewares, destination;
+            var middleware_names, excluded_middlewares, destination;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        middlewares = route.routeMiddlewares().map(function (name) { return _this.middlewares_list[name]; });
+                        middleware_names = route.routeMiddlewares();
+                        excluded_middlewares = route.getExcludedMiddlewares();
+                        // Remove excluded middlewares from the route middleware list.
+                        // A middleware is removed only if it is a route middleware. The router
+                        // middleware/global middlewares can't be excluded.
+                        middleware_names = middleware_names.filter(function (name) { return _this._middlewares.includes(name) || !excluded_middlewares.includes(name); });
                         destination = this.resolveDestination(route, req);
-                        return [4 /*yield*/, new pipeline_1.Pipeline().through(middlewares).sendTo(destination, req, res)];
+                        return [4 /*yield*/, new pipeline_1.Pipeline()
+                                .through(middleware_names.map(function (name) { return _this.middlewares_list[name]; }))
+                                .sendTo(destination, req, res)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
