@@ -1,4 +1,5 @@
 import { IRequest } from "@rheas/contracts";
+import { ParamComponent } from "../uri/routeParamComponent";
 import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
 
 export class UriValidator implements IRouteValidator {
@@ -17,6 +18,9 @@ export class UriValidator implements IRouteValidator {
             if (!routeComponents[i].equals(reqComponents[i])) {
                 return false;
             }
+            // Sets the matching route component on the request uri component.
+            // This helps in later determining the route params.
+            reqComponents[i].setComponent(routeComponents[i]);
         }
         return true;
     }
