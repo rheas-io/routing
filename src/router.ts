@@ -1,8 +1,8 @@
 import path from "path";
 import { Route } from "./route";
 import { Str } from "@rheas/support";
-import { Pipeline } from "./pipeline";
 import { RouteRegistrar } from "./routeRegistrar";
+import { RequestPipeline } from "./requestPipeline";
 import { KeyValue, IRequest } from "@rheas/contracts";
 import { UriValidator } from "./validators/uriValidator";
 import { HostValidator } from "./validators/hostValidator";
@@ -13,7 +13,7 @@ import { SchemeValidator } from "./validators/schemeValidator";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IExceptionHandler, IException } from "@rheas/contracts/errors";
 import { MethodNotAllowedException } from "@rheas/errors/methoNotAllowed";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler } from "@rheas/contracts/routes";
+import { IRoute, IRouteRegistrar, IRouter, INameParams, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
 
 export class Router extends Route implements IRouter {
 
@@ -37,7 +37,7 @@ export class Router extends Route implements IRouter {
      * 
      * @var array
      */
-    protected middlewares_list: KeyValue<IRequestHandler> = {};
+    protected middlewares_list: KeyValue<IMiddleware> = {};
 
     /**
      * Route registrars of this route.
@@ -139,21 +139,71 @@ export class Router extends Route implements IRouter {
      */
     protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse> {
 
-        let middleware_names: string[] = route.routeMiddlewares();
-        let excluded_middlewares: string[] = route.getExcludedMiddlewares();
-
-        // Remove excluded middlewares from the route middleware list.
-        // A middleware is removed only if it is a route middleware. The router
-        // middleware/global middlewares can't be excluded.
-        middleware_names = middleware_names.filter(
-            name => this._middlewares.includes(name) || !excluded_middlewares.includes(name)
-        );
-
         const destination = this.resolveDestination(route, req);
 
-        return await new Pipeline()
-            .through(middleware_names.map(name => this.middlewares_list[name]))
+        return await new RequestPipeline()
+            .through(this.resolveMiddlewarePipes(route))
             .sendTo(destination, req, res);
+    }
+
+    /**
+     * Resolves middleware handlers for the route. Returns an array
+     * of middleware handlers which executes the corresponding middleware
+     * with the params.
+     * 
+     * @param route 
+     */
+    private resolveMiddlewarePipes(route: IRoute): IMiddleware[] {
+
+        return route.routeMiddlewares().reduce((prev: IMiddleware[], current: string) => {
+            const nameParam = this.routeRequiresMiddleware(route, current);
+
+            if (nameParam !== false) {
+                prev.push((req, res, next) => {
+                    return this.middlewares_list[nameParam[0]](req, res, next, ...nameParam[1])
+                });
+            }
+            return prev;
+        }, []);
+    }
+
+    /**
+     * Checks if the given middleware (by name) has to be executed or not. Returns 
+     * [name, params[]] if the middleware is a global middleware or is not present
+     * in the exclusion list.
+     * 
+     * @param route 
+     * @param middleware 
+     */
+    private routeRequiresMiddleware(route: IRoute, middleware: string): INameParams | false {
+        const [name, params] = this.middlewareNameParams(middleware);
+
+        // Return name and params of this middleware string if it is
+        // present in the global middlewares list.
+        if (this._middlewares.includes(middleware)) {
+            return [name, params];
+        }
+
+        // The route middleware exclusion list.
+        const excluded = route.getExcludedMiddlewares();
+
+        if (!excluded.includes(name) && !excluded.includes(middleware)) {
+            return [name, params];
+        }
+        return false;
+    }
+
+    /**
+     * Returns middleware string as name and params array.
+     * 
+     * @param middleware 
+     */
+    private middlewareNameParams(middleware: string): INameParams {
+        let [name, ...others] = middleware.trim().split(':');
+
+        let params: string = others.join(':');
+
+        return [name, params.length > 0 ? params.split(',') : []];
     }
 
     /**

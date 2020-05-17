@@ -3,7 +3,7 @@ import { KeyValue, IRequest } from "@rheas/contracts";
 import { IResponse } from "@rheas/contracts/core/response";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IException } from "@rheas/contracts/errors";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler } from "@rheas/contracts/routes";
+import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
 export declare class Router extends Route implements IRouter {
     /**
      * The container instance
@@ -23,7 +23,7 @@ export declare class Router extends Route implements IRouter {
      *
      * @var array
      */
-    protected middlewares_list: KeyValue<IRequestHandler>;
+    protected middlewares_list: KeyValue<IMiddleware>;
     /**
      * Route registrars of this route.
      *
@@ -90,6 +90,29 @@ export declare class Router extends Route implements IRouter {
      * @param res
      */
     protected dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse>;
+    /**
+     * Resolves middleware handlers for the route. Returns an array
+     * of middleware handlers which executes the corresponding middleware
+     * with the params.
+     *
+     * @param route
+     */
+    private resolveMiddlewarePipes;
+    /**
+     * Checks if the given middleware (by name) has to be executed or not. Returns
+     * [name, params[]] if the middleware is a global middleware or is not present
+     * in the exclusion list.
+     *
+     * @param route
+     * @param middleware
+     */
+    private routeRequiresMiddleware;
+    /**
+     * Returns middleware string as name and params array.
+     *
+     * @param middleware
+     */
+    private middlewareNameParams;
     /**
      * Returns the final request handler of the route which is a request handler
      * executing the route action/controller method.

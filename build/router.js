@@ -62,8 +62,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = __importDefault(require("path"));
 var route_1 = require("./route");
 var support_1 = require("@rheas/support");
-var pipeline_1 = require("./pipeline");
 var routeRegistrar_1 = require("./routeRegistrar");
+var requestPipeline_1 = require("./requestPipeline");
 var uriValidator_1 = require("./validators/uriValidator");
 var hostValidator_1 = require("./validators/hostValidator");
 var notFound_1 = require("@rheas/errors/notFound");
@@ -182,25 +182,70 @@ var Router = /** @class */ (function (_super) {
      */
     Router.prototype.dispatchToRoute = function (route, req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var middleware_names, excluded_middlewares, destination;
-            var _this = this;
+            var destination;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        middleware_names = route.routeMiddlewares();
-                        excluded_middlewares = route.getExcludedMiddlewares();
-                        // Remove excluded middlewares from the route middleware list.
-                        // A middleware is removed only if it is a route middleware. The router
-                        // middleware/global middlewares can't be excluded.
-                        middleware_names = middleware_names.filter(function (name) { return _this._middlewares.includes(name) || !excluded_middlewares.includes(name); });
                         destination = this.resolveDestination(route, req);
-                        return [4 /*yield*/, new pipeline_1.Pipeline()
-                                .through(middleware_names.map(function (name) { return _this.middlewares_list[name]; }))
+                        return [4 /*yield*/, new requestPipeline_1.RequestPipeline()
+                                .through(this.resolveMiddlewarePipes(route))
                                 .sendTo(destination, req, res)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
+    };
+    /**
+     * Resolves middleware handlers for the route. Returns an array
+     * of middleware handlers which executes the corresponding middleware
+     * with the params.
+     *
+     * @param route
+     */
+    Router.prototype.resolveMiddlewarePipes = function (route) {
+        var _this = this;
+        return route.routeMiddlewares().reduce(function (prev, current) {
+            var nameParam = _this.routeRequiresMiddleware(route, current);
+            if (nameParam !== false) {
+                prev.push(function (req, res, next) {
+                    var _a;
+                    return (_a = _this.middlewares_list)[nameParam[0]].apply(_a, __spreadArrays([req, res, next], nameParam[1]));
+                });
+            }
+            return prev;
+        }, []);
+    };
+    /**
+     * Checks if the given middleware (by name) has to be executed or not. Returns
+     * [name, params[]] if the middleware is a global middleware or is not present
+     * in the exclusion list.
+     *
+     * @param route
+     * @param middleware
+     */
+    Router.prototype.routeRequiresMiddleware = function (route, middleware) {
+        var _a = this.middlewareNameParams(middleware), name = _a[0], params = _a[1];
+        // Return name and params of this middleware string if it is
+        // present in the global middlewares list.
+        if (this._middlewares.includes(middleware)) {
+            return [name, params];
+        }
+        // The route middleware exclusion list.
+        var excluded = route.getExcludedMiddlewares();
+        if (!excluded.includes(name) && !excluded.includes(middleware)) {
+            return [name, params];
+        }
+        return false;
+    };
+    /**
+     * Returns middleware string as name and params array.
+     *
+     * @param middleware
+     */
+    Router.prototype.middlewareNameParams = function (middleware) {
+        var _a = middleware.trim().split(':'), name = _a[0], others = _a.slice(1);
+        var params = others.join(':');
+        return [name, params.length > 0 ? params.split(',') : []];
     };
     /**
      * Returns the final request handler of the route which is a request handler
