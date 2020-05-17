@@ -324,6 +324,7 @@ var Router = /** @class */ (function (_super) {
         }
         var _methods = this.otherMethods(request, req_method);
         if (_methods.length > 0) {
+            //TODO options method.
             throw new methoNotAllowed_1.MethodNotAllowedException(_methods, "Url path does not support " + req_method + " method. Supported methods are: " + _methods.join(','));
         }
         throw new notFound_1.NotFoundException();

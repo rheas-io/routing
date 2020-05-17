@@ -297,6 +297,7 @@ export class Router extends Route implements IRouter {
         const _methods = this.otherMethods(request, req_method);
 
         if (_methods.length > 0) {
+            //TODO options method.
             throw new MethodNotAllowedException(
                 _methods,
                 `Url path does not support ${req_method} method. Supported methods are: ${_methods.join(',')}`
