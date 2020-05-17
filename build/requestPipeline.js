@@ -36,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Pipeline = /** @class */ (function () {
-    function Pipeline() {
+var RequestPipeline = /** @class */ (function () {
+    function RequestPipeline() {
         /**
-         *
+         * The middleware pipes through which the req and res has to pass
+         * through.
          *
          * @var array
          */
@@ -50,63 +51,48 @@ var Pipeline = /** @class */ (function () {
      *
      * @param handlers
      */
-    Pipeline.prototype.through = function (pipes) {
+    RequestPipeline.prototype.through = function (pipes) {
         this.pipes = pipes;
         return this;
     };
     /**
+     * Sends the req, res objects through the pipes to a destination and await
+     * for a response.
      *
+     * @param dest
      * @param req
      * @param res
      */
-    Pipeline.prototype.sendTo = function (destination, req, res) {
+    RequestPipeline.prototype.sendTo = function (dest, req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var pipeline;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        pipeline = this.pipes.reduceRight(this.pipeReducer, destination);
+                        pipeline = this.pipes.reduceRight(this.pipelineReducer, dest);
                         return [4 /*yield*/, pipeline(req, res)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    Pipeline.prototype.pipeReducer = function (prev, current) {
-        var _this = this;
-        return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, current(req, res, prev)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        }); };
-    };
     /**
+     * Returns a request handler that executes the current pipe on call.
      *
      * @param prev
      * @param current
      */
-    Pipeline.prototype.pipelineReducer = function (prev, current) {
+    RequestPipeline.prototype.pipelineReducer = function (next, current) {
         var _this = this;
         return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, current(req, res, function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, prev(req, res)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); })];
+                    case 0: return [4 /*yield*/, current(req, res, next)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         }); };
     };
-    return Pipeline;
+    return RequestPipeline;
 }());
-exports.Pipeline = Pipeline;
+exports.RequestPipeline = RequestPipeline;

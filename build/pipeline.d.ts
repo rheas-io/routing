@@ -1,6 +1,6 @@
 import { IRequest } from "@rheas/contracts";
 import { IResponse } from "@rheas/contracts/core/response";
-import { IRoutePipe, IRoutePipeHandler } from "@rheas/contracts/routes";
+import { IRoutePipeHandler, IRequestHandler } from "@rheas/contracts/routes";
 export declare class Pipeline {
     /**
      *
@@ -19,12 +19,12 @@ export declare class Pipeline {
      * @param req
      * @param res
      */
-    sendTo(req: IRequest, res: IResponse, destination: IRoutePipe): Promise<any>;
-    protected pipeReducer(prev: IRoutePipe, current: IRoutePipeHandler): (req: IRequest, res: IResponse) => Promise<IResponse>;
+    sendTo(destination: IRequestHandler, req: IRequest, res: IResponse): Promise<IResponse>;
+    protected pipeReducer(prev: IRequestHandler, current: IRoutePipeHandler): (req: IRequest, res: IResponse) => Promise<IResponse>;
     /**
      *
      * @param prev
      * @param current
      */
-    protected pipelineReducer(prev: IRoutePipe, current: IRoutePipeHandler): (req: IRequest, res: IResponse) => Promise<IResponse>;
+    protected pipelineReducer(prev: IRequestHandler, current: IRoutePipeHandler): (req: IRequest, res: IResponse) => Promise<IResponse>;
 }
