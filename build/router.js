@@ -287,10 +287,10 @@ var Router = /** @class */ (function (_super) {
      * @param filename
      */
     Router.prototype.controllerScript = function (filename) {
-        var rootPath = this.app.get('rootPath') || '';
-        var controllerFolders = support_1.Str.path(this.controllerPath).split('/');
-        var fileFolders = support_1.Str.path(filename).split('/');
-        return path_1.default.resolve.apply(path_1.default, __spreadArrays([rootPath], controllerFolders, fileFolders));
+        var rootPath = this.app.get('path.root') || '';
+        var controllerDir = support_1.Str.path(this.controllerPath);
+        var controllerFile = support_1.Str.path(filename);
+        return path_1.default.resolve(rootPath, controllerDir, controllerFile);
     };
     /**
      * Handles the exceptions. Binds the exception to the response and logs the exception

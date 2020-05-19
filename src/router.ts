@@ -248,12 +248,12 @@ export class Router extends Route implements IRouter {
      * @param filename 
      */
     private controllerScript(filename: string) {
-        const rootPath: string = this.app.get('rootPath') || '';
+        const rootPath: string = this.app.get('path.root') || '';
 
-        const controllerFolders = Str.path(this.controllerPath).split('/');
-        const fileFolders = Str.path(filename).split('/');
+        const controllerDir = Str.path(this.controllerPath);
+        const controllerFile = Str.path(filename);
 
-        return path.resolve(rootPath, ...controllerFolders, ...fileFolders);
+        return path.resolve(rootPath, controllerDir, controllerFile);
     }
 
     /**
@@ -265,7 +265,7 @@ export class Router extends Route implements IRouter {
      * @param res 
      */
     protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse {
-        const exceptionHandler = this.app.get<IExceptionHandler>('error');
+        const exceptionHandler: IExceptionHandler = this.app.get('error');
 
         if (exceptionHandler) {
             err = exceptionHandler.prepareException(err);
