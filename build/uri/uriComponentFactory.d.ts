@@ -1,6 +1,6 @@
 import { IRequest } from "@rheas/contracts";
 import { IRoute } from "@rheas/contracts/routes";
-import { IUriComponent } from "@rheas/contracts/routes/uri";
+import { IUriComponent, IRequestComponent } from "@rheas/contracts/routes/uri";
 export declare class ComponentFactory {
     /**
      * Creates a Uri component from the uri string
@@ -19,5 +19,5 @@ export declare class ComponentFactory {
      *
      * @param request
      */
-    static createFromRequest(request: IRequest): IUriComponent[];
+    static createFromRequest(request: IRequest): IRequestComponent[];
 }

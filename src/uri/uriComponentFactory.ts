@@ -3,7 +3,7 @@ import { IRoute } from "@rheas/contracts/routes";
 import { RequestComponent } from "./requestComponent";
 import { FixedComponent } from "./routeFixedComponent";
 import { ParamComponent } from "./routeParamComponent";
-import { IUriComponent } from "@rheas/contracts/routes/uri";
+import { IUriComponent, IRequestComponent } from "@rheas/contracts/routes/uri";
 
 export class ComponentFactory {
 
@@ -37,7 +37,7 @@ export class ComponentFactory {
      * 
      * @param request 
      */
-    public static createFromRequest(request: IRequest): IUriComponent[] {
+    public static createFromRequest(request: IRequest): IRequestComponent[] {
         const uri = request.getPath();
 
         return uri.split('/').map(component => new RequestComponent(component));
