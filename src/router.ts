@@ -125,13 +125,14 @@ export class Router extends Route implements IRouter {
         // create a response from the exception. This error response should
         // be returned.
         catch (err) {
+            //console.log(err);
             response = this.handleError(err, request, response);
         }
         return response;
     }
 
     /**
-     * Dispatches thee request to the route through middleware pipeline.
+     * Dispatches the request to the route through middleware pipeline.
      * 
      * @param route 
      * @param req 
@@ -461,6 +462,20 @@ export class Router extends Route implements IRouter {
 
             this._methodEndpoints[method].push(route);
         });
+    }
+
+    /**
+     * Router middlewares don't have to be sent to the routes. 
+     * 
+     * Middlewares of this router are global middlewares, that has to 
+     * be executed no matter what and before finding the matching route.
+     * 
+     * @override
+     * 
+     * @return array
+     */
+    public routeMiddlewares(): string[] {
+        return [];
     }
 
     /**

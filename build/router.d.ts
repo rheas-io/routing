@@ -83,7 +83,7 @@ export declare class Router extends Route implements IRouter {
      */
     processRequest(request: IRequest, response: IResponse): Promise<IResponse>;
     /**
-     * Dispatches thee request to the route through middleware pipeline.
+     * Dispatches the request to the route through middleware pipeline.
      *
      * @param route
      * @param req
@@ -227,6 +227,17 @@ export declare class Router extends Route implements IRouter {
      * @param route
      */
     protected cacheMethodRoute(route: IRoute): void;
+    /**
+     * Router middlewares don't have to be sent to the routes.
+     *
+     * Middlewares of this router are global middlewares, that has to
+     * be executed no matter what and before finding the matching route.
+     *
+     * @override
+     *
+     * @return array
+     */
+    routeMiddlewares(): string[];
     /**
      * An exposed function that allows users to register their
      * routes

@@ -166,6 +166,7 @@ var Router = /** @class */ (function (_super) {
                         return [3 /*break*/, 3];
                     case 2:
                         err_1 = _a.sent();
+                        //console.log(err);
                         response = this.handleError(err_1, request, response);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/, response];
@@ -174,7 +175,7 @@ var Router = /** @class */ (function (_super) {
         });
     };
     /**
-     * Dispatches thee request to the route through middleware pipeline.
+     * Dispatches the request to the route through middleware pipeline.
      *
      * @param route
      * @param req
@@ -466,6 +467,19 @@ var Router = /** @class */ (function (_super) {
             _this._methodEndpoints[method] = _this._methodEndpoints[method] || [];
             _this._methodEndpoints[method].push(route);
         });
+    };
+    /**
+     * Router middlewares don't have to be sent to the routes.
+     *
+     * Middlewares of this router are global middlewares, that has to
+     * be executed no matter what and before finding the matching route.
+     *
+     * @override
+     *
+     * @return array
+     */
+    Router.prototype.routeMiddlewares = function () {
+        return [];
     };
     /**
      * An exposed function that allows users to register their
