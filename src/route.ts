@@ -273,11 +273,11 @@ export class Route implements IRoute {
 
         if (this.hasParent()) {
             //@ts-ignore
-            fullPath = this.getParent().routePath() + "/";
+            fullPath = this.getParent().routePath();
         }
         fullPath += this.getPath();
 
-        return Str.trim(fullPath, "/");
+        return fullPath;
     }
 
     /**
@@ -368,6 +368,22 @@ export class Route implements IRoute {
     }
 
     /**
+     * Clears the path, replacing multiple slashes with single slash and 
+     * removing any trailing or leading slashes.
+     * 
+     * @param path 
+     */
+    private clearPath(path: string): string {
+        path = Str.trim(Str.replaceWithOne(path.trim(), '/'), '/');
+
+        if (path.length > 0 && !path.startsWith('/')) {
+            path = '/' + path;
+        }
+
+        return path;
+    }
+
+    /**
      * Sets the domian of this route
      * 
      * @param domain
@@ -376,6 +392,20 @@ export class Route implements IRoute {
         this._domain = this.clearDomain(domain);
 
         return this;
+    }
+
+    /**
+     * Removes the domain scheme, leading and trailing slashes
+     * 
+     * @param domain 
+     */
+    private clearDomain(domain: string): string {
+        domain = domain.trim();
+
+        domain = domain.replace("http://", "");
+        domain = domain.replace("https://", "");
+
+        return Str.trim(domain, "/");
     }
 
     /**
@@ -417,30 +447,6 @@ export class Route implements IRoute {
         this._excludedMiddlewares = middlewares;
 
         return this;
-    }
-
-    /**
-     * Removes the domain scheme, leading and trailing slashes
-     * 
-     * @param domain 
-     */
-    private clearDomain(domain: string): string {
-        domain = domain.trim();
-
-        domain = domain.replace("http://", "");
-        domain = domain.replace("https://", "");
-
-        return Str.trim(domain, "/");
-    }
-
-    /**
-     * Clears the path, replacing multiple slashes with single slash and 
-     * removing any trailing or leading slashes.
-     * 
-     * @param path 
-     */
-    private clearPath(path: string): string {
-        return Str.trim(Str.replaceWithOne(path.trim(), '/'), '/');
     }
 
     /**

@@ -247,10 +247,10 @@ var Route = /** @class */ (function () {
         var fullPath = "";
         if (this.hasParent()) {
             //@ts-ignore
-            fullPath = this.getParent().routePath() + "/";
+            fullPath = this.getParent().routePath();
         }
         fullPath += this.getPath();
-        return support_1.Str.trim(fullPath, "/");
+        return fullPath;
     };
     /**
      * Checks if this route accepts only secure connection requests. In todays
@@ -325,6 +325,19 @@ var Route = /** @class */ (function () {
         return this;
     };
     /**
+     * Clears the path, replacing multiple slashes with single slash and
+     * removing any trailing or leading slashes.
+     *
+     * @param path
+     */
+    Route.prototype.clearPath = function (path) {
+        path = support_1.Str.trim(support_1.Str.replaceWithOne(path.trim(), '/'), '/');
+        if (path.length > 0 && !path.startsWith('/')) {
+            path = '/' + path;
+        }
+        return path;
+    };
+    /**
      * Sets the domian of this route
      *
      * @param domain
@@ -332,6 +345,17 @@ var Route = /** @class */ (function () {
     Route.prototype.domain = function (domain) {
         this._domain = this.clearDomain(domain);
         return this;
+    };
+    /**
+     * Removes the domain scheme, leading and trailing slashes
+     *
+     * @param domain
+     */
+    Route.prototype.clearDomain = function (domain) {
+        domain = domain.trim();
+        domain = domain.replace("http://", "");
+        domain = domain.replace("https://", "");
+        return support_1.Str.trim(domain, "/");
     };
     /**
      * Sets the route allows only secure connections flag.
@@ -365,26 +389,6 @@ var Route = /** @class */ (function () {
         }
         this._excludedMiddlewares = middlewares;
         return this;
-    };
-    /**
-     * Removes the domain scheme, leading and trailing slashes
-     *
-     * @param domain
-     */
-    Route.prototype.clearDomain = function (domain) {
-        domain = domain.trim();
-        domain = domain.replace("http://", "");
-        domain = domain.replace("https://", "");
-        return support_1.Str.trim(domain, "/");
-    };
-    /**
-     * Clears the path, replacing multiple slashes with single slash and
-     * removing any trailing or leading slashes.
-     *
-     * @param path
-     */
-    Route.prototype.clearPath = function (path) {
-        return support_1.Str.trim(support_1.Str.replaceWithOne(path.trim(), '/'), '/');
     };
     /**
      * Sets the parent route of this route

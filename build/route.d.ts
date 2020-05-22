@@ -230,11 +230,24 @@ export declare class Route implements IRoute {
      */
     prefix(path: string): IRoute;
     /**
+     * Clears the path, replacing multiple slashes with single slash and
+     * removing any trailing or leading slashes.
+     *
+     * @param path
+     */
+    private clearPath;
+    /**
      * Sets the domian of this route
      *
      * @param domain
      */
     domain(domain: string): IRoute;
+    /**
+     * Removes the domain scheme, leading and trailing slashes
+     *
+     * @param domain
+     */
+    private clearDomain;
     /**
      * Sets the route allows only secure connections flag.
      *
@@ -253,19 +266,6 @@ export declare class Route implements IRoute {
      * @param middlewares
      */
     withoutMiddleware(middlewares: string | string[]): IRoute;
-    /**
-     * Removes the domain scheme, leading and trailing slashes
-     *
-     * @param domain
-     */
-    private clearDomain;
-    /**
-     * Clears the path, replacing multiple slashes with single slash and
-     * removing any trailing or leading slashes.
-     *
-     * @param path
-     */
-    private clearPath;
     /**
      * Sets the parent route of this route
      *
