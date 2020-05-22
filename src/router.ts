@@ -129,8 +129,6 @@ export class Router extends Route implements IRouter {
             // Catch any exception occured when processing the request and
             // create a response from the exception. This error response should
             // be returned.
-
-            //console.log(err);
             response = this.handleError(err, request, response);
         }
         return response;
@@ -166,7 +164,8 @@ export class Router extends Route implements IRouter {
      */
     protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse> {
 
-        const destination = this === route ? this.routeHandler : this.resolveDestination(route, req);
+        const destination =
+            this === route ? this.routeHandler.bind(this) : this.resolveDestination(route, req);
 
         return await new RequestPipeline()
             .through(this.middlewarePipesOfRoute(route))

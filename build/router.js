@@ -174,7 +174,6 @@ var Router = /** @class */ (function (_super) {
                         // Catch any exception occured when processing the request and
                         // create a response from the exception. This error response should
                         // be returned.
-                        //console.log(err);
                         response = this.handleError(err_1, request, response);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/, response];
@@ -212,7 +211,7 @@ var Router = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        destination = this === route ? this.routeHandler : this.resolveDestination(route, req);
+                        destination = this === route ? this.routeHandler.bind(this) : this.resolveDestination(route, req);
                         return [4 /*yield*/, new requestPipeline_1.RequestPipeline()
                                 .through(this.middlewarePipesOfRoute(route))
                                 .sendTo(destination, req, res)];
