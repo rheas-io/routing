@@ -63,6 +63,7 @@ var path_1 = __importDefault(require("path"));
 var route_1 = require("./route");
 var support_1 = require("@rheas/support");
 var routeRegistrar_1 = require("./routeRegistrar");
+var exception_1 = require("@rheas/errors/exception");
 var requestPipeline_1 = require("./requestPipeline");
 var uriValidator_1 = require("./validators/uriValidator");
 var hostValidator_1 = require("./validators/hostValidator");
@@ -145,27 +146,34 @@ var Router = /** @class */ (function (_super) {
         return new routeRegistrar_1.RouteRegistrar();
     };
     /**
-     * Application requests are send here for processing. A route match is
-     * checked for the request. If a match is found, dispatches the same to
-     * controller via middlewares.
+     * Application requests are send here for processing. The request is initially
+     * sent to a pipeline of global middlewares (middlewares of this class). Once that's
+     * done, they are forwarded to routeHandler, which checks for a matching route. If found
+     * one, then the request is send through a pipeline of route middlewares.
      *
      * @param request
      * @param response
      */
-    Router.prototype.processRequest = function (request, response) {
+    Router.prototype.handle = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var route, err_1;
+            var err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        route = this.matchingRoute(request);
-                        return [4 /*yield*/, this.dispatchToRoute(route, request, response)];
+                        return [4 /*yield*/, this.dispatchToRoute(this, request, response)];
                     case 1:
+                        // Sends request through the middlewares of this class, which are
+                        // global middlewares. Final destination will be the routeHandler
+                        // function of this object which will continue the request flow through
+                        // the route middleware pipeline, if required.
                         response = _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
                         err_1 = _a.sent();
+                        // Catch any exception occured when processing the request and
+                        // create a response from the exception. This error response should
+                        // be returned.
                         //console.log(err);
                         response = this.handleError(err_1, request, response);
                         return [3 /*break*/, 3];
@@ -173,6 +181,23 @@ var Router = /** @class */ (function (_super) {
                 }
             });
         });
+    };
+    /**
+     * Handles the exceptions. Binds the exception to the response and logs the exception
+     * if it has to be logged.
+     *
+     * @param err
+     * @param req
+     * @param res
+     */
+    Router.prototype.handleError = function (err, req, res) {
+        var exceptionHandler = this.app.get('error');
+        if (exceptionHandler) {
+            err = exceptionHandler.prepareException(err);
+            exceptionHandler.report(err);
+            res = exceptionHandler.responseFromError(err, req, res);
+        }
+        return res;
     };
     /**
      * Dispatches the request to the route through middleware pipeline.
@@ -187,10 +212,33 @@ var Router = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        destination = this.resolveDestination(route, req);
+                        destination = this === route ? this.routeHandler : this.resolveDestination(route, req);
                         return [4 /*yield*/, new requestPipeline_1.RequestPipeline()
-                                .through(this.resolveMiddlewarePipes(route))
+                                .through(this.middlewarePipesOfRoute(route))
                                 .sendTo(destination, req, res)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     *
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     *
+     * @param request
+     * @param response
+     */
+    Router.prototype.routeHandler = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var route;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        route = this.matchingRoute(request);
+                        return [4 /*yield*/, this.dispatchToRoute(route, request, response)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -203,34 +251,49 @@ var Router = /** @class */ (function (_super) {
      *
      * @param route
      */
-    Router.prototype.resolveMiddlewarePipes = function (route) {
+    Router.prototype.middlewarePipesOfRoute = function (route) {
         var _this = this;
-        return route.routeMiddlewares().reduce(function (prev, current) {
+        return route.middlewaresToResolve().reduce(function (prev, current) {
             var nameParam = _this.routeRequiresMiddleware(route, current);
             if (nameParam !== false) {
-                prev.push(function (req, res, next) {
-                    var _a;
-                    return (_a = _this.middlewares_list)[nameParam[0]].apply(_a, __spreadArrays([req, res, next], nameParam[1]));
-                });
+                prev.push(_this.resolveMiddleware(nameParam));
             }
             return prev;
         }, []);
     };
     /**
+     * Returns middleware handler function.
+     *
+     * @param nameParam
+     */
+    Router.prototype.resolveMiddleware = function (_a) {
+        var _this = this;
+        var name = _a[0], params = _a[1];
+        return function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+            var typeMiddleware;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        typeMiddleware = typeof this.middlewares_list[name];
+                        if (typeMiddleware !== 'function') {
+                            throw new exception_1.Exception("Middleware " + name + " has to be a function. Found: " + typeMiddleware);
+                        }
+                        return [4 /*yield*/, (_a = this.middlewares_list)[name].apply(_a, __spreadArrays([req, res, next], params))];
+                    case 1: return [2 /*return*/, _b.sent()];
+                }
+            });
+        }); };
+    };
+    /**
      * Checks if the given middleware (by name) has to be executed or not. Returns
-     * [name, params[]] if the middleware is a global middleware or is not present
-     * in the exclusion list.
+     * [name, params[]] if the middleware is not present in the exclusion list of route.
      *
      * @param route
      * @param middleware
      */
     Router.prototype.routeRequiresMiddleware = function (route, middleware) {
         var _a = this.middlewareNameParams(middleware), name = _a[0], params = _a[1];
-        // Return name and params of this middleware string if it is
-        // present in the global middlewares list.
-        if (this._middlewares.includes(middleware)) {
-            return [name, params];
-        }
         // The route middleware exclusion list.
         var excluded = route.getExcludedMiddlewares();
         if (!excluded.includes(name) && !excluded.includes(middleware)) {
@@ -292,23 +355,6 @@ var Router = /** @class */ (function (_super) {
         var controllerDir = support_1.Str.path(this.controllerPath);
         var controllerFile = support_1.Str.path(filename);
         return path_1.default.resolve(rootPath, controllerDir, controllerFile);
-    };
-    /**
-     * Handles the exceptions. Binds the exception to the response and logs the exception
-     * if it has to be logged.
-     *
-     * @param err
-     * @param req
-     * @param res
-     */
-    Router.prototype.handleError = function (err, req, res) {
-        var exceptionHandler = this.app.get('error');
-        if (exceptionHandler) {
-            err = exceptionHandler.prepareException(err);
-            exceptionHandler.report(err);
-            res = exceptionHandler.responseFromError(err, req, res);
-        }
-        return res;
     };
     /**
      * Checks the request for a matching route.
@@ -469,7 +515,7 @@ var Router = /** @class */ (function (_super) {
         });
     };
     /**
-     * Router middlewares don't have to be sent to the routes.
+     * Router middlewares shouldn't be send to the routes.
      *
      * Middlewares of this router are global middlewares, that has to
      * be executed no matter what and before finding the matching route.
@@ -480,6 +526,14 @@ var Router = /** @class */ (function (_super) {
      */
     Router.prototype.routeMiddlewares = function () {
         return [];
+    };
+    /**
+     * Only these middlewares will be resolved when processing requests.
+     *
+     * @returns array
+     */
+    Router.prototype.middlewaresToResolve = function () {
+        return this._middlewares;
     };
     /**
      * An exposed function that allows users to register their

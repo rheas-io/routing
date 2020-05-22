@@ -2,6 +2,7 @@ import path from "path";
 import { Route } from "./route";
 import { Str } from "@rheas/support";
 import { RouteRegistrar } from "./routeRegistrar";
+import { Exception } from "@rheas/errors/exception";
 import { RequestPipeline } from "./requestPipeline";
 import { KeyValue, IRequest } from "@rheas/contracts";
 import { UriValidator } from "./validators/uriValidator";
@@ -107,28 +108,53 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * Application requests are send here for processing. A route match is
-     * checked for the request. If a match is found, dispatches the same to 
-     * controller via middlewares.
+     * Application requests are send here for processing. The request is initially
+     * sent to a pipeline of global middlewares (middlewares of this class). Once that's
+     * done, they are forwarded to routeHandler, which checks for a matching route. If found
+     * one, then the request is send through a pipeline of route middlewares.
      * 
      * @param request 
      * @param response 
      */
-    public async processRequest(request: IRequest, response: IResponse): Promise<IResponse> {
+    public async handle(request: IRequest, response: IResponse): Promise<IResponse> {
 
         try {
-            const route = this.matchingRoute(request);
-
-            response = await this.dispatchToRoute(route, request, response);
+            // Sends request through the middlewares of this class, which are
+            // global middlewares. Final destination will be the routeHandler
+            // function of this object which will continue the request flow through
+            // the route middleware pipeline, if required.
+            response = await this.dispatchToRoute(this, request, response);
         }
-        // Catch any exception occured when processing the request and
-        // create a response from the exception. This error response should
-        // be returned.
         catch (err) {
+            // Catch any exception occured when processing the request and
+            // create a response from the exception. This error response should
+            // be returned.
+
             //console.log(err);
             response = this.handleError(err, request, response);
         }
         return response;
+    }
+
+    /**
+     * Handles the exceptions. Binds the exception to the response and logs the exception
+     * if it has to be logged.
+     * 
+     * @param err 
+     * @param req 
+     * @param res 
+     */
+    protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse {
+        const exceptionHandler: IExceptionHandler = this.app.get('error');
+
+        if (exceptionHandler) {
+            err = exceptionHandler.prepareException(err);
+
+            exceptionHandler.report(err);
+
+            res = exceptionHandler.responseFromError(err, req, res);
+        }
+        return res;
     }
 
     /**
@@ -140,11 +166,28 @@ export class Router extends Route implements IRouter {
      */
     protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse> {
 
-        const destination = this.resolveDestination(route, req);
+        const destination = this === route ? this.routeHandler : this.resolveDestination(route, req);
 
         return await new RequestPipeline()
-            .through(this.resolveMiddlewarePipes(route))
+            .through(this.middlewarePipesOfRoute(route))
             .sendTo(destination, req, res);
+    }
+
+    /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     * 
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     * 
+     * @param request 
+     * @param response 
+     */
+    private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
+
+        const route = this.matchingRoute(request);
+
+        return await this.dispatchToRoute(route, request, response);
     }
 
     /**
@@ -154,36 +197,45 @@ export class Router extends Route implements IRouter {
      * 
      * @param route 
      */
-    private resolveMiddlewarePipes(route: IRoute): IMiddleware[] {
+    private middlewarePipesOfRoute(route: IRoute): IMiddleware[] {
 
-        return route.routeMiddlewares().reduce((prev: IMiddleware[], current: string) => {
-            const nameParam = this.routeRequiresMiddleware(route, current);
+        return route.middlewaresToResolve().reduce(
+            (prev: IMiddleware[], current: string) => {
+                const nameParam = this.routeRequiresMiddleware(route, current);
 
-            if (nameParam !== false) {
-                prev.push((req, res, next) => {
-                    return this.middlewares_list[nameParam[0]](req, res, next, ...nameParam[1])
-                });
+                if (nameParam !== false) {
+                    prev.push(this.resolveMiddleware(nameParam));
+                }
+                return prev;
+            }, []);
+    }
+
+    /**
+     * Returns middleware handler function.
+     * 
+     * @param nameParam
+     */
+    private resolveMiddleware([name, params]: INameParams): IMiddleware {
+
+        return async (req, res, next) => {
+            const typeMiddleware = typeof this.middlewares_list[name];
+
+            if (typeMiddleware !== 'function') {
+                throw new Exception(`Middleware ${name} has to be a function. Found: ${typeMiddleware}`);
             }
-            return prev;
-        }, []);
+            return await this.middlewares_list[name](req, res, next, ...params)
+        };
     }
 
     /**
      * Checks if the given middleware (by name) has to be executed or not. Returns 
-     * [name, params[]] if the middleware is a global middleware or is not present
-     * in the exclusion list.
+     * [name, params[]] if the middleware is not present in the exclusion list of route.
      * 
      * @param route 
      * @param middleware 
      */
     private routeRequiresMiddleware(route: IRoute, middleware: string): INameParams | false {
         const [name, params] = this.middlewareNameParams(middleware);
-
-        // Return name and params of this middleware string if it is
-        // present in the global middlewares list.
-        if (this._middlewares.includes(middleware)) {
-            return [name, params];
-        }
 
         // The route middleware exclusion list.
         const excluded = route.getExcludedMiddlewares();
@@ -255,27 +307,6 @@ export class Router extends Route implements IRouter {
         const controllerFile = Str.path(filename);
 
         return path.resolve(rootPath, controllerDir, controllerFile);
-    }
-
-    /**
-     * Handles the exceptions. Binds the exception to the response and logs the exception
-     * if it has to be logged.
-     * 
-     * @param err 
-     * @param req 
-     * @param res 
-     */
-    protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse {
-        const exceptionHandler: IExceptionHandler = this.app.get('error');
-
-        if (exceptionHandler) {
-            err = exceptionHandler.prepareException(err);
-
-            exceptionHandler.report(err);
-
-            res = exceptionHandler.responseFromError(err, req, res);
-        }
-        return res;
     }
 
     /**
@@ -465,7 +496,7 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * Router middlewares don't have to be sent to the routes. 
+     * Router middlewares shouldn't be send to the routes. 
      * 
      * Middlewares of this router are global middlewares, that has to 
      * be executed no matter what and before finding the matching route.
@@ -476,6 +507,15 @@ export class Router extends Route implements IRouter {
      */
     public routeMiddlewares(): string[] {
         return [];
+    }
+
+    /**
+     * Only these middlewares will be resolved when processing requests.
+     * 
+     * @returns array
+     */
+    public middlewaresToResolve(): string[] {
+        return this._middlewares;
     }
 
     /**

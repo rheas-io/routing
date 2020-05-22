@@ -170,6 +170,13 @@ export declare class Route implements IRoute {
      */
     routeMiddlewares(): string[];
     /**
+     * Only these middlewares will be resolved when processing
+     * requests.
+     *
+     * @returns array
+     */
+    middlewaresToResolve(): string[];
+    /**
      * Returns the domain of this route. If no domain is defined for the route,
      * parent routes are checked for a domain and if it exists on parent, that
      * value is returned.

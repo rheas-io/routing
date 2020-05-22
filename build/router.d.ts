@@ -74,14 +74,24 @@ export declare class Router extends Route implements IRouter {
      */
     protected getWebRoutesRegistrar(): IRouteRegistrar;
     /**
-     * Application requests are send here for processing. A route match is
-     * checked for the request. If a match is found, dispatches the same to
-     * controller via middlewares.
+     * Application requests are send here for processing. The request is initially
+     * sent to a pipeline of global middlewares (middlewares of this class). Once that's
+     * done, they are forwarded to routeHandler, which checks for a matching route. If found
+     * one, then the request is send through a pipeline of route middlewares.
      *
      * @param request
      * @param response
      */
-    processRequest(request: IRequest, response: IResponse): Promise<IResponse>;
+    handle(request: IRequest, response: IResponse): Promise<IResponse>;
+    /**
+     * Handles the exceptions. Binds the exception to the response and logs the exception
+     * if it has to be logged.
+     *
+     * @param err
+     * @param req
+     * @param res
+     */
+    protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse;
     /**
      * Dispatches the request to the route through middleware pipeline.
      *
@@ -91,17 +101,33 @@ export declare class Router extends Route implements IRouter {
      */
     protected dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse>;
     /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     *
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     *
+     * @param request
+     * @param response
+     */
+    private routeHandler;
+    /**
      * Resolves middleware handlers for the route. Returns an array
      * of middleware handlers which executes the corresponding middleware
      * with the params.
      *
      * @param route
      */
-    private resolveMiddlewarePipes;
+    private middlewarePipesOfRoute;
+    /**
+     * Returns middleware handler function.
+     *
+     * @param nameParam
+     */
+    private resolveMiddleware;
     /**
      * Checks if the given middleware (by name) has to be executed or not. Returns
-     * [name, params[]] if the middleware is a global middleware or is not present
-     * in the exclusion list.
+     * [name, params[]] if the middleware is not present in the exclusion list of route.
      *
      * @param route
      * @param middleware
@@ -134,15 +160,6 @@ export declare class Router extends Route implements IRouter {
      * @param filename
      */
     private controllerScript;
-    /**
-     * Handles the exceptions. Binds the exception to the response and logs the exception
-     * if it has to be logged.
-     *
-     * @param err
-     * @param req
-     * @param res
-     */
-    protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse;
     /**
      * Checks the request for a matching route.
      *
@@ -228,7 +245,7 @@ export declare class Router extends Route implements IRouter {
      */
     protected cacheMethodRoute(route: IRoute): void;
     /**
-     * Router middlewares don't have to be sent to the routes.
+     * Router middlewares shouldn't be send to the routes.
      *
      * Middlewares of this router are global middlewares, that has to
      * be executed no matter what and before finding the matching route.
@@ -238,6 +255,12 @@ export declare class Router extends Route implements IRouter {
      * @return array
      */
     routeMiddlewares(): string[];
+    /**
+     * Only these middlewares will be resolved when processing requests.
+     *
+     * @returns array
+     */
+    middlewaresToResolve(): string[];
     /**
      * An exposed function that allows users to register their
      * routes
