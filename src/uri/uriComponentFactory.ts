@@ -25,7 +25,7 @@ export class ComponentFactory {
      * @param uri 
      */
     public static createFromRoute(route: IRoute): IUriComponent[] {
-        const uri = route.getPath();
+        const uri = route.routePath();
 
         return uri.split('/').map(
             component => ComponentFactory.createFromComponent(component)

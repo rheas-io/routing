@@ -23,7 +23,7 @@ var ComponentFactory = /** @class */ (function () {
      * @param uri
      */
     ComponentFactory.createFromRoute = function (route) {
-        var uri = route.getPath();
+        var uri = route.routePath();
         return uri.split('/').map(function (component) { return ComponentFactory.createFromComponent(component); });
     };
     /**
