@@ -174,6 +174,7 @@ var Router = /** @class */ (function (_super) {
                         // Catch any exception occured when processing the request and
                         // create a response from the exception. This error response should
                         // be returned.
+                        console.log(err_1);
                         response = this.handleError(err_1, request, response);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/, response];
@@ -215,29 +216,6 @@ var Router = /** @class */ (function (_super) {
                         return [4 /*yield*/, new requestPipeline_1.RequestPipeline()
                                 .through(this.middlewarePipesOfRoute(route))
                                 .sendTo(destination, req, res)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    /**
-     * Requests are send here after flowing through a series of global middlewares, if no response
-     * has been found.
-     *
-     * This handler finds a matching route for the request and continue the request flow through
-     * the route middleware pipeline.
-     *
-     * @param request
-     * @param response
-     */
-    Router.prototype.routeHandler = function (request, response) {
-        return __awaiter(this, void 0, void 0, function () {
-            var route;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        route = this.matchingRoute(request);
-                        return [4 /*yield*/, this.dispatchToRoute(route, request, response)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -354,6 +332,29 @@ var Router = /** @class */ (function (_super) {
         var controllerDir = support_1.Str.path(this.controllerPath);
         var controllerFile = support_1.Str.path(filename);
         return path_1.default.resolve(rootPath, controllerDir, controllerFile);
+    };
+    /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     *
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     *
+     * @param request
+     * @param response
+     */
+    Router.prototype.routeHandler = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var route;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        route = this.matchingRoute(request);
+                        return [4 /*yield*/, this.dispatchToRoute(route, request, response)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
     };
     /**
      * Checks the request for a matching route.

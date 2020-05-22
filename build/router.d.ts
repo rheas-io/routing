@@ -101,17 +101,6 @@ export declare class Router extends Route implements IRouter {
      */
     protected dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse>;
     /**
-     * Requests are send here after flowing through a series of global middlewares, if no response
-     * has been found.
-     *
-     * This handler finds a matching route for the request and continue the request flow through
-     * the route middleware pipeline.
-     *
-     * @param request
-     * @param response
-     */
-    private routeHandler;
-    /**
      * Resolves middleware handlers for the route. Returns an array
      * of middleware handlers which executes the corresponding middleware
      * with the params.
@@ -160,6 +149,17 @@ export declare class Router extends Route implements IRouter {
      * @param filename
      */
     private controllerScript;
+    /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     *
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     *
+     * @param request
+     * @param response
+     */
+    private routeHandler;
     /**
      * Checks the request for a matching route.
      *

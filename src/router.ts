@@ -129,6 +129,7 @@ export class Router extends Route implements IRouter {
             // Catch any exception occured when processing the request and
             // create a response from the exception. This error response should
             // be returned.
+            console.log(err);
             response = this.handleError(err, request, response);
         }
         return response;
@@ -170,23 +171,6 @@ export class Router extends Route implements IRouter {
         return await new RequestPipeline()
             .through(this.middlewarePipesOfRoute(route))
             .sendTo(destination, req, res);
-    }
-
-    /**
-     * Requests are send here after flowing through a series of global middlewares, if no response
-     * has been found.
-     * 
-     * This handler finds a matching route for the request and continue the request flow through
-     * the route middleware pipeline.
-     * 
-     * @param request 
-     * @param response 
-     */
-    private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
-
-        const route = this.matchingRoute(request);
-
-        return await this.dispatchToRoute(route, request, response);
     }
 
     /**
@@ -306,6 +290,23 @@ export class Router extends Route implements IRouter {
         const controllerFile = Str.path(filename);
 
         return path.resolve(rootPath, controllerDir, controllerFile);
+    }
+
+    /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     * 
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     * 
+     * @param request 
+     * @param response 
+     */
+    private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
+
+        const route = this.matchingRoute(request);
+
+        return await this.dispatchToRoute(route, request, response);
     }
 
     /**
