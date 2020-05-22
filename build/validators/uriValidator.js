@@ -18,7 +18,7 @@ var UriValidator = /** @class */ (function () {
             }
             // Sets the matching route component on the request uri component.
             // This helps in later determining the route params.
-            reqComponents[i].setComponent(routeComponents[i]);
+            reqComponents[i] && reqComponents[i].setComponent(routeComponents[i]);
         }
         return true;
     };
