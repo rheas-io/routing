@@ -45,7 +45,7 @@ var RequestComponent = /** @class */ (function (_super) {
     RequestComponent.prototype.getParam = function () {
         var param = {};
         if (this._routeComponent instanceof routeParamComponent_1.ParamComponent) {
-            param[this._routeComponent.getName()] = this.component;
+            param[this._routeComponent.getName()] = decodeURIComponent(this.component);
         }
         return param;
     };
