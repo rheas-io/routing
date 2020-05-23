@@ -10,6 +10,9 @@ var HostValidator = /** @class */ (function () {
      * @param request
      */
     HostValidator.prototype.matches = function (route, request) {
+        if (['*', ''].includes(route.routeDomain())) {
+            return true;
+        }
         return route.routeDomain() === request.getHost();
     };
     return HostValidator;
