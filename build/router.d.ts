@@ -1,6 +1,5 @@
 import { Route } from "./route";
-import { KeyValue, IRequest } from "@rheas/contracts";
-import { IResponse } from "@rheas/contracts/core/response";
+import { KeyValue, IRequest, IResponse } from "@rheas/contracts";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IException } from "@rheas/contracts/errors";
 import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
