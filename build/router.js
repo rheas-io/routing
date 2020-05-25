@@ -297,15 +297,18 @@ var Router = /** @class */ (function (_super) {
      */
     Router.prototype.resolveDestination = function (route, request) {
         var _this = this;
-        var controllerAction = route.getAction();
-        if (typeof controllerAction !== 'function') {
-            controllerAction = this.resolveController(controllerAction);
-        }
-        var params = request.params();
+        var self = this;
         return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var controllerAction, params;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, controllerAction.apply(void 0, __spreadArrays([req, res], params))];
+                    case 0:
+                        controllerAction = route.getAction();
+                        if (typeof controllerAction !== 'function') {
+                            controllerAction = self.resolveController(controllerAction);
+                        }
+                        params = request.params();
+                        return [4 /*yield*/, controllerAction.apply(void 0, __spreadArrays([req, res], params))];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

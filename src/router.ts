@@ -250,14 +250,16 @@ export class Router extends Route implements IRouter {
      */
     protected resolveDestination(route: IRoute, request: IRequest): IRequestHandler {
 
-        let controllerAction: string | IRequestHandler = route.getAction();
-
-        if (typeof controllerAction !== 'function') {
-            controllerAction = this.resolveController(controllerAction);
-        }
-        const params = request.params();
+        const self = this;
 
         return async (req, res) => {
+            let controllerAction: string | IRequestHandler = route.getAction();
+
+            if (typeof controllerAction !== 'function') {
+                controllerAction = self.resolveController(controllerAction);
+            }
+            const params = request.params();
+
             return await (<IRequestHandler>controllerAction)(req, res, ...params);
         }
     }
