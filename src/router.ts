@@ -173,6 +173,23 @@ export class Router extends Route implements IRouter {
     }
 
     /**
+     * Requests are send here after flowing through a series of global middlewares, if no response
+     * has been found.
+     * 
+     * This handler finds a matching route for the request and continue the request flow through
+     * the route middleware pipeline.
+     * 
+     * @param request 
+     * @param response 
+     */
+    private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
+
+        const route = this.matchingRoute(request);
+
+        return await this.dispatchToRoute(route, request, response);
+    }
+
+    /**
      * Resolves middleware handlers for the route. Returns an array
      * of middleware handlers which executes the corresponding middleware
      * with the params.
@@ -250,13 +267,11 @@ export class Router extends Route implements IRouter {
      */
     protected resolveDestination(route: IRoute, request: IRequest): IRequestHandler {
 
-        const self = this;
-
         return async (req, res) => {
             let controllerAction: string | IRequestHandler = route.getAction();
 
             if (typeof controllerAction !== 'function') {
-                controllerAction = self.resolveController(controllerAction);
+                controllerAction = this.resolveController(controllerAction);
             }
             const params = request.params();
 
@@ -291,23 +306,6 @@ export class Router extends Route implements IRouter {
         const controllerFile = Str.path(filename);
 
         return path.resolve(rootPath, controllerDir, controllerFile);
-    }
-
-    /**
-     * Requests are send here after flowing through a series of global middlewares, if no response
-     * has been found.
-     * 
-     * This handler finds a matching route for the request and continue the request flow through
-     * the route middleware pipeline.
-     * 
-     * @param request 
-     * @param response 
-     */
-    private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
-
-        const route = this.matchingRoute(request);
-
-        return await this.dispatchToRoute(route, request, response);
     }
 
     /**
