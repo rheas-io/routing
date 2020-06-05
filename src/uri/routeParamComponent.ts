@@ -5,10 +5,19 @@ import { IUriComponent } from "@rheas/contracts/routes/uri";
 export class ParamComponent extends UriComponent {
 
     /**
-     * @inheritdoc
+     * Flag that caches the optional status of this param 
+     * component.
+     * 
+     * @var boolean
      */
     public optional: boolean;
 
+    /**
+     * Creates a new parameter component of the route path. The particular
+     * segment is passed as argument.
+     * 
+     * @param component 
+     */
     constructor(component: string) {
         super(component);
 
@@ -16,10 +25,13 @@ export class ParamComponent extends UriComponent {
     }
 
     /**
-     * @inheritdoc
+     * Returns the name of the parameter without any optional
+     * symbol (?) or colon (:)
+     * 
+     * @returns param name
      */
     public getName(): string {
-        return Str.trimStart(this.component, ":");
+        return Str.trimEnd(Str.trimStart(this.component, ":"), '?');
     }
 
     /**

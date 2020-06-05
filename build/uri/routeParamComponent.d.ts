@@ -2,12 +2,24 @@ import { UriComponent } from "./baseComponent";
 import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class ParamComponent extends UriComponent {
     /**
-     * @inheritdoc
+     * Flag that caches the optional status of this param
+     * component.
+     *
+     * @var boolean
      */
     optional: boolean;
+    /**
+     * Creates a new parameter component of the route path. The particular
+     * segment is passed as argument.
+     *
+     * @param component
+     */
     constructor(component: string);
     /**
-     * @inheritdoc
+     * Returns the name of the parameter without any optional
+     * symbol (?) or colon (:)
+     *
+     * @returns param name
      */
     getName(): string;
     /**

@@ -17,16 +17,25 @@ var support_1 = require("@rheas/support");
 var baseComponent_1 = require("./baseComponent");
 var ParamComponent = /** @class */ (function (_super) {
     __extends(ParamComponent, _super);
+    /**
+     * Creates a new parameter component of the route path. The particular
+     * segment is passed as argument.
+     *
+     * @param component
+     */
     function ParamComponent(component) {
         var _this = _super.call(this, component) || this;
         _this.optional = component.endsWith('?');
         return _this;
     }
     /**
-     * @inheritdoc
+     * Returns the name of the parameter without any optional
+     * symbol (?) or colon (:)
+     *
+     * @returns param name
      */
     ParamComponent.prototype.getName = function () {
-        return support_1.Str.trimStart(this.component, ":");
+        return support_1.Str.trimEnd(support_1.Str.trimStart(this.component, ":"), '?');
     };
     /**
      * Returns true if the argument components value is not
