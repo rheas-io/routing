@@ -9,8 +9,16 @@ var UriComponent = /** @class */ (function () {
      * @param uriSegment
      */
     function UriComponent(uriSegment) {
-        this.component = uriSegment;
+        this._component = uriSegment;
     }
+    /**
+     * Returns the whole path segment.
+     *
+     * @returns string
+     */
+    UriComponent.prototype.getSegment = function () {
+        return this._component;
+    };
     /**
      * Base uri component equality check.
      *
@@ -22,7 +30,7 @@ var UriComponent = /** @class */ (function () {
         if (uriComponent === null || uriComponent === void 0) {
             return false;
         }
-        return this.component === uriComponent.component;
+        return this.getSegment() === uriComponent.getSegment();
     };
     return UriComponent;
 }());

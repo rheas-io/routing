@@ -26,7 +26,7 @@ export class FixedComponent extends UriComponent {
      * @return boolean
      */
     private isDecodingNeeded(): boolean {
-        return encodeURIComponent(this.component) !== this.component;
+        return encodeURIComponent(this.getSegment()) !== this.getSegment();
     }
 
     /**
@@ -40,8 +40,8 @@ export class FixedComponent extends UriComponent {
         if (uriComponent === null || uriComponent === void 0) {
             return false;
         }
-        return (this.component === uriComponent.component ||
-            (this.mayBeEncoded && this.component === decodeURIComponent(uriComponent.component))
+        return (this.getSegment() === uriComponent.getSegment() ||
+            (this.mayBeEncoded && this.getSegment() === decodeURIComponent(uriComponent.getSegment()))
         );
     }
 }

@@ -3,9 +3,11 @@ import { IUriComponent } from "@rheas/contracts/routes/uri";
 export class UriComponent implements IUriComponent {
 
     /**
-     * @inheritdoc
+     * Single route uri segment obtained when the route is split by forward slash (/)
+     * 
+     * @var string
      */
-    public component: string;
+    protected _component: string;
 
     /**
      * Stores the segment as it is. No trimming or any other modifications
@@ -15,7 +17,16 @@ export class UriComponent implements IUriComponent {
      * @param uriSegment 
      */
     constructor(uriSegment: string) {
-        this.component = uriSegment;
+        this._component = uriSegment;
+    }
+
+    /**
+     * Returns the whole path segment.
+     * 
+     * @returns string
+     */
+    public getSegment(): string {
+        return this._component
     }
 
     /**
@@ -29,7 +40,7 @@ export class UriComponent implements IUriComponent {
         if (uriComponent === null || uriComponent === void 0) {
             return false;
         }
-        return this.component === uriComponent.component;
+        return this.getSegment() === uriComponent.getSegment();
     }
 
 }

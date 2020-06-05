@@ -35,7 +35,7 @@ var ParamComponent = /** @class */ (function (_super) {
      * @returns param name
      */
     ParamComponent.prototype.getName = function () {
-        return support_1.Str.trimEnd(support_1.Str.trimStart(this.component, ":"), '?');
+        return support_1.Str.trimEnd(support_1.Str.trimStart(this.getSegment(), ":"), '?');
     };
     /**
      * Returns true if the argument components value is not
@@ -52,7 +52,7 @@ var ParamComponent = /** @class */ (function (_super) {
         // If there is an actual component passed, check the length
         // of the string. Length of the string > 0 indicates, the presence
         // of a value and return true, otherwise return value of optional.
-        return uriComponent.component.length > 0 || this.optional;
+        return uriComponent.getSegment().length > 0 || this.optional;
     };
     return ParamComponent;
 }(baseComponent_1.UriComponent));

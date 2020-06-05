@@ -31,7 +31,7 @@ var FixedComponent = /** @class */ (function (_super) {
      * @return boolean
      */
     FixedComponent.prototype.isDecodingNeeded = function () {
-        return encodeURIComponent(this.component) !== this.component;
+        return encodeURIComponent(this.getSegment()) !== this.getSegment();
     };
     /**
      * Returns true if the component values are matching. If it is not
@@ -44,8 +44,8 @@ var FixedComponent = /** @class */ (function (_super) {
         if (uriComponent === null || uriComponent === void 0) {
             return false;
         }
-        return (this.component === uriComponent.component ||
-            (this.mayBeEncoded && this.component === decodeURIComponent(uriComponent.component)));
+        return (this.getSegment() === uriComponent.getSegment() ||
+            (this.mayBeEncoded && this.getSegment() === decodeURIComponent(uriComponent.getSegment())));
     };
     return FixedComponent;
 }(baseComponent_1.UriComponent));

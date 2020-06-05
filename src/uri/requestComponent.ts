@@ -41,7 +41,7 @@ export class RequestComponent extends UriComponent implements IRequestComponent 
         const param: StringObject = {};
 
         if (this._routeComponent instanceof ParamComponent) {
-            param[this._routeComponent.getName()] = decodeURIComponent(this.component);
+            param[this._routeComponent.getName()] = decodeURIComponent(this.getSegment());
         }
         return param;
     }

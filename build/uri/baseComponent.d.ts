@@ -1,9 +1,11 @@
 import { IUriComponent } from "@rheas/contracts/routes/uri";
 export declare class UriComponent implements IUriComponent {
     /**
-     * @inheritdoc
+     * Single route uri segment obtained when the route is split by forward slash (/)
+     *
+     * @var string
      */
-    component: string;
+    protected _component: string;
     /**
      * Stores the segment as it is. No trimming or any other modifications
      * are done here as there may be instances where spaces are put purposefully
@@ -12,6 +14,12 @@ export declare class UriComponent implements IUriComponent {
      * @param uriSegment
      */
     constructor(uriSegment: string);
+    /**
+     * Returns the whole path segment.
+     *
+     * @returns string
+     */
+    getSegment(): string;
     /**
      * Base uri component equality check.
      *

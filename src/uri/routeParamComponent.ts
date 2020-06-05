@@ -31,7 +31,7 @@ export class ParamComponent extends UriComponent {
      * @returns param name
      */
     public getName(): string {
-        return Str.trimEnd(Str.trimStart(this.component, ":"), '?');
+        return Str.trimEnd(Str.trimStart(this.getSegment(), ":"), '?');
     }
 
     /**
@@ -50,6 +50,6 @@ export class ParamComponent extends UriComponent {
         // If there is an actual component passed, check the length
         // of the string. Length of the string > 0 indicates, the presence
         // of a value and return true, otherwise return value of optional.
-        return uriComponent.component.length > 0 || this.optional;
+        return uriComponent.getSegment().length > 0 || this.optional;
     }
 }
