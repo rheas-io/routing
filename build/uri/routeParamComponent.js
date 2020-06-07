@@ -25,9 +25,18 @@ var ParamComponent = /** @class */ (function (_super) {
      */
     function ParamComponent(component) {
         var _this = _super.call(this, component) || this;
-        _this.optional = component.endsWith('?');
+        _this._optional = component.endsWith('?');
         return _this;
     }
+    /**
+     * Returns true if the parameter is optional ie has a ? at
+     * the end of the path fragment.
+     *
+     * @returns boolean
+     */
+    ParamComponent.prototype.isOptional = function () {
+        return this._optional;
+    };
     /**
      * Returns the name of the parameter without any optional
      * symbol (?) or colon (:)
@@ -47,12 +56,12 @@ var ParamComponent = /** @class */ (function (_super) {
      */
     ParamComponent.prototype.equals = function (uriComponent) {
         if (uriComponent === null || uriComponent === void 0) {
-            return this.optional;
+            return this.isOptional();
         }
         // If there is an actual component passed, check the length
         // of the string. Length of the string > 0 indicates, the presence
         // of a value and return true, otherwise return value of optional.
-        return uriComponent.getSegment().length > 0 || this.optional;
+        return uriComponent.getSegment().length > 0 || this.isOptional();
     };
     return ParamComponent;
 }(baseComponent_1.UriComponent));

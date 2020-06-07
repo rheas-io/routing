@@ -1,8 +1,8 @@
 import { Str } from "@rheas/support";
 import { UriComponent } from "./baseComponent";
-import { IUriComponent } from "@rheas/contracts/routes/uri";
+import { IUriComponent, IParamComponent } from "@rheas/contracts/routes/uri";
 
-export class ParamComponent extends UriComponent {
+export class ParamComponent extends UriComponent implements IParamComponent {
 
     /**
      * Flag that caches the optional status of this param 
@@ -10,7 +10,7 @@ export class ParamComponent extends UriComponent {
      * 
      * @var boolean
      */
-    public optional: boolean;
+    protected _optional: boolean;
 
     /**
      * Creates a new parameter component of the route path. The particular
@@ -21,7 +21,17 @@ export class ParamComponent extends UriComponent {
     constructor(component: string) {
         super(component);
 
-        this.optional = component.endsWith('?');
+        this._optional = component.endsWith('?');
+    }
+
+    /**
+     * Returns true if the parameter is optional ie has a ? at
+     * the end of the path fragment.
+     * 
+     * @returns boolean
+     */
+    public isOptional(): boolean {
+        return this._optional;
     }
 
     /**
@@ -45,11 +55,11 @@ export class ParamComponent extends UriComponent {
     public equals(uriComponent: IUriComponent): boolean {
 
         if (uriComponent === null || uriComponent === void 0) {
-            return this.optional;
+            return this.isOptional();
         }
         // If there is an actual component passed, check the length
         // of the string. Length of the string > 0 indicates, the presence
         // of a value and return true, otherwise return value of optional.
-        return uriComponent.getSegment().length > 0 || this.optional;
+        return uriComponent.getSegment().length > 0 || this.isOptional();
     }
 }
