@@ -201,6 +201,17 @@ export class Route implements IRoute {
     }
 
     /**
+     * Removes the domain scheme, leading and trailing slashes
+     * 
+     * @param domain 
+     */
+    public static clearDomain(domain: string): string {
+        domain = Str.trimStart(domain.trim(), ["http://", "https://"]);
+
+        return Str.trim(domain, "/");
+    }
+
+    /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
      * 
@@ -392,17 +403,6 @@ export class Route implements IRoute {
         this._domain = Route.clearDomain(domain);
 
         return this;
-    }
-
-    /**
-     * Removes the domain scheme, leading and trailing slashes
-     * 
-     * @param domain 
-     */
-    public static clearDomain(domain: string): string {
-        domain = Str.trimStart(domain.trim(), ["http://", "https://"]);
-
-        return Str.trim(domain, "/");
     }
 
     /**

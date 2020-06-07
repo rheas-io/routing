@@ -157,6 +157,12 @@ export declare class Route implements IRoute {
      */
     static options(uri: string, controller: string | IRequestHandler): IRoute;
     /**
+     * Removes the domain scheme, leading and trailing slashes
+     *
+     * @param domain
+     */
+    static clearDomain(domain: string): string;
+    /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
      *
@@ -242,12 +248,6 @@ export declare class Route implements IRoute {
      * @param domain
      */
     domain(domain: string): IRoute;
-    /**
-     * Removes the domain scheme, leading and trailing slashes
-     *
-     * @param domain
-     */
-    static clearDomain(domain: string): string;
     /**
      * Sets the route allows only secure connections flag.
      *

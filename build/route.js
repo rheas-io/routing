@@ -180,6 +180,15 @@ var Route = /** @class */ (function () {
         return new Route(uri).methods(["OPTIONS"]).action(controller);
     };
     /**
+     * Removes the domain scheme, leading and trailing slashes
+     *
+     * @param domain
+     */
+    Route.clearDomain = function (domain) {
+        domain = support_1.Str.trimStart(domain.trim(), ["http://", "https://"]);
+        return support_1.Str.trim(domain, "/");
+    };
+    /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
      *
@@ -345,15 +354,6 @@ var Route = /** @class */ (function () {
     Route.prototype.domain = function (domain) {
         this._domain = Route.clearDomain(domain);
         return this;
-    };
-    /**
-     * Removes the domain scheme, leading and trailing slashes
-     *
-     * @param domain
-     */
-    Route.clearDomain = function (domain) {
-        domain = support_1.Str.trimStart(domain.trim(), ["http://", "https://"]);
-        return support_1.Str.trim(domain, "/");
     };
     /**
      * Sets the route allows only secure connections flag.
