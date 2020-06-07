@@ -247,7 +247,7 @@ export declare class Route implements IRoute {
      *
      * @param domain
      */
-    private clearDomain;
+    static clearDomain(domain: string): string;
     /**
      * Sets the route allows only secure connections flag.
      *

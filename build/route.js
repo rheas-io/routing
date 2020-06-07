@@ -343,7 +343,7 @@ var Route = /** @class */ (function () {
      * @param domain
      */
     Route.prototype.domain = function (domain) {
-        this._domain = this.clearDomain(domain);
+        this._domain = Route.clearDomain(domain);
         return this;
     };
     /**
@@ -351,10 +351,8 @@ var Route = /** @class */ (function () {
      *
      * @param domain
      */
-    Route.prototype.clearDomain = function (domain) {
-        domain = domain.trim();
-        domain = domain.replace("http://", "");
-        domain = domain.replace("https://", "");
+    Route.clearDomain = function (domain) {
+        domain = support_1.Str.trimStart(domain.trim(), ["http://", "https://"]);
         return support_1.Str.trim(domain, "/");
     };
     /**

@@ -389,7 +389,7 @@ export class Route implements IRoute {
      * @param domain
      */
     public domain(domain: string): IRoute {
-        this._domain = this.clearDomain(domain);
+        this._domain = Route.clearDomain(domain);
 
         return this;
     }
@@ -399,11 +399,8 @@ export class Route implements IRoute {
      * 
      * @param domain 
      */
-    private clearDomain(domain: string): string {
-        domain = domain.trim();
-
-        domain = domain.replace("http://", "");
-        domain = domain.replace("https://", "");
+    public static clearDomain(domain: string): string {
+        domain = Str.trimStart(domain.trim(), ["http://", "https://"]);
 
         return Str.trim(domain, "/");
     }
