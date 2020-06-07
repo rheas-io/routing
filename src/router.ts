@@ -414,91 +414,13 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * New host validator. Domain/subdomain checks.
-     * 
-     * @return
-     */
-    protected getHostValidator(): IRouteValidator {
-        return new HostValidator();
-    }
-
-    /**
-     * New scheme validator. http or https check
-     * 
-     * @return 
-     */
-    protected getSchemeValidator(): IRouteValidator {
-        return new SchemeValidator();
-    }
-
-    /**
-     * New route method validator.
-     * 
-     * @return
-     */
-    protected getMethodValidator(): IRouteValidator {
-        return new MethodValidator();
-    }
-
-    /**
-     * New uri validator. Checks if the request url and route path matches.
-     * 
-     * @return
-     */
-    protected getUriValidator(): IRouteValidator {
-        return new UriValidator();
-    }
-
-    /**
-     * Caches the routes by name and request methods. All these cache contains 
-     * only the final endpoint routes. Each endpoint route will traverse in
-     * reverse to match the request uri and to obtain the middlewares. 
-     * 
-     * Router will cache the endpoint routes by name and methods for faster 
-     * route  matching.
-     */
-    public cacheRoutes(): void {
-
-        this.routes(...this.routesList());
-
-        this.routeEndpoints().forEach(route => {
-            this.cacheNamedRoute(route);
-            this.cacheMethodRoute(route);
-        });
-    }
-
-    /**
-     * Caches the route by name if it has a non-empty name.
-     * 
-     * @param route 
-     */
-    protected cacheNamedRoute(route: IRoute): void {
-        const name = route.getName().trim();
-
-        if (name.length > 0) {
-            this._namedEndpoints[name] = route;
-        }
-    }
-
-    /**
-     * Sorts the route method and cache them into the appropriate array. This allows 
-     * quick retreival of request route by querying through the method array.
-     * 
-     * @param route 
-     */
-    protected cacheMethodRoute(route: IRoute): void {
-        route.getMethods().filter(method => method !== 'HEAD').forEach(method => {
-            this._methodEndpoints[method] = this._methodEndpoints[method] || [];
-
-            this._methodEndpoints[method].push(route);
-        });
-    }
-
-    /**
      * Router middlewares shouldn't be send to the routes. 
      * 
      * Middlewares of this router are global middlewares, that has to 
      * be executed no matter what and before finding the matching route.
+     * 
+     * To eliminate having this added to the endpoint middleware list,
+     * we simpley overrides it with an empty array.
      * 
      * @override
      * 
@@ -562,5 +484,95 @@ export class Router extends Route implements IRouter {
             throw Error("Unable to delete default route registrars [api, web].");
         }
         delete this.registrars[name];
+    }
+
+    /**
+     * Caches the routes by name and request methods. All these cache contains 
+     * only the final endpoint routes. Each endpoint route will traverse in
+     * reverse to match the request uri and to obtain the middlewares. 
+     * 
+     * Router will cache the endpoint routes by name and methods for faster 
+     * route  matching.
+     */
+    public cacheRoutes(): void {
+
+        this.routes(...this.routesList());
+
+        this.routeEndpoints().forEach(route => {
+            this.cacheNamedRoute(route);
+            this.cacheMethodRoute(route);
+        });
+    }
+
+    /**
+     * Caches the route by name if it has a non-empty name.
+     * 
+     * @param route 
+     */
+    protected cacheNamedRoute(route: IRoute): void {
+        const name = route.getName().trim();
+
+        if (name.length > 0) {
+            this._namedEndpoints[name] = route;
+        }
+    }
+
+    /**
+     * Sorts the route method and cache them into the appropriate array. This allows 
+     * quick retreival of request route by querying through the method array.
+     * 
+     * @param route 
+     */
+    protected cacheMethodRoute(route: IRoute): void {
+        route.getMethods().filter(method => method !== 'HEAD').forEach(method => {
+            this._methodEndpoints[method] = this._methodEndpoints[method] || [];
+
+            this._methodEndpoints[method].push(route);
+        });
+    }
+
+    /**
+     * New host validator. Domain/subdomain checks.
+     * 
+     * @return
+     */
+    protected getHostValidator(): IRouteValidator {
+        return new HostValidator();
+    }
+
+    /**
+     * New scheme validator. http or https check
+     * 
+     * @return 
+     */
+    protected getSchemeValidator(): IRouteValidator {
+        return new SchemeValidator();
+    }
+
+    /**
+     * New route method validator.
+     * 
+     * @return
+     */
+    protected getMethodValidator(): IRouteValidator {
+        return new MethodValidator();
+    }
+
+    /**
+     * New uri validator. Checks if the request url and route path matches.
+     * 
+     * @return
+     */
+    protected getUriValidator(): IRouteValidator {
+        return new UriValidator();
+    }
+
+    /**
+     * Returns route if a route with the name exists or null.
+     * 
+     * @param name 
+     */
+    public getNamedRoute(name: string): IRoute | null {
+        return this._namedEndpoints[name] || null;
     }
 }

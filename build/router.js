@@ -445,82 +445,13 @@ var Router = /** @class */ (function (_super) {
         return this._routeValidators;
     };
     /**
-     * New host validator. Domain/subdomain checks.
-     *
-     * @return
-     */
-    Router.prototype.getHostValidator = function () {
-        return new hostValidator_1.HostValidator();
-    };
-    /**
-     * New scheme validator. http or https check
-     *
-     * @return
-     */
-    Router.prototype.getSchemeValidator = function () {
-        return new schemeValidator_1.SchemeValidator();
-    };
-    /**
-     * New route method validator.
-     *
-     * @return
-     */
-    Router.prototype.getMethodValidator = function () {
-        return new methodValidator_1.MethodValidator();
-    };
-    /**
-     * New uri validator. Checks if the request url and route path matches.
-     *
-     * @return
-     */
-    Router.prototype.getUriValidator = function () {
-        return new uriValidator_1.UriValidator();
-    };
-    /**
-     * Caches the routes by name and request methods. All these cache contains
-     * only the final endpoint routes. Each endpoint route will traverse in
-     * reverse to match the request uri and to obtain the middlewares.
-     *
-     * Router will cache the endpoint routes by name and methods for faster
-     * route  matching.
-     */
-    Router.prototype.cacheRoutes = function () {
-        var _this = this;
-        this.routes.apply(this, this.routesList());
-        this.routeEndpoints().forEach(function (route) {
-            _this.cacheNamedRoute(route);
-            _this.cacheMethodRoute(route);
-        });
-    };
-    /**
-     * Caches the route by name if it has a non-empty name.
-     *
-     * @param route
-     */
-    Router.prototype.cacheNamedRoute = function (route) {
-        var name = route.getName().trim();
-        if (name.length > 0) {
-            this._namedEndpoints[name] = route;
-        }
-    };
-    /**
-     * Sorts the route method and cache them into the appropriate array. This allows
-     * quick retreival of request route by querying through the method array.
-     *
-     * @param route
-     */
-    Router.prototype.cacheMethodRoute = function (route) {
-        var _this = this;
-        route.getMethods().filter(function (method) { return method !== 'HEAD'; }).forEach(function (method) {
-            _this._methodEndpoints[method] = _this._methodEndpoints[method] || [];
-            _this._methodEndpoints[method].push(route);
-        });
-    };
-    /**
      * Router middlewares shouldn't be send to the routes.
      *
      * Middlewares of this router are global middlewares, that has to
      * be executed no matter what and before finding the matching route.
+     *
+     * To eliminate having this added to the endpoint middleware list,
+     * we simpley overrides it with an empty array.
      *
      * @override
      *
@@ -578,6 +509,86 @@ var Router = /** @class */ (function (_super) {
             throw Error("Unable to delete default route registrars [api, web].");
         }
         delete this.registrars[name];
+    };
+    /**
+     * Caches the routes by name and request methods. All these cache contains
+     * only the final endpoint routes. Each endpoint route will traverse in
+     * reverse to match the request uri and to obtain the middlewares.
+     *
+     * Router will cache the endpoint routes by name and methods for faster
+     * route  matching.
+     */
+    Router.prototype.cacheRoutes = function () {
+        var _this = this;
+        this.routes.apply(this, this.routesList());
+        this.routeEndpoints().forEach(function (route) {
+            _this.cacheNamedRoute(route);
+            _this.cacheMethodRoute(route);
+        });
+    };
+    /**
+     * Caches the route by name if it has a non-empty name.
+     *
+     * @param route
+     */
+    Router.prototype.cacheNamedRoute = function (route) {
+        var name = route.getName().trim();
+        if (name.length > 0) {
+            this._namedEndpoints[name] = route;
+        }
+    };
+    /**
+     * Sorts the route method and cache them into the appropriate array. This allows
+     * quick retreival of request route by querying through the method array.
+     *
+     * @param route
+     */
+    Router.prototype.cacheMethodRoute = function (route) {
+        var _this = this;
+        route.getMethods().filter(function (method) { return method !== 'HEAD'; }).forEach(function (method) {
+            _this._methodEndpoints[method] = _this._methodEndpoints[method] || [];
+            _this._methodEndpoints[method].push(route);
+        });
+    };
+    /**
+     * New host validator. Domain/subdomain checks.
+     *
+     * @return
+     */
+    Router.prototype.getHostValidator = function () {
+        return new hostValidator_1.HostValidator();
+    };
+    /**
+     * New scheme validator. http or https check
+     *
+     * @return
+     */
+    Router.prototype.getSchemeValidator = function () {
+        return new schemeValidator_1.SchemeValidator();
+    };
+    /**
+     * New route method validator.
+     *
+     * @return
+     */
+    Router.prototype.getMethodValidator = function () {
+        return new methodValidator_1.MethodValidator();
+    };
+    /**
+     * New uri validator. Checks if the request url and route path matches.
+     *
+     * @return
+     */
+    Router.prototype.getUriValidator = function () {
+        return new uriValidator_1.UriValidator();
+    };
+    /**
+     * Returns route if a route with the name exists or null.
+     *
+     * @param name
+     */
+    Router.prototype.getNamedRoute = function (name) {
+        return this._namedEndpoints[name] || null;
     };
     return Router;
 }(route_1.Route));
