@@ -18,6 +18,14 @@ var ComponentFactory = /** @class */ (function () {
         return new routeFixedComponent_1.FixedComponent(component);
     };
     /**
+     * Creates uriComponents from a domain string and returns the list.
+     *
+     * @param domain
+     */
+    ComponentFactory.createFromDomain = function (domain) {
+        return domain.split('.').map(function (component) { return ComponentFactory.createFromComponent(component); });
+    };
+    /**
      * Creates uriComponents from a route uri and returns it.
      *
      * @param uri

@@ -20,6 +20,18 @@ export class ComponentFactory {
     }
 
     /**
+     * Creates uriComponents from a domain string and returns the list.
+     * 
+     * @param domain
+     */
+    public static createFromDomain(domain: string): IUriComponent[] {
+
+        return domain.split('.').map(
+            component => ComponentFactory.createFromComponent(component)
+        );
+    }
+
+    /**
      * Creates uriComponents from a route uri and returns it.
      * 
      * @param uri 

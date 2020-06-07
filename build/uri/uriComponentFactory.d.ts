@@ -9,6 +9,12 @@ export declare class ComponentFactory {
      */
     private static createFromComponent;
     /**
+     * Creates uriComponents from a domain string and returns the list.
+     *
+     * @param domain
+     */
+    static createFromDomain(domain: string): IUriComponent[];
+    /**
      * Creates uriComponents from a route uri and returns it.
      *
      * @param uri
