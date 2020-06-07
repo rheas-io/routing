@@ -1,6 +1,9 @@
+import { Str } from "@rheas/support";
 import { IApp } from "@rheas/contracts/core/app";
+import { RouteUrlGenerator } from "./routeUrlGenerator";
 import { StringObject, IRequest } from "@rheas/contracts";
-import { IUrlGenerator, IRouter } from "@rheas/contracts/routes";
+import { InvalidArgumentException } from "@rheas/errors/invalidArgument";
+import { IUrlGenerator, IRouter, IRoute } from "@rheas/contracts/routes";
 
 export class UrlGenerator implements IUrlGenerator {
 
@@ -36,7 +39,7 @@ export class UrlGenerator implements IUrlGenerator {
      * @param req 
      */
     public current(req: IRequest): string {
-        throw new Error("Method not implemented.");
+        return req.getFullUrl();
     }
 
     /**
@@ -47,7 +50,7 @@ export class UrlGenerator implements IUrlGenerator {
      * @param fallback 
      */
     public previous(req: IRequest, fallback: string = "/"): string {
-        throw new Error("Method not implemented.");
+        return this.to(fallback);
     }
 
     /**
@@ -59,7 +62,13 @@ export class UrlGenerator implements IUrlGenerator {
      * @param params 
      */
     public toRoute(name: string, params: StringObject = {}): string {
-        throw new Error("Method not implemented.");
+        const route: IRoute | null = this._router.getNamedRoute(name);
+
+        if (route === null) {
+            throw new InvalidArgumentException(`Route ${name} not defined.`);
+        }
+
+        return new RouteUrlGenerator(this._app, route).generateUrl(params);
     }
 
     /**
@@ -71,6 +80,11 @@ export class UrlGenerator implements IUrlGenerator {
      * @param secure
      */
     public to(path: string, params: StringObject = {}, secure: boolean | null = null): string {
-        throw new Error("Method not implemented.");
+
+        if (Str.isValidUrl(path)) {
+            return path;
+        }
+
+        return path;
     }
 }

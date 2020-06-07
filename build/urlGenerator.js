@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var support_1 = require("@rheas/support");
+var routeUrlGenerator_1 = require("./routeUrlGenerator");
+var invalidArgument_1 = require("@rheas/errors/invalidArgument");
 var UrlGenerator = /** @class */ (function () {
     /**
      * Creates a url generator for the application
@@ -16,7 +19,7 @@ var UrlGenerator = /** @class */ (function () {
      * @param req
      */
     UrlGenerator.prototype.current = function (req) {
-        throw new Error("Method not implemented.");
+        return req.getFullUrl();
     };
     /**
      * Returns the previous url or the fallback url, if not empty. Otherwise
@@ -27,7 +30,7 @@ var UrlGenerator = /** @class */ (function () {
      */
     UrlGenerator.prototype.previous = function (req, fallback) {
         if (fallback === void 0) { fallback = "/"; }
-        throw new Error("Method not implemented.");
+        return this.to(fallback);
     };
     /**
      * Generates a full route url. Params are replaced with the given argument list.
@@ -39,7 +42,11 @@ var UrlGenerator = /** @class */ (function () {
      */
     UrlGenerator.prototype.toRoute = function (name, params) {
         if (params === void 0) { params = {}; }
-        throw new Error("Method not implemented.");
+        var route = this._router.getNamedRoute(name);
+        if (route === null) {
+            throw new invalidArgument_1.InvalidArgumentException("Route " + name + " not defined.");
+        }
+        return new routeUrlGenerator_1.RouteUrlGenerator(this._app, route).generateUrl(params);
     };
     /**
      * Creates an absolute url to the given path. Params are used to replace params or append query
@@ -52,7 +59,10 @@ var UrlGenerator = /** @class */ (function () {
     UrlGenerator.prototype.to = function (path, params, secure) {
         if (params === void 0) { params = {}; }
         if (secure === void 0) { secure = null; }
-        throw new Error("Method not implemented.");
+        if (support_1.Str.isValidUrl(path)) {
+            return path;
+        }
+        return path;
     };
     return UrlGenerator;
 }());
