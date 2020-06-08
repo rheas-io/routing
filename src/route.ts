@@ -284,9 +284,15 @@ export class Route implements IRoute {
 
         if (this.hasParent()) {
             //@ts-ignore
-            fullPath.push(this.getParent().routePath());
+            const parentPath = this.getParent().routePath();
+
+            if (parentPath.length > 0) {
+                fullPath.push(parentPath);
+            }
         }
-        fullPath.push(this.getPath());
+        if (this._path.length > 0) {
+            fullPath.push(this._path);
+        }
 
         return fullPath.join('/');
     }
