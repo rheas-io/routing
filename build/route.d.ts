@@ -236,13 +236,6 @@ export declare class Route implements IRoute {
      */
     prefix(path: string): IRoute;
     /**
-     * Clears the path, replacing multiple slashes with single slash and
-     * removing any trailing or leading slashes.
-     *
-     * @param path
-     */
-    private clearPath;
-    /**
      * Sets the domian of this route
      *
      * @param domain

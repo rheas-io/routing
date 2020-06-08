@@ -373,25 +373,9 @@ export class Route implements IRoute {
      * @param path
      */
     public prefix(path: string): IRoute {
-        this._path = this.clearPath(path);
+        this._path = Str.path(path);
 
         return this;
-    }
-
-    /**
-     * Clears the path, replacing multiple slashes with single slash and 
-     * removing any trailing or leading slashes.
-     * 
-     * @param path 
-     */
-    private clearPath(path: string): string {
-        path = Str.trim(Str.replaceWithOne(path.trim(), '/'), '/');
-
-        if (path.length > 0 && !path.startsWith('/')) {
-            path = '/' + path;
-        }
-
-        return path;
     }
 
     /**
