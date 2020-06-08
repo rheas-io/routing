@@ -12,15 +12,16 @@ describe("Route uri component tests", () => {
     });
 
     it("invalid input test", () => {
-        //@ts-ignore
-        expect(new FixedComponent("api").equals(undefined)).toBe(false);
-        //@ts-ignore
-        expect(new FixedComponent("api").equals("api")).toBe(false);
-        //@ts-ignore
-        expect(new FixedComponent("api").equals(true)).toBe(false);
-        //@ts-ignore
-        expect(new FixedComponent("api").equals({ component: "api" })).toBe(true);
-        //@ts-ignore
-        expect(new FixedComponent("api").equals({ component: "" })).toBe(false);
+        let toCheck = new FixedComponent(" ");
+        expect(new FixedComponent("api").equals(toCheck)).toBe(false);
+
+        toCheck = new FixedComponent("0");
+        expect(new FixedComponent("api").equals(toCheck)).toBe(false);
+
+        toCheck = new FixedComponent(":api");
+        expect(new FixedComponent("api").equals(toCheck)).toBe(false);
+
+        toCheck = new FixedComponent("");
+        expect(new FixedComponent("api").equals(toCheck)).toBe(false);
     });
 });
