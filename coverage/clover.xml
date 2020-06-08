@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1591640129745" clover="3.2.0">
+  <project timestamp="1591640129745" name="All files">
+    <metrics statements="410" coveredstatements="213" conditionals="124" coveredconditionals="32" methods="121" coveredmethods="43" elements="655" coveredelements="288" complexity="0" loc="410" ncloc="410" packages="3" files="14" classes="14"/>
+    <package name="src">
+      <metrics statements="317" coveredstatements="148" conditionals="91" coveredconditionals="13" methods="88" coveredmethods="22"/>
+      <file name="index.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/index.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+      </file>
+      <file name="requestPipeline.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/requestPipeline.ts">
+        <metrics statements="12" coveredstatements="5" conditionals="3" coveredconditionals="0" methods="6" coveredmethods="1"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="35" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="44" count="3" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="46" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="49" count="3" type="stmt"/>
+      </file>
+      <file name="route.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/route.ts">
+        <metrics statements="132" coveredstatements="88" conditionals="34" coveredconditionals="13" methods="39" coveredmethods="19"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="20" count="17" type="stmt"/>
+        <line num="27" count="17" type="stmt"/>
+        <line num="34" count="17" type="stmt"/>
+        <line num="41" count="17" type="stmt"/>
+        <line num="48" count="17" type="stmt"/>
+        <line num="56" count="17" type="stmt"/>
+        <line num="63" count="17" type="stmt"/>
+        <line num="70" count="17" type="stmt"/>
+        <line num="78" count="17" type="stmt"/>
+        <line num="85" count="17" type="stmt"/>
+        <line num="92" count="17" type="stmt"/>
+        <line num="99" count="17" type="stmt"/>
+        <line num="120" count="17" type="cond" truecount="1" falsecount="1"/>
+        <line num="121" count="17" type="stmt"/>
+        <line num="129" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="130" count="5" type="stmt"/>
+        <line num="139" count="3" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="149" count="3" type="stmt"/>
+        <line num="150" count="10" type="stmt"/>
+        <line num="159" count="3" type="stmt"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="169" count="3" type="stmt"/>
+        <line num="170" count="0" type="stmt"/>
+        <line num="179" count="3" type="stmt"/>
+        <line num="180" count="0" type="stmt"/>
+        <line num="189" count="3" type="stmt"/>
+        <line num="190" count="0" type="stmt"/>
+        <line num="199" count="3" type="stmt"/>
+        <line num="200" count="0" type="stmt"/>
+        <line num="208" count="3" type="stmt"/>
+        <line num="209" count="0" type="stmt"/>
+        <line num="211" count="0" type="stmt"/>
+        <line num="220" count="23" type="stmt"/>
+        <line num="221" count="5" type="stmt"/>
+        <line num="222" count="13" type="stmt"/>
+        <line num="225" count="5" type="stmt"/>
+        <line num="227" count="5" type="stmt"/>
+        <line num="235" count="3" type="stmt"/>
+        <line num="236" count="0" type="stmt"/>
+        <line num="238" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="240" count="0" type="stmt"/>
+        <line num="243" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="244" count="0" type="stmt"/>
+        <line num="246" count="0" type="stmt"/>
+        <line num="255" count="3" type="stmt"/>
+        <line num="256" count="0" type="stmt"/>
+        <line num="266" count="3" type="stmt"/>
+        <line num="267" count="0" type="stmt"/>
+        <line num="269" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="271" count="0" type="stmt"/>
+        <line num="273" count="0" type="stmt"/>
+        <line num="282" count="3" type="stmt"/>
+        <line num="283" count="31" type="stmt"/>
+        <line num="285" count="31" type="cond" truecount="2" falsecount="0"/>
+        <line num="287" count="19" type="stmt"/>
+        <line num="289" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="290" count="15" type="stmt"/>
+        <line num="293" count="31" type="cond" truecount="2" falsecount="0"/>
+        <line num="294" count="23" type="stmt"/>
+        <line num="297" count="31" type="stmt"/>
+        <line num="306" count="3" type="stmt"/>
+        <line num="307" count="0" type="stmt"/>
+        <line num="309" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="311" count="0" type="stmt"/>
+        <line num="313" count="0" type="stmt"/>
+        <line num="322" count="3" type="stmt"/>
+        <line num="323" count="15" type="stmt"/>
+        <line num="325" count="15" type="stmt"/>
+        <line num="326" count="13" type="stmt"/>
+        <line num="329" count="15" type="cond" truecount="2" falsecount="0"/>
+        <line num="330" count="10" type="stmt"/>
+        <line num="332" count="15" type="stmt"/>
+        <line num="340" count="3" type="stmt"/>
+        <line num="341" count="10" type="cond" truecount="1" falsecount="1"/>
+        <line num="342" count="0" type="stmt"/>
+        <line num="345" count="20" type="cond" truecount="1" falsecount="1"/>
+        <line num="346" count="0" type="stmt"/>
+        <line num="349" count="10" type="stmt"/>
+        <line num="351" count="10" type="stmt"/>
+        <line num="359" count="3" type="stmt"/>
+        <line num="360" count="10" type="stmt"/>
+        <line num="362" count="10" type="stmt"/>
+        <line num="370" count="3" type="stmt"/>
+        <line num="371" count="10" type="stmt"/>
+        <line num="373" count="10" type="stmt"/>
+        <line num="381" count="3" type="stmt"/>
+        <line num="382" count="17" type="stmt"/>
+        <line num="384" count="17" type="stmt"/>
+        <line num="392" count="3" type="stmt"/>
+        <line num="393" count="0" type="stmt"/>
+        <line num="395" count="0" type="stmt"/>
+        <line num="403" count="3" type="stmt"/>
+        <line num="404" count="0" type="stmt"/>
+        <line num="406" count="0" type="stmt"/>
+        <line num="414" count="3" type="stmt"/>
+        <line num="416" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="417" count="0" type="stmt"/>
+        <line num="419" count="0" type="stmt"/>
+        <line num="421" count="0" type="stmt"/>
+        <line num="429" count="3" type="stmt"/>
+        <line num="431" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="432" count="0" type="stmt"/>
+        <line num="434" count="0" type="stmt"/>
+        <line num="436" count="0" type="stmt"/>
+        <line num="444" count="3" type="stmt"/>
+        <line num="445" count="13" type="stmt"/>
+        <line num="453" count="3" type="stmt"/>
+        <line num="454" count="0" type="stmt"/>
+        <line num="462" count="3" type="stmt"/>
+        <line num="463" count="10" type="stmt"/>
+        <line num="471" count="3" type="stmt"/>
+        <line num="472" count="0" type="stmt"/>
+        <line num="480" count="3" type="stmt"/>
+        <line num="481" count="0" type="stmt"/>
+        <line num="489" count="3" type="stmt"/>
+        <line num="490" count="50" type="stmt"/>
+        <line num="498" count="3" type="stmt"/>
+        <line num="499" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="500" count="0" type="stmt"/>
+        <line num="502" count="0" type="stmt"/>
+        <line num="510" count="3" type="stmt"/>
+        <line num="511" count="0" type="stmt"/>
+        <line num="519" count="3" type="stmt"/>
+        <line num="520" count="15" type="stmt"/>
+        <line num="528" count="3" type="stmt"/>
+        <line num="529" count="31" type="stmt"/>
+        <line num="531" count="3" type="stmt"/>
+      </file>
+      <file name="routeRegistrar.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/routeRegistrar.ts">
+        <metrics statements="7" coveredstatements="4" conditionals="3" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="4" count="3" type="cond" truecount="0" falsecount="3"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="31" count="3" type="stmt"/>
+      </file>
+      <file name="router.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/router.ts">
+        <metrics statements="160" coveredstatements="45" conditionals="51" coveredconditionals="0" methods="41" coveredmethods="1"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="83" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="96" count="3" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="105" count="3" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="118" count="3" type="stmt"/>
+        <line num="125" count="0" type="stmt"/>
+        <line num="131" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="134" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="145" count="3" type="stmt"/>
+        <line num="146" count="0" type="stmt"/>
+        <line num="148" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="149" count="0" type="stmt"/>
+        <line num="151" count="0" type="stmt"/>
+        <line num="153" count="0" type="stmt"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="165" count="3" type="stmt"/>
+        <line num="167" count="0" type="stmt"/>
+        <line num="170" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="185" count="3" type="stmt"/>
+        <line num="187" count="0" type="stmt"/>
+        <line num="189" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="199" count="3" type="stmt"/>
+        <line num="201" count="0" type="stmt"/>
+        <line num="203" count="0" type="stmt"/>
+        <line num="205" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="206" count="0" type="stmt"/>
+        <line num="208" count="0" type="stmt"/>
+        <line num="217" count="3" type="stmt"/>
+        <line num="219" count="0" type="stmt"/>
+        <line num="220" count="0" type="stmt"/>
+        <line num="222" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="223" count="0" type="stmt"/>
+        <line num="225" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="236" count="3" type="stmt"/>
+        <line num="237" count="0" type="stmt"/>
+        <line num="240" count="0" type="stmt"/>
+        <line num="242" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="243" count="0" type="stmt"/>
+        <line num="245" count="0" type="stmt"/>
+        <line num="253" count="3" type="stmt"/>
+        <line num="254" count="0" type="stmt"/>
+        <line num="256" count="0" type="stmt"/>
+        <line num="258" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="268" count="3" type="stmt"/>
+        <line num="270" count="0" type="stmt"/>
+        <line num="271" count="0" type="stmt"/>
+        <line num="273" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="274" count="0" type="stmt"/>
+        <line num="276" count="0" type="stmt"/>
+        <line num="278" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="287" count="3" type="stmt"/>
+        <line num="289" count="0" type="stmt"/>
+        <line num="291" count="0" type="stmt"/>
+        <line num="293" count="0" type="stmt"/>
+        <line num="302" count="3" type="stmt"/>
+        <line num="303" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="305" count="0" type="stmt"/>
+        <line num="306" count="0" type="stmt"/>
+        <line num="308" count="0" type="stmt"/>
+        <line num="317" count="3" type="stmt"/>
+        <line num="319" count="0" type="stmt"/>
+        <line num="320" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="322" count="0" type="stmt"/>
+        <line num="324" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="325" count="0" type="stmt"/>
+        <line num="328" count="0" type="stmt"/>
+        <line num="330" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="332" count="0" type="stmt"/>
+        <line num="338" count="0" type="stmt"/>
+        <line num="347" count="3" type="stmt"/>
+        <line num="349" count="0" type="stmt"/>
+        <line num="350" count="0" type="stmt"/>
+        <line num="352" count="0" type="stmt"/>
+        <line num="354" count="0" type="stmt"/>
+        <line num="355" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="356" count="0" type="stmt"/>
+        <line num="359" count="0" type="stmt"/>
+        <line num="369" count="3" type="stmt"/>
+        <line num="371" count="0" type="stmt"/>
+        <line num="373" count="0" type="stmt"/>
+        <line num="374" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="375" count="0" type="stmt"/>
+        <line num="378" count="0" type="stmt"/>
+        <line num="389" count="3" type="stmt"/>
+        <line num="391" count="0" type="stmt"/>
+        <line num="392" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="393" count="0" type="stmt"/>
+        <line num="396" count="0" type="stmt"/>
+        <line num="405" count="3" type="stmt"/>
+        <line num="407" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="408" count="0" type="stmt"/>
+        <line num="413" count="0" type="stmt"/>
+        <line num="429" count="3" type="stmt"/>
+        <line num="430" count="0" type="stmt"/>
+        <line num="438" count="3" type="stmt"/>
+        <line num="439" count="0" type="stmt"/>
+        <line num="448" count="3" type="stmt"/>
+        <line num="449" count="0" type="stmt"/>
+        <line num="451" count="0" type="stmt"/>
+        <line num="452" count="0" type="stmt"/>
+        <line num="453" count="0" type="stmt"/>
+        <line num="456" count="0" type="stmt"/>
+        <line num="467" count="3" type="stmt"/>
+        <line num="468" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="469" count="0" type="stmt"/>
+        <line num="471" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="472" count="0" type="stmt"/>
+        <line num="474" count="0" type="stmt"/>
+        <line num="482" count="3" type="stmt"/>
+        <line num="483" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="484" count="0" type="stmt"/>
+        <line num="486" count="0" type="stmt"/>
+        <line num="497" count="3" type="stmt"/>
+        <line num="499" count="0" type="stmt"/>
+        <line num="501" count="0" type="stmt"/>
+        <line num="502" count="0" type="stmt"/>
+        <line num="503" count="0" type="stmt"/>
+        <line num="512" count="3" type="stmt"/>
+        <line num="513" count="0" type="stmt"/>
+        <line num="515" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="516" count="0" type="stmt"/>
+        <line num="526" count="3" type="stmt"/>
+        <line num="527" count="0" type="stmt"/>
+        <line num="528" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="530" count="0" type="stmt"/>
+        <line num="539" count="3" type="stmt"/>
+        <line num="540" count="0" type="stmt"/>
+        <line num="548" count="3" type="stmt"/>
+        <line num="549" count="0" type="stmt"/>
+        <line num="557" count="3" type="stmt"/>
+        <line num="558" count="0" type="stmt"/>
+        <line num="566" count="3" type="stmt"/>
+        <line num="567" count="0" type="stmt"/>
+        <line num="575" count="3" type="stmt"/>
+        <line num="576" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="578" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.uri">
+      <metrics statements="67" coveredstatements="53" conditionals="25" coveredconditionals="19" methods="25" coveredmethods="17"/>
+      <file name="baseComponent.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/uri/baseComponent.ts">
+        <metrics statements="9" coveredstatements="6" conditionals="4" coveredconditionals="0" methods="4" coveredmethods="3"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="20" count="36" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="77" type="stmt"/>
+        <line num="39" count="3" type="stmt"/>
+        <line num="40" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="43" count="0" type="stmt"/>
+        <line num="46" count="3" type="stmt"/>
+      </file>
+      <file name="requestComponent.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/uri/requestComponent.ts">
+        <metrics statements="14" coveredstatements="7" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="1"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="31" count="3" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="40" count="3" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="43" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="48" count="3" type="stmt"/>
+      </file>
+      <file name="routeFixedComponent.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/uri/routeFixedComponent.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="9" coveredconditionals="9" methods="4" coveredmethods="4"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="14" count="21" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="21" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="21" type="stmt"/>
+        <line num="39" count="3" type="stmt"/>
+        <line num="40" count="12" type="cond" truecount="4" falsecount="0"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="43" count="10" type="cond" truecount="3" falsecount="0"/>
+        <line num="47" count="3" type="stmt"/>
+      </file>
+      <file name="routeParamComponent.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/uri/routeParamComponent.ts">
+        <metrics statements="14" coveredstatements="14" conditionals="8" coveredconditionals="8" methods="5" coveredmethods="5"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="22" count="15" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="15" type="stmt"/>
+        <line num="33" count="3" type="stmt"/>
+        <line num="34" count="4" type="stmt"/>
+        <line num="43" count="3" type="stmt"/>
+        <line num="44" count="3" type="stmt"/>
+        <line num="55" count="3" type="stmt"/>
+        <line num="57" count="8" type="cond" truecount="4" falsecount="0"/>
+        <line num="58" count="2" type="stmt"/>
+        <line num="63" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="3" type="stmt"/>
+      </file>
+      <file name="uriComponentFactory.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/uri/uriComponentFactory.ts">
+        <metrics statements="19" coveredstatements="15" conditionals="2" coveredconditionals="2" methods="8" coveredmethods="4"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="16" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="39" count="3" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="43" count="10" type="stmt"/>
+        <line num="52" count="3" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="57" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.validators">
+      <metrics statements="26" coveredstatements="12" conditionals="8" coveredconditionals="0" methods="8" coveredmethods="4"/>
+      <file name="hostValidator.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/validators/hostValidator.ts">
+        <metrics statements="6" coveredstatements="3" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+      </file>
+      <file name="methodValidator.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/validators/methodValidator.ts">
+        <metrics statements="4" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+      </file>
+      <file name="schemeValidator.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/validators/schemeValidator.ts">
+        <metrics statements="6" coveredstatements="3" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="15" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+      </file>
+      <file name="uriValidator.ts" path="/Users/kaleshkaladharan/Desktop/vscode/rheas/routing/src/validators/uriValidator.ts">
+        <metrics statements="10" coveredstatements="3" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="22" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
