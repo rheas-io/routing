@@ -280,15 +280,15 @@ export class Route implements IRoute {
      * @return string
      */
     public routePath(): string {
-        let fullPath: string = "";
+        let fullPath: string[] = [];
 
         if (this.hasParent()) {
             //@ts-ignore
-            fullPath = this.getParent().routePath();
+            fullPath.push(this.getParent().routePath());
         }
-        fullPath += this.getPath();
+        fullPath.push(this.getPath());
 
-        return fullPath;
+        return fullPath.join('/');
     }
 
     /**

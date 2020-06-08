@@ -253,13 +253,13 @@ var Route = /** @class */ (function () {
      * @return string
      */
     Route.prototype.routePath = function () {
-        var fullPath = "";
+        var fullPath = [];
         if (this.hasParent()) {
             //@ts-ignore
-            fullPath = this.getParent().routePath();
+            fullPath.push(this.getParent().routePath());
         }
-        fullPath += this.getPath();
-        return fullPath;
+        fullPath.push(this.getPath());
+        return fullPath.join('/');
     };
     /**
      * Checks if this route accepts only secure connection requests. In todays
@@ -330,21 +330,8 @@ var Route = /** @class */ (function () {
      * @param path
      */
     Route.prototype.prefix = function (path) {
-        this._path = this.clearPath(path);
+        this._path = support_1.Str.path(path);
         return this;
-    };
-    /**
-     * Clears the path, replacing multiple slashes with single slash and
-     * removing any trailing or leading slashes.
-     *
-     * @param path
-     */
-    Route.prototype.clearPath = function (path) {
-        path = support_1.Str.trim(support_1.Str.replaceWithOne(path.trim(), '/'), '/');
-        if (path.length > 0 && !path.startsWith('/')) {
-            path = '/' + path;
-        }
-        return path;
     };
     /**
      * Sets the domian of this route
