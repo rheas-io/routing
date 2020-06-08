@@ -1,3 +1,4 @@
+import { Route } from "./route";
 import { Str } from "@rheas/support";
 import { IApp } from "@rheas/contracts/core/app";
 import { IRoute } from "@rheas/contracts/routes";
@@ -6,7 +7,6 @@ import { ParamComponent } from "./uri/routeParamComponent";
 import { ComponentFactory } from "./uri/uriComponentFactory";
 import { InvalidArgumentException } from "@rheas/errors/invalidArgument";
 import { IUriComponent, IParamComponent } from "@rheas/contracts/routes/uri";
-import { Route } from "./route";
 
 export class RouteUrlGenerator {
 

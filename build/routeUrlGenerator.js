@@ -7,11 +7,11 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var route_1 = require("./route");
 var support_1 = require("@rheas/support");
 var routeParamComponent_1 = require("./uri/routeParamComponent");
 var uriComponentFactory_1 = require("./uri/uriComponentFactory");
 var invalidArgument_1 = require("@rheas/errors/invalidArgument");
-var route_1 = require("./route");
 var RouteUrlGenerator = /** @class */ (function () {
     /**
      * Creates a new route url generator for the given route
