@@ -25,5 +25,11 @@ describe("Param components test", () => {
         expect(new ParamComponent(":api").equals(toCheck)).toBe(false);
         //optional with empty input
         expect(new ParamComponent(":api?").equals(toCheck)).toBe(true);
-    })
+    });
+
+    it('name test', () => {
+        expect(new ParamComponent(":api").getName()).toBe('api');
+        expect(new ParamComponent(":id?").getName()).toBe('id');
+        expect(new ParamComponent(":lång?").getName()).toBe('lång');
+    });
 });
