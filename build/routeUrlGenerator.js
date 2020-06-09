@@ -58,8 +58,9 @@ var RouteUrlGenerator = /** @class */ (function () {
         var secure = this._route.isHttpRoute() ? 'http://' : 'https://';
         var domain = this.getDomainString(params);
         var path = this.getPathString(params);
+        path = path.length > 0 ? '/' + path : '';
         var queryString = this.getQueryString(params);
-        return secure + domain + '/' + path + queryString;
+        return secure + domain + path + queryString;
     };
     /**
      * Returns the domain part of this route (without the protocol part).

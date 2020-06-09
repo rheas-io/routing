@@ -72,10 +72,13 @@ export class RouteUrlGenerator {
 
         const secure = this._route.isHttpRoute() ? 'http://' : 'https://';
         const domain = this.getDomainString(params);
-        const path = this.getPathString(params);
+
+        let path = this.getPathString(params);
+        path = path.length > 0 ? '/' + path : '';
+
         const queryString = this.getQueryString(params);
 
-        return secure + domain + '/' + path + queryString;
+        return secure + domain + path + queryString;
     }
 
     /**
