@@ -28,7 +28,7 @@
     "@types/node": "^13.13.2",
     "jest": "^25.4.0",
     "ts-jest": "^25.4.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.5"
   },
   "repository": {
     "type": "git",
@@ -39,6 +39,5 @@
   "bugs": {
     "url": "https://github.com/rheas-io/routing/issues"
   },
-  "homepage": "https://github.com/rheas-io/routing#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/rheas-io/routing#readme"
 }
