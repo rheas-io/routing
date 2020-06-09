@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UriValidator = void 0;
 var UriValidator = /** @class */ (function () {
     function UriValidator() {
     }

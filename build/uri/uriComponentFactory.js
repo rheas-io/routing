@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentFactory = void 0;
 var routeFixedComponent_1 = require("./routeFixedComponent");
 var routeParamComponent_1 = require("./routeParamComponent");
 var ComponentFactory = /** @class */ (function () {

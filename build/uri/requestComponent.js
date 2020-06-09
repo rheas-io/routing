@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RequestComponent = void 0;
 var baseComponent_1 = require("./baseComponent");
 var routeParamComponent_1 = require("./routeParamComponent");
 var RequestComponent = /** @class */ (function (_super) {

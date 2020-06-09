@@ -7,6 +7,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RouteUrlGenerator = void 0;
 var route_1 = require("./route");
 var support_1 = require("@rheas/support");
 var routeParamComponent_1 = require("./uri/routeParamComponent");
@@ -54,7 +55,7 @@ var RouteUrlGenerator = /** @class */ (function () {
      */
     RouteUrlGenerator.prototype.generateUrl = function (params) {
         if (params === void 0) { params = {}; }
-        var secure = this._route.routeSecure() ? 'https://' : 'http://';
+        var secure = this._route.isHttpRoute() ? 'http://' : 'https://';
         var domain = this.getDomainString(params);
         var path = this.getPathString(params);
         var queryString = this.getQueryString(params);

@@ -48,12 +48,12 @@ export class Route implements IRoute {
     protected _domain: string = "";
 
     /**
-     * Flag to set if this route or route group allows secure
-     * only connections.
+     * Flag to set if this route or route group is for http
+     * connections.
      * 
      * @var boolean
      */
-    protected _secureOnly: boolean = false;
+    protected _httpRoute: boolean = false;
 
     /**
      * Route specific middlewares
@@ -298,22 +298,6 @@ export class Route implements IRoute {
     }
 
     /**
-     * Checks if this route accepts only secure connection requests. In todays
-     * standard https is the standard, so we won't be adding httpOnly checks.
-     * 
-     * @return string
-     */
-    public routeSecure(): boolean {
-        let secureOnly = this._secureOnly;
-
-        if (!secureOnly && this.hasParent()) {
-            //@ts-ignore
-            secureOnly = this.getParent().routeSecure();
-        }
-        return secureOnly;
-    }
-
-    /**
      * Returns all the child endpoints of this route. Endpoint is a route
      * with a valid method property.
      * 
@@ -330,6 +314,23 @@ export class Route implements IRoute {
             endpoints.unshift(this);
         }
         return endpoints;
+    }
+
+    /**
+     * Checks if this route accepts http connection requests. Https requests are
+     * the default and this function returns true only if the httpRoute flag is set
+     * for this route or any parent routes.
+     * 
+     * @return string
+     */
+    public isHttpRoute(): boolean {
+        let httpRoute = this._httpRoute;
+
+        if (!httpRoute && this.hasParent()) {
+            //@ts-ignore
+            httpRoute = this.getParent().routeSecure();
+        }
+        return httpRoute;
     }
 
     /**
@@ -396,12 +397,12 @@ export class Route implements IRoute {
     }
 
     /**
-     * Sets the route allows only secure connections flag.
+     * Sets the route to allow http requests.
      * 
      * @return this
      */
-    public secure(): IRoute {
-        this._secureOnly = true;
+    public http(httpRoute: boolean = true): IRoute {
+        this._httpRoute = httpRoute;
 
         return this;
     }

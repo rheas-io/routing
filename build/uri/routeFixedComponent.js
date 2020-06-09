@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FixedComponent = void 0;
 var baseComponent_1 = require("./baseComponent");
 var FixedComponent = /** @class */ (function (_super) {
     __extends(FixedComponent, _super);

@@ -12,8 +12,8 @@ export class SchemeValidator implements IRouteValidator {
      * @param request 
      */
     public matches(route: IRoute, request: IRequest): boolean {
-        if (route.routeSecure()) {
-            return request.isSecure();
+        if (!request.isSecure()) {
+            return route.isHttpRoute();
         }
         return true;
     }

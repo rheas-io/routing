@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ParamComponent = void 0;
 var support_1 = require("@rheas/support");
 var baseComponent_1 = require("./baseComponent");
 var ParamComponent = /** @class */ (function (_super) {

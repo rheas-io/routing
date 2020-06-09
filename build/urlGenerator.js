@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UrlGenerator = void 0;
 var support_1 = require("@rheas/support");
 var routeUrlGenerator_1 = require("./routeUrlGenerator");
 var invalidArgument_1 = require("@rheas/errors/invalidArgument");

@@ -1,4 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RequestComponent = void 0;
 var requestComponent_1 = require("./requestComponent");
-exports.RequestComponent = requestComponent_1.RequestComponent;
+Object.defineProperty(exports, "RequestComponent", { enumerable: true, get: function () { return requestComponent_1.RequestComponent; } });

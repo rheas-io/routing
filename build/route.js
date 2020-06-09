@@ -7,6 +7,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Route = void 0;
 var support_1 = require("@rheas/support");
 var uriComponentFactory_1 = require("./uri/uriComponentFactory");
 var Route = /** @class */ (function () {
@@ -62,12 +63,12 @@ var Route = /** @class */ (function () {
          */
         this._domain = "";
         /**
-         * Flag to set if this route or route group allows secure
-         * only connections.
+         * Flag to set if this route or route group is for http
+         * connections.
          *
          * @var boolean
          */
-        this._secureOnly = false;
+        this._httpRoute = false;
         /**
          * Route specific middlewares
          *
@@ -267,20 +268,6 @@ var Route = /** @class */ (function () {
         return fullPath.join('/');
     };
     /**
-     * Checks if this route accepts only secure connection requests. In todays
-     * standard https is the standard, so we won't be adding httpOnly checks.
-     *
-     * @return string
-     */
-    Route.prototype.routeSecure = function () {
-        var secureOnly = this._secureOnly;
-        if (!secureOnly && this.hasParent()) {
-            //@ts-ignore
-            secureOnly = this.getParent().routeSecure();
-        }
-        return secureOnly;
-    };
-    /**
      * Returns all the child endpoints of this route. Endpoint is a route
      * with a valid method property.
      *
@@ -295,6 +282,21 @@ var Route = /** @class */ (function () {
             endpoints.unshift(this);
         }
         return endpoints;
+    };
+    /**
+     * Checks if this route accepts http connection requests. Https requests are
+     * the default and this function returns true only if the httpRoute flag is set
+     * for this route or any parent routes.
+     *
+     * @return string
+     */
+    Route.prototype.isHttpRoute = function () {
+        var httpRoute = this._httpRoute;
+        if (!httpRoute && this.hasParent()) {
+            //@ts-ignore
+            httpRoute = this.getParent().routeSecure();
+        }
+        return httpRoute;
     };
     /**
      * Sets the methods of this route
@@ -348,12 +350,13 @@ var Route = /** @class */ (function () {
         return this;
     };
     /**
-     * Sets the route allows only secure connections flag.
+     * Sets the route to allow http requests.
      *
      * @return this
      */
-    Route.prototype.secure = function () {
-        this._secureOnly = true;
+    Route.prototype.http = function (httpRoute) {
+        if (httpRoute === void 0) { httpRoute = true; }
+        this._httpRoute = httpRoute;
         return this;
     };
     /**

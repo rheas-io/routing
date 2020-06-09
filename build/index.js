@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RouteRegistrar = exports.Router = exports.Route = void 0;
 var route_1 = require("./route");
-exports.Route = route_1.Route;
+Object.defineProperty(exports, "Route", { enumerable: true, get: function () { return route_1.Route; } });
 var router_1 = require("./router");
-exports.Router = router_1.Router;
+Object.defineProperty(exports, "Router", { enumerable: true, get: function () { return router_1.Router; } });
 var routeRegistrar_1 = require("./routeRegistrar");
-exports.RouteRegistrar = routeRegistrar_1.RouteRegistrar;
+Object.defineProperty(exports, "RouteRegistrar", { enumerable: true, get: function () { return routeRegistrar_1.RouteRegistrar; } });

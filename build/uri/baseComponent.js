@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UriComponent = void 0;
 var UriComponent = /** @class */ (function () {
     /**
      * Stores the segment as it is. No trimming or any other modifications

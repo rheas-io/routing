@@ -38,12 +38,12 @@ export declare class Route implements IRoute {
      */
     protected _domain: string;
     /**
-     * Flag to set if this route or route group allows secure
-     * only connections.
+     * Flag to set if this route or route group is for http
+     * connections.
      *
      * @var boolean
      */
-    protected _secureOnly: boolean;
+    protected _httpRoute: boolean;
     /**
      * Route specific middlewares
      *
@@ -198,19 +198,20 @@ export declare class Route implements IRoute {
      */
     routePath(): string;
     /**
-     * Checks if this route accepts only secure connection requests. In todays
-     * standard https is the standard, so we won't be adding httpOnly checks.
-     *
-     * @return string
-     */
-    routeSecure(): boolean;
-    /**
      * Returns all the child endpoints of this route. Endpoint is a route
      * with a valid method property.
      *
      * @return array
      */
     routeEndpoints(): IRoute[];
+    /**
+     * Checks if this route accepts http connection requests. Https requests are
+     * the default and this function returns true only if the httpRoute flag is set
+     * for this route or any parent routes.
+     *
+     * @return string
+     */
+    isHttpRoute(): boolean;
     /**
      * Sets the methods of this route
      *
@@ -242,11 +243,11 @@ export declare class Route implements IRoute {
      */
     domain(domain: string): IRoute;
     /**
-     * Sets the route allows only secure connections flag.
+     * Sets the route to allow http requests.
      *
      * @return this
      */
-    secure(): IRoute;
+    http(httpRoute?: boolean): IRoute;
     /**
      * Sets the middlewares to be used by this route or route group.
      *

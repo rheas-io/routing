@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RouteRegistrar = void 0;
 var route_1 = require("./route");
 var RouteRegistrar = /** @class */ (function (_super) {
     __extends(RouteRegistrar, _super);

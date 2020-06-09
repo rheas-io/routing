@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SchemeValidator = void 0;
 var SchemeValidator = /** @class */ (function () {
     function SchemeValidator() {
     }
@@ -12,8 +13,8 @@ var SchemeValidator = /** @class */ (function () {
      * @param request
      */
     SchemeValidator.prototype.matches = function (route, request) {
-        if (route.routeSecure()) {
-            return request.isSecure();
+        if (!request.isSecure()) {
+            return route.isHttpRoute();
         }
         return true;
     };

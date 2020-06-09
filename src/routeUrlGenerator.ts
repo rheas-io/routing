@@ -70,7 +70,7 @@ export class RouteUrlGenerator {
      */
     public generateUrl(params: AnyObject = {}): string {
 
-        const secure = this._route.routeSecure() ? 'https://' : 'http://';
+        const secure = this._route.isHttpRoute() ? 'http://' : 'https://';
         const domain = this.getDomainString(params);
         const path = this.getPathString(params);
         const queryString = this.getQueryString(params);

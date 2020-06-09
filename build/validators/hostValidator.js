@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HostValidator = void 0;
 var HostValidator = /** @class */ (function () {
     function HostValidator() {
     }
