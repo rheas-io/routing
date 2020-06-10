@@ -1,6 +1,6 @@
 import { IApp } from "@rheas/contracts/core/app";
-import { StringObject, IRequest } from "@rheas/contracts";
-import { IUrlGenerator, IRouter } from "@rheas/contracts/routes";
+import { AnyObject, IRequest } from "@rheas/contracts";
+import { IUrlGenerator, IRouter, IRoute } from "@rheas/contracts/routes";
 export declare class UrlGenerator implements IUrlGenerator {
     /**
      * Application instance.
@@ -20,7 +20,7 @@ export declare class UrlGenerator implements IUrlGenerator {
      *
      * @param app
      */
-    constructor(app: IApp);
+    constructor(app: IApp, router: IRouter);
     /**
      * Returns the current request url.
      *
@@ -43,7 +43,15 @@ export declare class UrlGenerator implements IUrlGenerator {
      * @param name
      * @param params
      */
-    toRoute(name: string, params?: StringObject): string;
+    toRoute(name: string, params?: AnyObject): string;
+    /**
+     * Returns a url of the given route.
+     *
+     * @param route
+     * @param params
+     * @param secure
+     */
+    routeUrl(route: IRoute, params?: AnyObject, secure?: boolean): string;
     /**
      * Creates an absolute url to the given path. Params are used to replace params or append query
      * string. By default all paths are created as secure if no value is given.
@@ -52,5 +60,5 @@ export declare class UrlGenerator implements IUrlGenerator {
      * @param params
      * @param secure
      */
-    to(path: string, params?: StringObject, secure?: boolean | null): string;
+    to(path: string, params?: AnyObject, secure?: boolean): string;
 }

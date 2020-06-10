@@ -1,7 +1,8 @@
+import { Route } from "./route";
 import { Str } from "@rheas/support";
 import { IApp } from "@rheas/contracts/core/app";
+import { AnyObject, IRequest } from "@rheas/contracts";
 import { RouteUrlGenerator } from "./routeUrlGenerator";
-import { StringObject, IRequest } from "@rheas/contracts";
 import { InvalidArgumentException } from "@rheas/errors/invalidArgument";
 import { IUrlGenerator, IRouter, IRoute } from "@rheas/contracts/routes";
 
@@ -27,10 +28,9 @@ export class UrlGenerator implements IUrlGenerator {
      * 
      * @param app 
      */
-    constructor(app: IApp) {
+    constructor(app: IApp, router: IRouter) {
         this._app = app;
-
-        this._router = this._app.get('router');
+        this._router = router;
     }
 
     /**
@@ -50,6 +50,8 @@ export class UrlGenerator implements IUrlGenerator {
      * @param fallback 
      */
     public previous(req: IRequest, fallback: string = "/"): string {
+
+        //TODO
         return this.to(fallback);
     }
 
@@ -61,14 +63,25 @@ export class UrlGenerator implements IUrlGenerator {
      * @param name 
      * @param params 
      */
-    public toRoute(name: string, params: StringObject = {}): string {
+    public toRoute(name: string, params: AnyObject = {}): string {
         const route: IRoute | null = this._router.getNamedRoute(name);
 
         if (route === null) {
             throw new InvalidArgumentException(`Route ${name} not defined.`);
         }
 
-        return new RouteUrlGenerator(this._app, route).generateUrl(params);
+        return this.routeUrl(route, params);
+    }
+
+    /**
+     * Returns a url of the given route.
+     * 
+     * @param route 
+     * @param params 
+     * @param secure 
+     */
+    public routeUrl(route: IRoute, params: AnyObject = {}, secure: boolean = true) {
+        return new RouteUrlGenerator(this._app, route).generateUrl(params, secure);
     }
 
     /**
@@ -79,12 +92,16 @@ export class UrlGenerator implements IUrlGenerator {
      * @param params
      * @param secure
      */
-    public to(path: string, params: StringObject = {}, secure: boolean | null = null): string {
+    public to(path: string, params: AnyObject = {}, secure?: boolean): string {
 
         if (Str.isValidUrl(path)) {
             return path;
         }
+        // If the url is not a valid url, create a route from the
+        // path and generate a route url. As long as a route is not 
+        // registered on a router, we can do things like this.
+        const route = new Route(path);
 
-        return path;
+        return this.routeUrl(route, params, secure);
     }
 }
