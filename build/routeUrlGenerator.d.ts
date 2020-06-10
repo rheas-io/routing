@@ -51,7 +51,13 @@ export declare class RouteUrlGenerator {
      *
      * @param params
      */
-    generateUrl(params?: AnyObject): string;
+    generateUrl(params?: AnyObject, secure?: boolean): string;
+    /**
+     * Returns the protocol string of the route
+     *
+     * @param secure
+     */
+    getProtocolString(secure?: boolean): "http://" | "https://";
     /**
      * Returns the domain part of this route (without the protocol part).
      *

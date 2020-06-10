@@ -68,9 +68,9 @@ export class RouteUrlGenerator {
      * 
      * @param params 
      */
-    public generateUrl(params: AnyObject = {}): string {
+    public generateUrl(params: AnyObject = {}, secure?: boolean): string {
 
-        const secure = this._route.isHttpRoute() ? 'http://' : 'https://';
+        const protocol = this.getProtocolString(secure);
         const domain = this.getDomainString(params);
 
         let path = this.getPathString(params);
@@ -78,7 +78,20 @@ export class RouteUrlGenerator {
 
         const queryString = this.getQueryString(params);
 
-        return secure + domain + path + queryString;
+        return protocol + domain + path + queryString;
+    }
+
+    /**
+     * Returns the protocol string of the route
+     * 
+     * @param secure 
+     */
+    public getProtocolString(secure?: boolean) {
+
+        if (secure == null) {
+            return this._route.isHttpRoute() ? 'http://' : 'https://';
+        }
+        return !secure ? 'http://' : 'https://';
     }
 
     /**
