@@ -80,7 +80,7 @@ export class UrlGenerator implements IUrlGenerator {
      * @param params 
      * @param secure 
      */
-    public routeUrl(route: IRoute, params: AnyObject = {}, secure: boolean = true) {
+    public routeUrl(route: IRoute, params: AnyObject = {}, secure?: boolean) {
         return new RouteUrlGenerator(this._app, route).generateUrl(params, secure);
     }
 

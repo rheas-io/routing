@@ -60,7 +60,6 @@ var UrlGenerator = /** @class */ (function () {
      */
     UrlGenerator.prototype.routeUrl = function (route, params, secure) {
         if (params === void 0) { params = {}; }
-        if (secure === void 0) { secure = true; }
         return new routeUrlGenerator_1.RouteUrlGenerator(this._app, route).generateUrl(params, secure);
     };
     /**
