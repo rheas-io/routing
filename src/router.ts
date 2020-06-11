@@ -251,7 +251,7 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * Resolves controller from route action string.
+     * Resolves controller function from route action string.
      * 
      * @param controller 
      */
@@ -259,9 +259,7 @@ export class Router extends Route implements IRouter {
 
         let [className, method] = controller.trim().split('@');
 
-        const controllerClass = require(this.controllerScript(className)).default;
-
-        return (new controllerClass)[method];
+        return require(this.controllerScript(className))[method];
     }
 
     /**

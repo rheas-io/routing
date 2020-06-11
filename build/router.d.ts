@@ -129,7 +129,7 @@ export declare class Router extends Route implements IRouter {
      */
     protected resolveDestination(route: IRoute, request: IRequest): IRequestHandler;
     /**
-     * Resolves controller from route action string.
+     * Resolves controller function from route action string.
      *
      * @param controller
      */

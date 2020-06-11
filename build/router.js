@@ -313,14 +313,13 @@ var Router = /** @class */ (function (_super) {
         }); };
     };
     /**
-     * Resolves controller from route action string.
+     * Resolves controller function from route action string.
      *
      * @param controller
      */
     Router.prototype.resolveController = function (controller) {
         var _a = controller.trim().split('@'), className = _a[0], method = _a[1];
-        var controllerClass = require(this.controllerScript(className)).default;
-        return (new controllerClass)[method];
+        return require(this.controllerScript(className))[method];
     };
     /**
      * Returns path to the script. The path is respective to the root
