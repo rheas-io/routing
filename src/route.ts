@@ -70,14 +70,6 @@ export class Route implements IRoute {
     protected _excludedMiddlewares: string[] = [];
 
     /**
-     * Flag to check whether route middlewares have to be skipped 
-     * or not.
-     * 
-     * @var boolean
-     */
-    protected _shouldSkipMiddleware: boolean = false;
-
-    /**
      * Returns the uri components of this route path
      * 
      * @var array
@@ -239,9 +231,13 @@ export class Route implements IRoute {
             //@ts-ignore
             fullMiddlewares = [...this.getParent().routeMiddlewares()];
         }
+        fullMiddlewares = [...fullMiddlewares, ...this._middlewares];
 
-        if (!this._shouldSkipMiddleware) {
-            fullMiddlewares = [...fullMiddlewares, ...this._middlewares];
+        //Removes any excluded middlewares from the list
+        if (this._excludedMiddlewares.length > 0) {
+            fullMiddlewares = fullMiddlewares.filter(middleware => {
+                return !this._excludedMiddlewares.includes(middleware);
+            });
         }
         return fullMiddlewares;
     }

@@ -57,13 +57,6 @@ export declare class Route implements IRoute {
      */
     protected _excludedMiddlewares: string[];
     /**
-     * Flag to check whether route middlewares have to be skipped
-     * or not.
-     *
-     * @var boolean
-     */
-    protected _shouldSkipMiddleware: boolean;
-    /**
      * Returns the uri components of this route path
      *
      * @var array

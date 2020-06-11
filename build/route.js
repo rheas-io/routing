@@ -82,13 +82,6 @@ var Route = /** @class */ (function () {
          */
         this._excludedMiddlewares = [];
         /**
-         * Flag to check whether route middlewares have to be skipped
-         * or not.
-         *
-         * @var boolean
-         */
-        this._shouldSkipMiddleware = false;
-        /**
          * Returns the uri components of this route path
          *
          * @var array
@@ -213,13 +206,18 @@ var Route = /** @class */ (function () {
      * @return array
      */
     Route.prototype.routeMiddlewares = function () {
+        var _this = this;
         var fullMiddlewares = [];
         if (this.hasParent()) {
             //@ts-ignore
             fullMiddlewares = __spreadArrays(this.getParent().routeMiddlewares());
         }
-        if (!this._shouldSkipMiddleware) {
-            fullMiddlewares = __spreadArrays(fullMiddlewares, this._middlewares);
+        fullMiddlewares = __spreadArrays(fullMiddlewares, this._middlewares);
+        //Removes any excluded middlewares from the list
+        if (this._excludedMiddlewares.length > 0) {
+            fullMiddlewares = fullMiddlewares.filter(function (middleware) {
+                return !_this._excludedMiddlewares.includes(middleware);
+            });
         }
         return fullMiddlewares;
     };
