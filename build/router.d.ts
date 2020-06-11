@@ -65,13 +65,13 @@ export declare class Router extends Route implements IRouter {
      *
      * @return IRouteRegistrar
      */
-    protected getApiRoutesRegistrar(): IRouteRegistrar;
+    getApiRoutesRegistrar(): IRouteRegistrar;
     /**
      * Registers all the web routes
      *
      * @return IRouteRegistrar
      */
-    protected getWebRoutesRegistrar(): IRouteRegistrar;
+    getWebRoutesRegistrar(): IRouteRegistrar;
     /**
      * Application requests are send here for processing. The request is initially
      * sent to a pipeline of global middlewares (middlewares of this class). Once that's

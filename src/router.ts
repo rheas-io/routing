@@ -93,7 +93,7 @@ export class Router extends Route implements IRouter {
      * 
      * @return IRouteRegistrar
      */
-    protected getApiRoutesRegistrar(): IRouteRegistrar {
+    public getApiRoutesRegistrar(): IRouteRegistrar {
         return new RouteRegistrar('api');
     }
 
@@ -102,7 +102,7 @@ export class Router extends Route implements IRouter {
      * 
      * @return IRouteRegistrar
      */
-    protected getWebRoutesRegistrar(): IRouteRegistrar {
+    public getWebRoutesRegistrar(): IRouteRegistrar {
         return new RouteRegistrar();
     }
 
