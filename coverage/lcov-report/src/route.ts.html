@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.88% </span>
+                <span class="strong">67.39% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>93/137</span>
+                <span class='fraction'>93/138</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.24% </span>
+                <span class="strong">36.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/34</span>
+                <span class='fraction'>13/36</span>
             </div>
         
             
@@ -587,7 +587,8 @@
 <a name='L528'></a><a href='#L528'>528</a>
 <a name='L529'></a><a href='#L529'>529</a>
 <a name='L530'></a><a href='#L530'>530</a>
-<a name='L531'></a><a href='#L531'>531</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<a name='L531'></a><a href='#L531'>531</a>
+<a name='L532'></a><a href='#L532'>532</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -893,22 +894,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
@@ -919,6 +904,23 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1167,12 +1169,12 @@ export class Route implements IRoute {
     protected _domain: string = "";
 &nbsp;
     /**
-     * Flag to set if this route or route group allows secure
-     * only connections.
+     * Flag to set if this route or route group is for http
+     * connections.
      * 
      * @var boolean
      */
-    protected _secureOnly: boolean = false;
+    protected _httpRoute: boolean = false;
 &nbsp;
     /**
      * Route specific middlewares
@@ -1417,22 +1419,6 @@ export class Route implements IRoute {
     }
 &nbsp;
     /**
-     * Checks if this route accepts only secure connection requests. In todays
-     * standard https is the standard, so we won't be adding httpOnly checks.
-     * 
-     * @return string
-     */
-<span class="fstat-no" title="function not covered" >    public r</span>outeSecure(): boolean {
-        let secureOnly = <span class="cstat-no" title="statement not covered" >this._secureOnly;</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >        if (!secureOnly &amp;&amp; this.hasParent()) {</span>
-            //@ts-ignore
-<span class="cstat-no" title="statement not covered" >            secureOnly = this.getParent().routeSecure();</span>
-        }
-<span class="cstat-no" title="statement not covered" >        return secureOnly;</span>
-    }
-&nbsp;
-    /**
      * Returns all the child endpoints of this route. Endpoint is a route
      * with a valid method property.
      * 
@@ -1449,6 +1435,23 @@ export class Route implements IRoute {
             endpoints.unshift(this);
         }
         return endpoints;
+    }
+&nbsp;
+    /**
+     * Checks if this route accepts http connection requests. Https requests are
+     * the default and this function returns true only if the httpRoute flag is set
+     * for this route or any parent routes.
+     * 
+     * @return string
+     */
+<span class="fstat-no" title="function not covered" >    public i</span>sHttpRoute(): boolean {
+        let httpRoute = <span class="cstat-no" title="statement not covered" >this._httpRoute;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (!httpRoute &amp;&amp; this.hasParent()) {</span>
+            //@ts-ignore
+<span class="cstat-no" title="statement not covered" >            httpRoute = this.getParent().routeSecure();</span>
+        }
+<span class="cstat-no" title="statement not covered" >        return httpRoute;</span>
     }
 &nbsp;
     /**
@@ -1515,12 +1518,12 @@ export class Route implements IRoute {
     }
 &nbsp;
     /**
-     * Sets the route allows only secure connections flag.
+     * Sets the route to allow http requests.
      * 
      * @return this
      */
-<span class="fstat-no" title="function not covered" >    public s</span>ecure(): IRoute {
-<span class="cstat-no" title="statement not covered" >        this._secureOnly = true;</span>
+<span class="fstat-no" title="function not covered" >    public h</span>ttp(<span class="cstat-no" title="statement not covered" >httpRoute: boolean = true): IRoute {</span>
+<span class="cstat-no" title="statement not covered" >        this._httpRoute = httpRoute;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        return this;</span>
     }
@@ -1654,7 +1657,7 @@ export class Route implements IRoute {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jun 08 2020 23:45:29 GMT+0530 (India Standard Time)
+                at Thu Jun 11 2020 13:27:57 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../prettify.js"></script>
