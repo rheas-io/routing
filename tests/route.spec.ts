@@ -49,42 +49,40 @@ const namedRoutes: KeyValue<IRoute> = [
     return routes;
 }, {});
 
-describe("Route class", () => {
 
-    // Route methods check
-    it("methods check", () => {
-        let route = Route.all("/api", "");
-        expect(route.getMethods()).toEqual(Route.verbs);
+// Route methods check
+it("methods check", () => {
+    let route = Route.all("/api", "");
+    expect(route.getMethods()).toEqual(Route.verbs);
 
-        route = Route.get('/', '');
-        expect(route.getMethods()).toContain("GET");
-        expect(route.getMethods()).toContain("HEAD");
-        expect(route.getMethods()).not.toContain("POST");
+    route = Route.get('/', '');
+    expect(route.getMethods()).toContain("GET");
+    expect(route.getMethods()).toContain("HEAD");
+    expect(route.getMethods()).not.toContain("POST");
 
-        route = Route.put('/user', '');
-        expect(route.getMethods()).toContain("PUT");
-        expect(route.getMethods()).not.toContain("HEAD");
+    route = Route.put('/user', '');
+    expect(route.getMethods()).toContain("PUT");
+    expect(route.getMethods()).not.toContain("HEAD");
 
-        route = new Route().methods("GET");
-        expect(route.getMethods()).toContain("HEAD");
+    route = new Route().methods("GET");
+    expect(route.getMethods()).toContain("HEAD");
 
-        // Throw error when invalid method is used
-        expect(() => { route = new Route().methods("ANY"); }).toThrow();
-    });
+    // Throw error when invalid method is used
+    expect(() => { route = new Route().methods("ANY"); }).toThrow();
+});
 
-    //Test route path string
-    it("path_test", () => {
-        expect(namedRoutes['home'].routePath()).toBe("");
-        expect(namedRoutes['article_1'].routePath()).toBe("blog/article1/:slug?");
-        expect(namedRoutes['article_2'].routePath()).toBe("blog/article2/:slug?");
-        expect(namedRoutes['article_3'].routePath()).toBe("blog/article3/:slug?");
+//Test route path string
+it("path_test", () => {
+    expect(namedRoutes['home'].routePath()).toBe("");
+    expect(namedRoutes['article_1'].routePath()).toBe("blog/article1/:slug?");
+    expect(namedRoutes['article_2'].routePath()).toBe("blog/article2/:slug?");
+    expect(namedRoutes['article_3'].routePath()).toBe("blog/article3/:slug?");
 
-        expect(namedRoutes['faq'].routePath()).toBe("api/faq");
-        expect(namedRoutes['contact'].routePath()).toBe("api/contact");
-        expect(namedRoutes['pricing'].routePath()).toBe("api/pricing");
+    expect(namedRoutes['faq'].routePath()).toBe("api/faq");
+    expect(namedRoutes['contact'].routePath()).toBe("api/contact");
+    expect(namedRoutes['pricing'].routePath()).toBe("api/pricing");
 
-        expect(namedRoutes['project_rheas'].routePath()).toBe("api/projects/rheas");
-        expect(namedRoutes['project_kaysy'].routePath()).toBe("api/projects/kaysy");
-        expect(namedRoutes['project_kuber'].routePath()).toBe("api/projects/kuber");
-    });
-})
+    expect(namedRoutes['project_rheas'].routePath()).toBe("api/projects/rheas");
+    expect(namedRoutes['project_kaysy'].routePath()).toBe("api/projects/kaysy");
+    expect(namedRoutes['project_kuber'].routePath()).toBe("api/projects/kuber");
+});
