@@ -2,7 +2,7 @@ import { Route } from "./route";
 import { KeyValue, IRequest, IResponse } from "@rheas/contracts";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IException } from "@rheas/contracts/errors";
-import { IRoute, IRouteRegistrar, IRouter, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
+import { IRoute, IRouter, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
 export declare class Router extends Route implements IRouter {
     /**
      * The container instance
@@ -23,12 +23,6 @@ export declare class Router extends Route implements IRouter {
      * @var array
      */
     protected middlewares_list: KeyValue<IMiddleware>;
-    /**
-     * Route registrars of this route.
-     *
-     * @var array
-     */
-    protected registrars: KeyValue<IRouteRegistrar>;
     /**
      * Cache of route by names.
      *
@@ -60,18 +54,6 @@ export declare class Router extends Route implements IRouter {
      * router.
      */
     constructor(app: IContainer);
-    /**
-     * Retreives the api route registrar
-     *
-     * @return IRouteRegistrar
-     */
-    getApiRoutesRegistrar(): IRouteRegistrar;
-    /**
-     * Registers all the web routes
-     *
-     * @return IRouteRegistrar
-     */
-    getWebRoutesRegistrar(): IRouteRegistrar;
     /**
      * Application requests are send here for processing. The request is initially
      * sent to a pipeline of global middlewares (middlewares of this class). Once that's
@@ -217,28 +199,6 @@ export declare class Router extends Route implements IRouter {
      * @returns array
      */
     middlewaresToResolve(): string[];
-    /**
-     * An exposed function that allows users to register their
-     * routes
-     *
-     * @return array
-     */
-    routesList(): IRoute[];
-    /**
-     * Adds a custom route registrar to the router. This allows adding more
-     * route registration on the router other than the default api and web
-     * routes.
-     *
-     * @param name string
-     * @param registrar new route registrar
-     */
-    addRegistrar(name: string, registrar: IRouteRegistrar): void;
-    /**
-     * Deletes a registrar from the router
-     *
-     * @param name name of the registrar to delete
-     */
-    deleteRegistrar(name: string): void;
     /**
      * Caches the routes by name and request methods. All these cache contains
      * only the final endpoint routes. Each endpoint route will traverse in

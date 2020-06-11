@@ -63,7 +63,6 @@ exports.Router = void 0;
 var path_1 = __importDefault(require("path"));
 var route_1 = require("./route");
 var support_1 = require("@rheas/support");
-var routeRegistrar_1 = require("./routeRegistrar");
 var exception_1 = require("@rheas/errors/exception");
 var requestPipeline_1 = require("./requestPipeline");
 var uriValidator_1 = require("./validators/uriValidator");
@@ -102,12 +101,6 @@ var Router = /** @class */ (function (_super) {
          */
         _this.middlewares_list = {};
         /**
-         * Route registrars of this route.
-         *
-         * @var array
-         */
-        _this.registrars = {};
-        /**
          * Cache of route by names.
          *
          * @var object
@@ -126,26 +119,8 @@ var Router = /** @class */ (function (_super) {
          */
         _this._routeValidators = [];
         _this.app = app;
-        _this.addRegistrar("api", _this.getApiRoutesRegistrar());
-        _this.addRegistrar("web", _this.getWebRoutesRegistrar());
         return _this;
     }
-    /**
-     * Retreives the api route registrar
-     *
-     * @return IRouteRegistrar
-     */
-    Router.prototype.getApiRoutesRegistrar = function () {
-        return new routeRegistrar_1.RouteRegistrar('api');
-    };
-    /**
-     * Registers all the web routes
-     *
-     * @return IRouteRegistrar
-     */
-    Router.prototype.getWebRoutesRegistrar = function () {
-        return new routeRegistrar_1.RouteRegistrar();
-    };
     /**
      * Application requests are send here for processing. The request is initially
      * sent to a pipeline of global middlewares (middlewares of this class). Once that's
@@ -470,48 +445,6 @@ var Router = /** @class */ (function (_super) {
         return this._middlewares;
     };
     /**
-     * An exposed function that allows users to register their
-     * routes
-     *
-     * @return array
-     */
-    Router.prototype.routesList = function () {
-        var routes = [];
-        for (var name_1 in this.registrars) {
-            var registrar = this.registrars[name_1];
-            routes.push(registrar.routes.apply(registrar, registrar.routesList()));
-        }
-        return routes;
-    };
-    /**
-     * Adds a custom route registrar to the router. This allows adding more
-     * route registration on the router other than the default api and web
-     * routes.
-     *
-     * @param name string
-     * @param registrar new route registrar
-     */
-    Router.prototype.addRegistrar = function (name, registrar) {
-        if (!name) {
-            throw Error("Please provide a valid route name");
-        }
-        if (this.registrars[name] instanceof route_1.Route) {
-            throw Error("A route registrar of that name already exists.");
-        }
-        this.registrars[name] = registrar;
-    };
-    /**
-     * Deletes a registrar from the router
-     *
-     * @param name name of the registrar to delete
-     */
-    Router.prototype.deleteRegistrar = function (name) {
-        if (["api", "web"].includes(name)) {
-            throw Error("Unable to delete default route registrars [api, web].");
-        }
-        delete this.registrars[name];
-    };
-    /**
      * Caches the routes by name and request methods. All these cache contains
      * only the final endpoint routes. Each endpoint route will traverse in
      * reverse to match the request uri and to obtain the middlewares.
@@ -521,7 +454,6 @@ var Router = /** @class */ (function (_super) {
      */
     Router.prototype.cacheRoutes = function () {
         var _this = this;
-        this.routes.apply(this, this.routesList());
         this.routeEndpoints().forEach(function (route) {
             _this.cacheNamedRoute(route);
             _this.cacheMethodRoute(route);

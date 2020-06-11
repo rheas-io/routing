@@ -1,7 +1,6 @@
 import path from "path";
 import { Route } from "./route";
 import { Str } from "@rheas/support";
-import { RouteRegistrar } from "./routeRegistrar";
 import { Exception } from "@rheas/errors/exception";
 import { RequestPipeline } from "./requestPipeline";
 import { UriValidator } from "./validators/uriValidator";
@@ -13,7 +12,7 @@ import { KeyValue, IRequest, IResponse } from "@rheas/contracts";
 import { IContainer } from "@rheas/contracts/container/container";
 import { IExceptionHandler, IException } from "@rheas/contracts/errors";
 import { MethodNotAllowedException } from "@rheas/errors/methoNotAllowed";
-import { IRoute, IRouteRegistrar, IRouter, INameParams, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
+import { IRoute, IRouter, INameParams, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
 
 export class Router extends Route implements IRouter {
 
@@ -38,13 +37,6 @@ export class Router extends Route implements IRouter {
      * @var array
      */
     protected middlewares_list: KeyValue<IMiddleware> = {};
-
-    /**
-     * Route registrars of this route.
-     * 
-     * @var array
-     */
-    protected registrars: KeyValue<IRouteRegistrar> = {};
 
     /**
      * Cache of route by names.
@@ -83,27 +75,6 @@ export class Router extends Route implements IRouter {
         super();
 
         this.app = app;
-
-        this.addRegistrar("api", this.getApiRoutesRegistrar());
-        this.addRegistrar("web", this.getWebRoutesRegistrar());
-    }
-
-    /**
-     * Retreives the api route registrar
-     * 
-     * @return IRouteRegistrar
-     */
-    public getApiRoutesRegistrar(): IRouteRegistrar {
-        return new RouteRegistrar('api');
-    }
-
-    /**
-     * Registers all the web routes
-     * 
-     * @return IRouteRegistrar
-     */
-    public getWebRoutesRegistrar(): IRouteRegistrar {
-        return new RouteRegistrar();
     }
 
     /**
@@ -440,53 +411,6 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * An exposed function that allows users to register their
-     * routes
-     * 
-     * @return array
-     */
-    public routesList(): IRoute[] {
-        const routes = [];
-
-        for (let name in this.registrars) {
-            const registrar = this.registrars[name];
-            routes.push(registrar.routes(...registrar.routesList()));
-        }
-
-        return routes;
-    }
-
-    /**
-     * Adds a custom route registrar to the router. This allows adding more
-     * route registration on the router other than the default api and web
-     * routes.
-     * 
-     * @param name string
-     * @param registrar new route registrar
-     */
-    public addRegistrar(name: string, registrar: IRouteRegistrar): void {
-        if (!name) {
-            throw Error("Please provide a valid route name");
-        }
-        if (this.registrars[name] instanceof Route) {
-            throw Error("A route registrar of that name already exists.");
-        }
-        this.registrars[name] = registrar;
-    }
-
-    /**
-     * Deletes a registrar from the router
-     * 
-     * @param name name of the registrar to delete
-     */
-    public deleteRegistrar(name: string): void {
-        if (["api", "web"].includes(name)) {
-            throw Error("Unable to delete default route registrars [api, web].");
-        }
-        delete this.registrars[name];
-    }
-
-    /**
      * Caches the routes by name and request methods. All these cache contains 
      * only the final endpoint routes. Each endpoint route will traverse in
      * reverse to match the request uri and to obtain the middlewares. 
@@ -495,8 +419,6 @@ export class Router extends Route implements IRouter {
      * route  matching.
      */
     public cacheRoutes(): void {
-
-        this.routes(...this.routesList());
 
         this.routeEndpoints().forEach(route => {
             this.cacheNamedRoute(route);
