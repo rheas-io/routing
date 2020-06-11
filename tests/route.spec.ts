@@ -49,7 +49,7 @@ const namedRoutes: KeyValue<IRoute> = [
     return routes;
 }, {});
 
-describe("route", () => {
+describe("Route class", () => {
 
     // Route methods check
     it("methods check", () => {
@@ -87,4 +87,4 @@ describe("route", () => {
         expect(namedRoutes['project_kaysy'].routePath()).toBe("api/projects/kaysy");
         expect(namedRoutes['project_kuber'].routePath()).toBe("api/projects/kuber");
     });
-});
+})
