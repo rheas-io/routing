@@ -88,7 +88,7 @@ export class Route implements IRoute {
      * 
      * @var array
      */
-    protected _childRoutes: IRoute[] = [];
+    protected _routes: IRoute[] = [];
 
     /**
      * Creates a new route. The parent of this route
@@ -214,7 +214,7 @@ export class Route implements IRoute {
             route.setParent(this);
         });
 
-        this._childRoutes = routes;
+        this._routes = routes;
 
         return this;
     }
@@ -302,7 +302,7 @@ export class Route implements IRoute {
     public routeEndpoints(): IRoute[] {
         let endpoints: IRoute[] = [];
 
-        this._childRoutes.forEach(route => {
+        this._routes.forEach(route => {
             endpoints.push(...route.routeEndpoints());
         });
 
@@ -490,6 +490,15 @@ export class Route implements IRoute {
      */
     public getParent(): IRoute | null {
         return this._parentRoute;
+    }
+
+    /**
+     * Returns the child routes.
+     * 
+     * @return Route|null
+     */
+    public getChildRoutes(): IRoute[] {
+        return this._routes;
     }
 
     /**

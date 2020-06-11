@@ -73,7 +73,7 @@ export declare class Route implements IRoute {
      *
      * @var array
      */
-    protected _childRoutes: IRoute[];
+    protected _routes: IRoute[];
     /**
      * Creates a new route. The parent of this route
      * will be set wherever this route gets registered.
@@ -289,6 +289,12 @@ export declare class Route implements IRoute {
      * @return Route|null
      */
     getParent(): IRoute | null;
+    /**
+     * Returns the child routes.
+     *
+     * @return Route|null
+     */
+    getChildRoutes(): IRoute[];
     /**
      * Returns the uri components of this route.
      *

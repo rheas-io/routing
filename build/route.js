@@ -98,7 +98,7 @@ var Route = /** @class */ (function () {
          *
          * @var array
          */
-        this._childRoutes = [];
+        this._routes = [];
         this.prefix(path);
     }
     /**
@@ -197,7 +197,7 @@ var Route = /** @class */ (function () {
         routes.forEach(function (route) {
             route.setParent(_this);
         });
-        this._childRoutes = routes;
+        this._routes = routes;
         return this;
     };
     /**
@@ -273,7 +273,7 @@ var Route = /** @class */ (function () {
      */
     Route.prototype.routeEndpoints = function () {
         var endpoints = [];
-        this._childRoutes.forEach(function (route) {
+        this._routes.forEach(function (route) {
             endpoints.push.apply(endpoints, route.routeEndpoints());
         });
         if (this.isEndpoint()) {
@@ -432,6 +432,14 @@ var Route = /** @class */ (function () {
      */
     Route.prototype.getParent = function () {
         return this._parentRoute;
+    };
+    /**
+     * Returns the child routes.
+     *
+     * @return Route|null
+     */
+    Route.prototype.getChildRoutes = function () {
+        return this._routes;
     };
     /**
      * Returns the uri components of this route.
