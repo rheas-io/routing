@@ -328,7 +328,7 @@ export class Route implements IRoute {
 
         if (!httpRoute && this.hasParent()) {
             //@ts-ignore
-            httpRoute = this.getParent().routeSecure();
+            httpRoute = this.getParent().isHttpRoute();
         }
         return httpRoute;
     }

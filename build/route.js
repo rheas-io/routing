@@ -294,7 +294,7 @@ var Route = /** @class */ (function () {
         var httpRoute = this._httpRoute;
         if (!httpRoute && this.hasParent()) {
             //@ts-ignore
-            httpRoute = this.getParent().routeSecure();
+            httpRoute = this.getParent().isHttpRoute();
         }
         return httpRoute;
     };
