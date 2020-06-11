@@ -137,7 +137,7 @@ export class Route implements IRoute {
      * @param controller 
      */
     public static all(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(Route.verbs).action(controller);
+        return new Route(uri).methods([...Route.verbs]).action(controller);
     }
 
     /**
@@ -147,7 +147,7 @@ export class Route implements IRoute {
      * @param controller 
      */
     public static get(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["GET", "HEAD"]).action(controller);
+        return new Route(uri).methods(["GET"]).action(controller);
     }
 
     /**
@@ -345,6 +345,11 @@ export class Route implements IRoute {
 
         if (!methods.every(method => Route.verbs.includes(method))) {
             throw new Error(`Method not supported on route ${this._path}. Supported methods are: ` + Route.verbs);
+        }
+
+        // Add HEAD if methods contains GET and does not contain a HEAD
+        if (methods.includes("GET") && !methods.includes("HEAD")) {
+            methods.push("HEAD");
         }
 
         this._methods = methods;

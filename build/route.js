@@ -124,7 +124,7 @@ var Route = /** @class */ (function () {
      * @param controller
      */
     Route.all = function (uri, controller) {
-        return new Route(uri).methods(Route.verbs).action(controller);
+        return new Route(uri).methods(__spreadArrays(Route.verbs)).action(controller);
     };
     /**
      * Creates a new route for GET and HEAD requests
@@ -133,7 +133,7 @@ var Route = /** @class */ (function () {
      * @param controller
      */
     Route.get = function (uri, controller) {
-        return new Route(uri).methods(["GET", "HEAD"]).action(controller);
+        return new Route(uri).methods(["GET"]).action(controller);
     };
     /**
      * Creates a new route for PUT requests
@@ -309,6 +309,10 @@ var Route = /** @class */ (function () {
         }
         if (!methods.every(function (method) { return Route.verbs.includes(method); })) {
             throw new Error("Method not supported on route " + this._path + ". Supported methods are: " + Route.verbs);
+        }
+        // Add HEAD if methods contains GET and does not contain a HEAD
+        if (methods.includes("GET") && !methods.includes("HEAD")) {
+            methods.push("HEAD");
         }
         this._methods = methods;
         return this;
