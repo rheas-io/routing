@@ -30,7 +30,7 @@ export class RequestPipeline {
      * @param res 
      */
     public async sendTo(dest: IRequestHandler, req: IRequest, res: IResponse): Promise<IResponse> {
-        const pipeline = this.pipeline(dest);
+        const pipeline = this.resolvePipeline(dest);
 
         return await pipeline(req, res);
     }
@@ -40,7 +40,7 @@ export class RequestPipeline {
      * 
      * @param dest 
      */
-    protected pipeline(dest: IRequestHandler): IRequestHandler {
+    protected resolvePipeline(dest: IRequestHandler): IRequestHandler {
         return this._pipes.reduceRight(this.pipelineReducer, dest);
     }
 

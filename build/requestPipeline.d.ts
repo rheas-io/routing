@@ -28,7 +28,7 @@ export declare class RequestPipeline {
      *
      * @param dest
      */
-    protected pipeline(dest: IRequestHandler): IRequestHandler;
+    protected resolvePipeline(dest: IRequestHandler): IRequestHandler;
     /**
      * Returns a request handler that executes the current pipe on call.
      *

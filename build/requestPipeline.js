@@ -70,7 +70,7 @@ var RequestPipeline = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        pipeline = this.pipeline(dest);
+                        pipeline = this.resolvePipeline(dest);
                         return [4 /*yield*/, pipeline(req, res)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -82,7 +82,7 @@ var RequestPipeline = /** @class */ (function () {
      *
      * @param dest
      */
-    RequestPipeline.prototype.pipeline = function (dest) {
+    RequestPipeline.prototype.resolvePipeline = function (dest) {
         return this._pipes.reduceRight(this.pipelineReducer, dest);
     };
     /**
