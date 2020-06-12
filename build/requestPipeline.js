@@ -45,7 +45,7 @@ var RequestPipeline = /** @class */ (function () {
          *
          * @var array
          */
-        this.pipes = [];
+        this._pipes = [];
     }
     /**
      * The sequence of middlewares through which the request has to pass.
@@ -53,7 +53,7 @@ var RequestPipeline = /** @class */ (function () {
      * @param handlers
      */
     RequestPipeline.prototype.through = function (pipes) {
-        this.pipes = pipes;
+        this._pipes = pipes;
         return this;
     };
     /**
@@ -70,7 +70,7 @@ var RequestPipeline = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        pipeline = this.pipes.reduceRight(this.pipelineReducer, dest);
+                        pipeline = this._pipes.reduceRight(this.pipelineReducer, dest);
                         return [4 /*yield*/, pipeline(req, res)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }

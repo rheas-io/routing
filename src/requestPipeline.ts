@@ -8,7 +8,7 @@ export class RequestPipeline {
      * 
      * @var array
      */
-    protected pipes: IMiddleware[] = [];
+    protected _pipes: IMiddleware[] = [];
 
     /**
      * The sequence of middlewares through which the request has to pass.
@@ -16,7 +16,7 @@ export class RequestPipeline {
      * @param handlers 
      */
     public through(pipes: IMiddleware[]) {
-        this.pipes = pipes;
+        this._pipes = pipes;
 
         return this;
     }
@@ -30,7 +30,7 @@ export class RequestPipeline {
      * @param res 
      */
     public async sendTo(dest: IRequestHandler, req: IRequest, res: IResponse): Promise<IResponse> {
-        const pipeline = this.pipes.reduceRight(this.pipelineReducer, dest);
+        const pipeline = this._pipes.reduceRight(this.pipelineReducer, dest);
 
         return await pipeline(req, res);
     }

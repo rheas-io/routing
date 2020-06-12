@@ -7,7 +7,7 @@ export declare class RequestPipeline {
      *
      * @var array
      */
-    protected pipes: IMiddleware[];
+    protected _pipes: IMiddleware[];
     /**
      * The sequence of middlewares through which the request has to pass.
      *
