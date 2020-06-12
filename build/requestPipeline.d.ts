@@ -24,6 +24,12 @@ export declare class RequestPipeline {
      */
     sendTo(dest: IRequestHandler, req: IRequest, res: IResponse): Promise<IResponse>;
     /**
+     * Gets the reduced pipeline.
+     *
+     * @param dest
+     */
+    protected pipeline(dest: IRequestHandler): IRequestHandler;
+    /**
      * Returns a request handler that executes the current pipe on call.
      *
      * @param prev

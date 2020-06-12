@@ -30,9 +30,18 @@ export class RequestPipeline {
      * @param res 
      */
     public async sendTo(dest: IRequestHandler, req: IRequest, res: IResponse): Promise<IResponse> {
-        const pipeline = this._pipes.reduceRight(this.pipelineReducer, dest);
+        const pipeline = this.pipeline(dest);
 
         return await pipeline(req, res);
+    }
+
+    /**
+     * Gets the reduced pipeline.
+     * 
+     * @param dest 
+     */
+    protected pipeline(dest: IRequestHandler): IRequestHandler {
+        return this._pipes.reduceRight(this.pipelineReducer, dest);
     }
 
     /**

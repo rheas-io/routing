@@ -70,12 +70,20 @@ var RequestPipeline = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        pipeline = this._pipes.reduceRight(this.pipelineReducer, dest);
+                        pipeline = this.pipeline(dest);
                         return [4 /*yield*/, pipeline(req, res)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
+    };
+    /**
+     * Gets the reduced pipeline.
+     *
+     * @param dest
+     */
+    RequestPipeline.prototype.pipeline = function (dest) {
+        return this._pipes.reduceRight(this.pipelineReducer, dest);
     };
     /**
      * Returns a request handler that executes the current pipe on call.
