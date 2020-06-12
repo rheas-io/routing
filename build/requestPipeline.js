@@ -78,7 +78,7 @@ var RequestPipeline = /** @class */ (function () {
         });
     };
     /**
-     * Gets the reduced pipeline.
+     * Gets the complete request handler pipeline.
      *
      * @param dest
      */
