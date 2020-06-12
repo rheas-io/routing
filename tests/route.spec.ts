@@ -1,63 +1,8 @@
 import { Route } from "../src";
-import { KeyValue } from "@rheas/contracts";
-import { IRoute } from "@rheas/contracts/routes";
 import { FixedComponent } from "../src/uri/routeFixedComponent";
 import { ParamComponent } from "../src/uri/routeParamComponent";
-
-/**
- * Independent route group with prefix blog and name blog.
- */
-const blogRoutes = Route.group('blog').name('blog').routes(
-    Route.get('article1/:slug?', 'articleController@get').name('article_1'),
-    Route.get('/article2/:slug? ', 'articleController@get').name('article_2'),
-    Route.get('/article3/:slug?/', 'articleController@get').name('article_3'),
-);
-
-/**
- * A route group with no prefix. Similar to web routes. Deeply
- * nested routes to check various scenarios.
- */
-const homeRoutes = Route.group().routes(
-    Route.get('/', 'homeController@get').name('home'), blogRoutes
-);
-
-/**
- * Independent amed routes.
- */
-const faqRoute = Route.get('/faq', 'faqController@get').name('faq');
-const pricingRoute = Route.get('pricing', 'pricingController@get').middleware("auth").name('pricing');
-
-/**
- * A route group with "api" as prefix. A deeply nested group is
- * used for checking paths and other functions of routes. Add as
- * many route as possible to test all scenarios.
- */
-const apiRoutes = Route.group('api').middleware(["api", "throttle:60,1"]).routes(
-    faqRoute, pricingRoute,
-    Route.get('/contact/', 'contactController@get').name('contact'),
-    Route.group('/projects').routes(
-        Route.get('rheas', 'rheasController@get').name('project_rheas'),
-        Route.get('/kaysy', 'kaysyController@get').name('project_kaysy'),
-        Route.get('/kuber/', 'kuberController@get').name('project_kuber')
-    )
-);
-
-/**
- * A collection of named routes as key-value where name is the key
- * and route is the value.
- */
-const namedRoutes: KeyValue<IRoute> = [
-    ...homeRoutes.routeEndpoints(),
-    ...apiRoutes.routeEndpoints()
-].reduce<KeyValue<IRoute>>((routes, currentRoute) => {
-    const name = currentRoute.getName().trim();
-
-    if (name.length > 0) {
-        routes[name] = currentRoute;
-    }
-    return routes;
-}, {});
-
+import { ComponentFactory } from "../src/uri/uriComponentFactory";
+import { blogRoutes, homeRoutes, apiRoutes, faqRoute, pricingRoute, namedRoutes } from "./testRoutes";
 
 // Route methods check
 it("methods check", () => {
@@ -150,6 +95,12 @@ it("parent_check", () => {
     expect(namedRoutes['article_1'].getParent()).not.toEqual(homeRoutes);
 });
 
+// child route check
+it("child_check", () => {
+    expect(namedRoutes['pricing'].getChildRoutes()).toEqual([]);
+    expect(apiRoutes.getChildRoutes()).toEqual(expect.arrayContaining([faqRoute]));
+});
+
 // endpoint check
 it("isEndpoint", () => {
     expect(blogRoutes.isEndpoint()).not.toBe(true);
@@ -176,6 +127,10 @@ it("isHttp route", () => {
 
     pricingRoute.http();
     expect(pricingRoute.isHttpRoute()).toBe(true);
+
+    pricingRoute.http(false);
+    expect(pricingRoute.isHttpRoute()).toBe(false);
+
     expect(faqRoute.isHttpRoute()).toBe(false);
 });
 
@@ -187,12 +142,18 @@ it("getAction", () => {
 });
 
 //withoutMiddleware
+//TODO
 it("withoutMiddleware", () => {
     pricingRoute.withoutMiddleware("auth");
-
     expect(pricingRoute.routeMiddlewares()).not.toContainEqual("auth");
+
+    pricingRoute.withoutMiddleware(["auth", "api"]);
+    expect(pricingRoute.routeMiddlewares()).not.toContainEqual("api");
+    expect(pricingRoute.getExcludedMiddlewares()).toEqual(expect.arrayContaining(["auth", "api"]));
+
+    pricingRoute.withoutMiddleware([]);
+    expect(pricingRoute.getExcludedMiddlewares()).toEqual([]);
     expect(faqRoute.getExcludedMiddlewares()).toEqual([]);
-    expect(pricingRoute.getExcludedMiddlewares()).toEqual(expect.arrayContaining(["auth"]));
 });
 
 //uriComponents
@@ -200,6 +161,9 @@ it("uriComponents", () => {
     expect(namedRoutes["article_1"].getUriComponents()).toStrictEqual([
         new FixedComponent("blog"), new FixedComponent("article1"), new ParamComponent(":slug?")
     ]);
+    expect(faqRoute.getUriComponents()).toStrictEqual(
+        ComponentFactory.createFromRoute(faqRoute)
+    );
     expect(faqRoute.getUriComponents()).toStrictEqual([
         new FixedComponent("api"), new FixedComponent("faq")
     ]);
