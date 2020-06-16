@@ -57,8 +57,8 @@ var RequestPipeline = /** @class */ (function () {
         return this;
     };
     /**
-     * Sends the req, res objects through the pipes to a destination and await
-     * for a response.
+     * Sends the req, res objects through the middleware pipes to a destination
+     * and await for a response.
      *
      * @param dest
      * @param req
