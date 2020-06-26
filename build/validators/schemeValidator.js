@@ -2,7 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemeValidator = void 0;
 var SchemeValidator = /** @class */ (function () {
-    function SchemeValidator() {
+    /**
+     * Creates a scheme validator. Reads the dev mode status from app
+     * configurations.
+     *
+     * @param app
+     */
+    function SchemeValidator(app) {
+        this._devMode = app.config('app.dev', false);
     }
     /**
      * Checks if the request came through a secure channel if the
@@ -13,7 +20,7 @@ var SchemeValidator = /** @class */ (function () {
      * @param request
      */
     SchemeValidator.prototype.matches = function (route, request) {
-        if (!request.isSecure()) {
+        if (!this._devMode && !request.isSecure()) {
             return route.isHttpRoute();
         }
         return true;
