@@ -1,15 +1,15 @@
 import { Route } from "./route";
+import { IApp } from "@rheas/contracts/core/app";
 import { KeyValue, IRequest, IResponse } from "@rheas/contracts";
-import { IContainer } from "@rheas/contracts/container/container";
 import { IException } from "@rheas/contracts/errors";
 import { IRoute, IRouter, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
 export declare class Router extends Route implements IRouter {
     /**
-     * The container instance
+     * The application instance
      *
-     * @var IContainer
+     * @var IApp
      */
-    protected app: IContainer;
+    protected app: IApp;
     /**
      * The folder where controller files are located. The location
      * is respective to the root path.
@@ -53,7 +53,7 @@ export declare class Router extends Route implements IRouter {
      * Rheas will read the config and use the router as the application
      * router.
      */
-    constructor(app: IContainer);
+    constructor(app: IApp);
     /**
      * Application requests are send here for processing. The request is initially
      * sent to a pipeline of global middlewares (middlewares of this class). Once that's

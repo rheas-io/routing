@@ -1,6 +1,7 @@
 import path from "path";
 import { Route } from "./route";
 import { Str } from "@rheas/support";
+import { IApp } from "@rheas/contracts/core/app";
 import { Exception } from "@rheas/errors/exception";
 import { RequestPipeline } from "./requestPipeline";
 import { UriValidator } from "./validators/uriValidator";
@@ -9,7 +10,6 @@ import { NotFoundException } from "@rheas/errors/notFound";
 import { MethodValidator } from "./validators/methodValidator";
 import { SchemeValidator } from "./validators/schemeValidator";
 import { KeyValue, IRequest, IResponse } from "@rheas/contracts";
-import { IContainer } from "@rheas/contracts/container/container";
 import { IExceptionHandler, IException } from "@rheas/contracts/errors";
 import { MethodNotAllowedException } from "@rheas/errors/methoNotAllowed";
 import { IRoute, IRouter, INameParams, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
@@ -17,11 +17,11 @@ import { IRoute, IRouter, INameParams, IRouteValidator, IRequestHandler, IMiddle
 export class Router extends Route implements IRouter {
 
     /**
-     * The container instance
+     * The application instance
      * 
-     * @var IContainer
+     * @var IApp
      */
-    protected app: IContainer;
+    protected app: IApp;
 
     /**
      * The folder where controller files are located. The location
@@ -71,7 +71,7 @@ export class Router extends Route implements IRouter {
      * Rheas will read the config and use the router as the application
      * router.
      */
-    constructor(app: IContainer) {
+    constructor(app: IApp) {
         super();
 
         this.app = app;
@@ -466,7 +466,7 @@ export class Router extends Route implements IRouter {
      * @return 
      */
     protected getSchemeValidator(): IRouteValidator {
-        return new SchemeValidator();
+        return new SchemeValidator(this.app);
     }
 
     /**

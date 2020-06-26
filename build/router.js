@@ -496,7 +496,7 @@ var Router = /** @class */ (function (_super) {
      * @return
      */
     Router.prototype.getSchemeValidator = function () {
-        return new schemeValidator_1.SchemeValidator();
+        return new schemeValidator_1.SchemeValidator(this.app);
     };
     /**
      * New route method validator.
