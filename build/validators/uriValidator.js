@@ -13,6 +13,9 @@ var UriValidator = /** @class */ (function () {
     UriValidator.prototype.matches = function (route, request) {
         var routeComponents = route.getUriComponents();
         var reqComponents = request.getPathComponents();
+        if (reqComponents.length > routeComponents.length) {
+            return false;
+        }
         for (var i = 0; i < routeComponents.length; i++) {
             if (!routeComponents[i].equals(reqComponents[i])) {
                 return false;

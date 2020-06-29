@@ -13,6 +13,10 @@ export class UriValidator implements IRouteValidator {
         const routeComponents = route.getUriComponents();
         const reqComponents = request.getPathComponents();
 
+        if (reqComponents.length > routeComponents.length) {
+            return false;
+        }
+
         for (let i = 0; i < routeComponents.length; i++) {
             if (!routeComponents[i].equals(reqComponents[i])) {
                 return false;
