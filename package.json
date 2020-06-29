@@ -39,5 +39,6 @@
   "bugs": {
     "url": "https://github.com/rheas-io/routing/issues"
   },
-  "homepage": "https://github.com/rheas-io/routing#readme"
+  "homepage": "https://github.com/rheas-io/routing#readme",
+  "dependencies": {}
 }
