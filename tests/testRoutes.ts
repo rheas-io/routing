@@ -30,7 +30,7 @@ const pricingRoute = Route.get('pricing', 'pricingController@get').middleware("a
  * used for checking paths and other functions of routes. Add as
  * many route as possible to test all scenarios.
  */
-const apiRoutes = Route.group('api').middleware(["api", "throttle:60,1"]).routes(
+const apiRoutes = Route.group('api').middleware("api", "throttle:60,1").routes(
     faqRoute, pricingRoute,
     Route.get('/contact/', 'contactController@get').name('contact'),
     Route.group('/projects').routes(

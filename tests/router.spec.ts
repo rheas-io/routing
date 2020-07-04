@@ -4,7 +4,7 @@ import { HostValidator } from "../src/validators/hostValidator";
 import { UriValidator } from "../src/validators/uriValidator";
 import { SchemeValidator } from "../src/validators/schemeValidator";
 import { MethodValidator } from "../src/validators/methodValidator";
-import { blogRoutes, homeRoutes, apiRoutes, faqRoute, pricingRoute, namedRoutes } from "./testRoutes";
+import { homeRoutes, apiRoutes, faqRoute, pricingRoute } from "./testRoutes";
 
 class ExtendedRouter extends Router {
     /**
@@ -12,7 +12,7 @@ class ExtendedRouter extends Router {
      */
     public assertValidators() {
         expect(this.routeValidators()).toEqual(expect.arrayContaining([
-            new HostValidator, new SchemeValidator, new MethodValidator, new UriValidator
+            new HostValidator, new SchemeValidator(this.app), new MethodValidator, new UriValidator
         ]));
         // Cache check for branch coverage
         expect(this.routeValidators().length).toBe(4);
@@ -22,7 +22,7 @@ class ExtendedRouter extends Router {
 describe("router", () => {
 
     const router = new ExtendedRouter(new MockApp(__dirname));
-    router.middleware(["trimString", "maintenance"]);
+    router.middleware("trimString", "maintenance");
     router.routes(apiRoutes, homeRoutes);
     router.cacheRoutes();
 

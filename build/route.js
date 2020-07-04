@@ -366,9 +366,10 @@ var Route = /** @class */ (function () {
      *
      * @param middlewares
      */
-    Route.prototype.middleware = function (middlewares) {
-        if (!Array.isArray(middlewares)) {
-            middlewares = Array.from(arguments);
+    Route.prototype.middleware = function () {
+        var middlewares = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            middlewares[_i] = arguments[_i];
         }
         this._middlewares = middlewares;
         return this;
@@ -378,9 +379,10 @@ var Route = /** @class */ (function () {
      *
      * @param middlewares
      */
-    Route.prototype.withoutMiddleware = function (middlewares) {
-        if (!Array.isArray(middlewares)) {
-            middlewares = Array.from(arguments);
+    Route.prototype.withoutMiddleware = function () {
+        var middlewares = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            middlewares[_i] = arguments[_i];
         }
         this._excludedMiddlewares = middlewares;
         return this;

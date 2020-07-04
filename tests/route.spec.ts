@@ -147,11 +147,11 @@ it("withoutMiddleware", () => {
     pricingRoute.withoutMiddleware("auth");
     expect(pricingRoute.routeMiddlewares()).not.toContainEqual("auth");
 
-    pricingRoute.withoutMiddleware(["auth", "api"]);
+    pricingRoute.withoutMiddleware("auth", "api");
     expect(pricingRoute.routeMiddlewares()).not.toContainEqual("api");
     expect(pricingRoute.getExcludedMiddlewares()).toEqual(expect.arrayContaining(["auth", "api"]));
 
-    pricingRoute.withoutMiddleware([]);
+    pricingRoute.withoutMiddleware();
     expect(pricingRoute.getExcludedMiddlewares()).toEqual([]);
     expect(faqRoute.getExcludedMiddlewares()).toEqual([]);
 });

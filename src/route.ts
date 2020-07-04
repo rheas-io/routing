@@ -413,11 +413,8 @@ export class Route implements IRoute {
      * 
      * @param middlewares 
      */
-    public middleware(middlewares: string | string[]): IRoute {
+    public middleware(...middlewares: string[]): IRoute {
 
-        if (!Array.isArray(middlewares)) {
-            middlewares = Array.from(arguments);
-        }
         this._middlewares = middlewares;
 
         return this;
@@ -428,11 +425,8 @@ export class Route implements IRoute {
      * 
      * @param middlewares 
      */
-    public withoutMiddleware(middlewares: string | string[]): IRoute {
+    public withoutMiddleware(...middlewares: string[]): IRoute {
 
-        if (!Array.isArray(middlewares)) {
-            middlewares = Array.from(arguments);
-        }
         this._excludedMiddlewares = middlewares;
 
         return this;

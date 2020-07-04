@@ -246,13 +246,13 @@ export declare class Route implements IRoute {
      *
      * @param middlewares
      */
-    middleware(middlewares: string | string[]): IRoute;
+    middleware(...middlewares: string[]): IRoute;
     /**
      * Sets the excluded middlewares of this route.
      *
      * @param middlewares
      */
-    withoutMiddleware(middlewares: string | string[]): IRoute;
+    withoutMiddleware(...middlewares: string[]): IRoute;
     /**
      * Sets the parent route of this route
      *
