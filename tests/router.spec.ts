@@ -12,7 +12,7 @@ class ExtendedRouter extends Router {
      */
     public assertValidators() {
         expect(this.routeValidators()).toEqual(expect.arrayContaining([
-            new HostValidator, new SchemeValidator(this.app), new MethodValidator, new UriValidator
+            new HostValidator, new SchemeValidator, new MethodValidator, new UriValidator
         ]));
         // Cache check for branch coverage
         expect(this.routeValidators().length).toBe(4);
