@@ -9,7 +9,7 @@ export class UrlServiceProvider extends ServiceProvider {
      */
     public register() {
         this.container.singleton(this.name, app => {
-            return new UrlGenerator(<IApp>app, app.get('router'));
+            return new UrlGenerator(app.get('router'));
         });
     }
 }

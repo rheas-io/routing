@@ -1,5 +1,4 @@
 import { IRequest } from "@rheas/contracts";
-import { IApp } from "@rheas/contracts/core/app";
 import { IRouteValidator, IRoute } from "@rheas/contracts/routes";
 export declare class SchemeValidator implements IRouteValidator {
     /**
@@ -12,9 +11,8 @@ export declare class SchemeValidator implements IRouteValidator {
      * Creates a scheme validator. Reads the dev mode status from app
      * configurations.
      *
-     * @param app
      */
-    constructor(app: IApp);
+    constructor();
     /**
      * Checks if the request came through a secure channel if the
      * route accepts secure channel requests only. In all other cases,

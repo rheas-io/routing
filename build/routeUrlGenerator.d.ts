@@ -1,14 +1,7 @@
-import { IApp } from "@rheas/contracts/core/app";
 import { IRoute } from "@rheas/contracts/routes";
 import { AnyObject, KeyValue } from "@rheas/contracts";
 import { IUriComponent, IParamComponent } from "@rheas/contracts/routes/uri";
 export declare class RouteUrlGenerator {
-    /**
-     * The application instance.
-     *
-     * @var IApp
-     */
-    protected _app: IApp;
     /**
      * The route object.
      *
@@ -42,10 +35,9 @@ export declare class RouteUrlGenerator {
     /**
      * Creates a new route url generator for the given route
      *
-     * @param app
      * @param route
      */
-    constructor(app: IApp, route: IRoute);
+    constructor(route: IRoute);
     /**
      * Creates a url for the route.
      *

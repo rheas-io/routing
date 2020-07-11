@@ -1,13 +1,6 @@
-import { IApp } from "@rheas/contracts/core/app";
 import { AnyObject, IRequest } from "@rheas/contracts";
 import { IUrlGenerator, IRouter, IRoute } from "@rheas/contracts/routes";
 export declare class UrlGenerator implements IUrlGenerator {
-    /**
-     * Application instance.
-     *
-     * @var IApp
-     */
-    protected _app: IApp;
     /**
      * Application router. Needed to resolve url by route
      * names.
@@ -18,9 +11,9 @@ export declare class UrlGenerator implements IUrlGenerator {
     /**
      * Creates a url generator for the application
      *
-     * @param app
+     * @param router
      */
-    constructor(app: IApp, router: IRouter);
+    constructor(router: IRouter);
     /**
      * Returns the current request url.
      *

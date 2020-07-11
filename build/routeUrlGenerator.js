@@ -10,6 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RouteUrlGenerator = void 0;
 var route_1 = require("./route");
 var support_1 = require("@rheas/support");
+var helpers_1 = require("@rheas/support/helpers");
 var routeParamComponent_1 = require("./uri/routeParamComponent");
 var uriComponentFactory_1 = require("./uri/uriComponentFactory");
 var invalidArgument_1 = require("@rheas/errors/invalidArgument");
@@ -17,10 +18,9 @@ var RouteUrlGenerator = /** @class */ (function () {
     /**
      * Creates a new route url generator for the given route
      *
-     * @param app
      * @param route
      */
-    function RouteUrlGenerator(app, route) {
+    function RouteUrlGenerator(route) {
         /**
          * Cached route domain string
          *
@@ -45,7 +45,6 @@ var RouteUrlGenerator = /** @class */ (function () {
          * @var object
          */
         this._pathParams = null;
-        this._app = app;
         this._route = route;
     }
     /**
@@ -163,7 +162,7 @@ var RouteUrlGenerator = /** @class */ (function () {
             this._domain = this._route.routeDomain() ||
                 // If route domain is empty, read the domain from app 
                 // config file.
-                route_1.Route.clearDomain(this._app.config('app.domain', ''));
+                route_1.Route.clearDomain(helpers_1.config('app.domain', ''));
         }
         return this._domain;
     };

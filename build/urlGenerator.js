@@ -9,10 +9,9 @@ var UrlGenerator = /** @class */ (function () {
     /**
      * Creates a url generator for the application
      *
-     * @param app
+     * @param router
      */
-    function UrlGenerator(app, router) {
-        this._app = app;
+    function UrlGenerator(router) {
         this._router = router;
     }
     /**
@@ -60,7 +59,7 @@ var UrlGenerator = /** @class */ (function () {
      */
     UrlGenerator.prototype.routeUrl = function (route, params, secure) {
         if (params === void 0) { params = {}; }
-        return new routeUrlGenerator_1.RouteUrlGenerator(this._app, route).generateUrl(params, secure);
+        return new routeUrlGenerator_1.RouteUrlGenerator(route).generateUrl(params, secure);
     };
     /**
      * Creates an absolute url to the given path. Params are used to replace params or append query

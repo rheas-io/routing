@@ -9,13 +9,6 @@ import { IUrlGenerator, IRouter, IRoute } from "@rheas/contracts/routes";
 export class UrlGenerator implements IUrlGenerator {
 
     /**
-     * Application instance.
-     * 
-     * @var IApp
-     */
-    protected _app: IApp;
-
-    /**
      * Application router. Needed to resolve url by route
      * names.
      * 
@@ -26,10 +19,9 @@ export class UrlGenerator implements IUrlGenerator {
     /**
      * Creates a url generator for the application
      * 
-     * @param app 
+     * @param router 
      */
-    constructor(app: IApp, router: IRouter) {
-        this._app = app;
+    constructor(router: IRouter) {
         this._router = router;
     }
 
@@ -81,7 +73,7 @@ export class UrlGenerator implements IUrlGenerator {
      * @param secure 
      */
     public routeUrl(route: IRoute, params: AnyObject = {}, secure?: boolean) {
-        return new RouteUrlGenerator(this._app, route).generateUrl(params, secure);
+        return new RouteUrlGenerator(route).generateUrl(params, secure);
     }
 
     /**

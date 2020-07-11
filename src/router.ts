@@ -466,7 +466,7 @@ export class Router extends Route implements IRouter {
      * @return 
      */
     protected getSchemeValidator(): IRouteValidator {
-        return new SchemeValidator(this.app);
+        return new SchemeValidator();
     }
 
     /**

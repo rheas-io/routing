@@ -1,6 +1,6 @@
 import { Route } from "./route";
 import { Str } from "@rheas/support";
-import { IApp } from "@rheas/contracts/core/app";
+import { config } from "@rheas/support/helpers";
 import { IRoute } from "@rheas/contracts/routes";
 import { AnyObject, KeyValue } from "@rheas/contracts";
 import { ParamComponent } from "./uri/routeParamComponent";
@@ -9,13 +9,6 @@ import { InvalidArgumentException } from "@rheas/errors/invalidArgument";
 import { IUriComponent, IParamComponent } from "@rheas/contracts/routes/uri";
 
 export class RouteUrlGenerator {
-
-    /**
-     * The application instance.
-     * 
-     * @var IApp
-     */
-    protected _app: IApp;
 
     /**
      * The route object.
@@ -55,11 +48,9 @@ export class RouteUrlGenerator {
     /**
      * Creates a new route url generator for the given route
      * 
-     * @param app
      * @param route 
      */
-    constructor(app: IApp, route: IRoute) {
-        this._app = app;
+    constructor(route: IRoute) {
         this._route = route;
     }
 
@@ -195,7 +186,7 @@ export class RouteUrlGenerator {
             this._domain = this._route.routeDomain() ||
                 // If route domain is empty, read the domain from app 
                 // config file.
-                Route.clearDomain(this._app.config('app.domain', ''));
+                Route.clearDomain(config('app.domain', ''));
         }
 
         return this._domain;

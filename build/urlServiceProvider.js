@@ -26,7 +26,7 @@ var UrlServiceProvider = /** @class */ (function (_super) {
      */
     UrlServiceProvider.prototype.register = function () {
         this.container.singleton(this.name, function (app) {
-            return new urlGenerator_1.UrlGenerator(app, app.get('router'));
+            return new urlGenerator_1.UrlGenerator(app.get('router'));
         });
     };
     return UrlServiceProvider;

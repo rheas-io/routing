@@ -1,5 +1,5 @@
 import { IRequest } from "@rheas/contracts";
-import { IApp } from "@rheas/contracts/core/app";
+import { config } from "@rheas/support/helpers";
 import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
 
 export class SchemeValidator implements IRouteValidator {
@@ -15,10 +15,9 @@ export class SchemeValidator implements IRouteValidator {
      * Creates a scheme validator. Reads the dev mode status from app
      * configurations.
      * 
-     * @param app 
      */
-    constructor(app: IApp) {
-        this._devMode = app.config('app.dev', false);
+    constructor() {
+        this._devMode = config('app.dev', false);
     }
 
     /**

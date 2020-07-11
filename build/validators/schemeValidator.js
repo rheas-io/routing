@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemeValidator = void 0;
+var helpers_1 = require("@rheas/support/helpers");
 var SchemeValidator = /** @class */ (function () {
     /**
      * Creates a scheme validator. Reads the dev mode status from app
      * configurations.
      *
-     * @param app
      */
-    function SchemeValidator(app) {
-        this._devMode = app.config('app.dev', false);
+    function SchemeValidator() {
+        this._devMode = helpers_1.config('app.dev', false);
     }
     /**
      * Checks if the request came through a secure channel if the
