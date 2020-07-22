@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UriComponent = void 0;
-var UriComponent = /** @class */ (function () {
+class UriComponent {
     /**
      * Stores the segment as it is. No trimming or any other modifications
      * are done here as there may be instances where spaces are put purposefully
@@ -9,7 +9,7 @@ var UriComponent = /** @class */ (function () {
      *
      * @param uriSegment
      */
-    function UriComponent(uriSegment) {
+    constructor(uriSegment) {
         this._component = uriSegment;
     }
     /**
@@ -17,9 +17,9 @@ var UriComponent = /** @class */ (function () {
      *
      * @returns string
      */
-    UriComponent.prototype.getSegment = function () {
+    getSegment() {
         return this._component;
-    };
+    }
     /**
      * Base uri component equality check.
      *
@@ -27,12 +27,11 @@ var UriComponent = /** @class */ (function () {
      *
      * @param uriComponent
      */
-    UriComponent.prototype.equals = function (uriComponent) {
+    equals(uriComponent) {
         if (uriComponent === null || uriComponent === void 0) {
             return false;
         }
         return this.getSegment() === uriComponent.getSegment();
-    };
-    return UriComponent;
-}());
+    }
+}
 exports.UriComponent = UriComponent;

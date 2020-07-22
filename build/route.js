@@ -1,16 +1,9 @@
 "use strict";
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Route = void 0;
-var support_1 = require("@rheas/support");
-var uriComponentFactory_1 = require("./uri/uriComponentFactory");
-var Route = /** @class */ (function () {
+const support_1 = require("@rheas/support");
+const uriComponentFactory_1 = require("./uri/uriComponentFactory");
+class Route {
     /**
      * Creates a new route. The parent of this route
      * will be set wherever this route gets registered.
@@ -30,8 +23,7 @@ var Route = /** @class */ (function () {
      *
      * @return Route
      */
-    function Route(path) {
-        if (path === void 0) { path = ""; }
+    constructor(path = "") {
         /**
          * Http methods this route handles.
          *
@@ -106,130 +98,123 @@ var Route = /** @class */ (function () {
      *
      * @param prefix
      */
-    Route.group = function (prefix) {
-        if (prefix === void 0) { prefix = ""; }
+    static group(prefix = "") {
         return new Route(prefix);
-    };
+    }
     /**
      * Creates a new route for all methods
      *
      * @param uri
      * @param controller
      */
-    Route.all = function (uri, controller) {
-        return new Route(uri).methods(__spreadArrays(Route.verbs)).action(controller);
-    };
+    static all(uri, controller) {
+        return new Route(uri).methods([...Route.verbs]).action(controller);
+    }
     /**
      * Creates a new route for GET and HEAD requests
      *
      * @param uri
      * @param controller
      */
-    Route.get = function (uri, controller) {
+    static get(uri, controller) {
         return new Route(uri).methods(["GET"]).action(controller);
-    };
+    }
     /**
      * Creates a new route for PUT requests
      *
      * @param uri
      * @param controller
      */
-    Route.put = function (uri, controller) {
+    static put(uri, controller) {
         return new Route(uri).methods(["PUT"]).action(controller);
-    };
+    }
     /**
      * Creates a new route for post requests
      *
      * @param uri
      * @param controller
      */
-    Route.post = function (uri, controller) {
+    static post(uri, controller) {
         return new Route(uri).methods(["POST"]).action(controller);
-    };
+    }
     /**
      * Creates a new route for PATCH requests
      *
      * @param uri
      * @param controller
      */
-    Route.patch = function (uri, controller) {
+    static patch(uri, controller) {
         return new Route(uri).methods(["PATCH"]).action(controller);
-    };
+    }
     /**
      * Creates a new route for DELETE requests
      *
      * @param uri
      * @param controller
      */
-    Route.delete = function (uri, controller) {
+    static delete(uri, controller) {
         return new Route(uri).methods(["DELETE"]).action(controller);
-    };
+    }
     /**
      * Creates a new route for OPTIONS requests
      *
      * @param uri
      * @param controller
      */
-    Route.options = function (uri, controller) {
+    static options(uri, controller) {
         return new Route(uri).methods(["OPTIONS"]).action(controller);
-    };
+    }
     /**
      * Removes the domain scheme, leading and trailing slashes
      *
      * @param domain
      */
-    Route.clearDomain = function (domain) {
+    static clearDomain(domain) {
         domain = support_1.Str.trimStart(domain.trim(), ["http://", "https://"]);
         return support_1.Str.trim(domain, "/");
-    };
+    }
     /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
      *
      * @param routes
      */
-    Route.prototype.routes = function () {
-        var _this = this;
-        var routes = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            routes[_i] = arguments[_i];
-        }
-        routes.forEach(function (route) {
-            route.setParent(_this);
+    routes(...routes) {
+        routes.forEach(route => {
+            route.setParent(this);
         });
         this._routes = routes;
         return this;
-    };
+    }
     /**
      * Middlewares to be used along with this route.
      *
      * @return array
      */
-    Route.prototype.routeMiddlewares = function () {
-        var _this = this;
-        var fullMiddlewares = [];
+    routeMiddlewares() {
+        let fullMiddlewares = [];
         if (this.hasParent()) {
             //@ts-ignore
-            fullMiddlewares = __spreadArrays(this.getParent().routeMiddlewares());
+            fullMiddlewares = [...this.getParent().routeMiddlewares()];
         }
-        fullMiddlewares = __spreadArrays(fullMiddlewares, this._middlewares);
+        fullMiddlewares = [...fullMiddlewares, ...this._middlewares];
         //Removes any excluded middlewares from the list
         if (this._excludedMiddlewares.length > 0) {
-            fullMiddlewares = fullMiddlewares.filter(function (middleware) {
-                return !_this._excludedMiddlewares.includes(middleware);
+            fullMiddlewares = fullMiddlewares.filter(middleware => {
+                return !this._excludedMiddlewares.includes(middleware);
             });
         }
         return fullMiddlewares;
-    };
+    }
     /**
      * Only these middlewares will be resolved when processing
      * requests.
      *
      * @returns array
      */
-    Route.prototype.middlewaresToResolve = function () {
+    middlewaresToResolve() {
         return this.routeMiddlewares();
-    };
+    }
     /**
      * Returns the domain of this route. If no domain is defined for the route,
      * parent routes are checked for a domain and if it exists on parent, that
@@ -237,25 +222,25 @@ var Route = /** @class */ (function () {
      *
      * @return string
      */
-    Route.prototype.routeDomain = function () {
-        var domain = this._domain;
+    routeDomain() {
+        let domain = this._domain;
         if (domain.length <= 0 && this.hasParent()) {
             //@ts-ignore
             domain = this.getParent().routeDomain();
         }
         return domain;
-    };
+    }
     /**
      * Returns the complete route path including prefixes and
      * parent paths.
      *
      * @return string
      */
-    Route.prototype.routePath = function () {
-        var fullPath = [];
+    routePath() {
+        let fullPath = [];
         if (this.hasParent()) {
             //@ts-ignore
-            var parentPath = this.getParent().routePath();
+            const parentPath = this.getParent().routePath();
             if (parentPath.length > 0) {
                 fullPath.push(parentPath);
             }
@@ -264,23 +249,23 @@ var Route = /** @class */ (function () {
             fullPath.push(this._path);
         }
         return fullPath.join('/');
-    };
+    }
     /**
      * Returns all the child endpoints of this route. Endpoint is a route
      * with a valid method property.
      *
      * @return array
      */
-    Route.prototype.routeEndpoints = function () {
-        var endpoints = [];
-        this._routes.forEach(function (route) {
-            endpoints.push.apply(endpoints, route.routeEndpoints());
+    routeEndpoints() {
+        let endpoints = [];
+        this._routes.forEach(route => {
+            endpoints.push(...route.routeEndpoints());
         });
         if (this.isEndpoint()) {
             endpoints.unshift(this);
         }
         return endpoints;
-    };
+    }
     /**
      * Checks if this route accepts http connection requests. Https requests are
      * the default and this function returns true only if the httpRoute flag is set
@@ -288,25 +273,25 @@ var Route = /** @class */ (function () {
      *
      * @return string
      */
-    Route.prototype.isHttpRoute = function () {
-        var httpRoute = this._httpRoute;
+    isHttpRoute() {
+        let httpRoute = this._httpRoute;
         if (!httpRoute && this.hasParent()) {
             //@ts-ignore
             httpRoute = this.getParent().isHttpRoute();
         }
         return httpRoute;
-    };
+    }
     /**
      * Sets the methods of this route
      *
      * @param methods
      */
-    Route.prototype.methods = function (methods) {
+    methods(methods) {
         if (!Array.isArray(methods)) {
             methods = Array.from(arguments);
         }
-        if (!methods.every(function (method) { return Route.verbs.includes(method); })) {
-            throw new Error("Method not supported on route " + this._path + ". Supported methods are: " + Route.verbs);
+        if (!methods.every(method => Route.verbs.includes(method))) {
+            throw new Error(`Method not supported on route ${this._path}. Supported methods are: ` + Route.verbs);
         }
         // Add HEAD if methods contains GET and does not contain a HEAD
         if (methods.includes("GET") && !methods.includes("HEAD")) {
@@ -314,176 +299,166 @@ var Route = /** @class */ (function () {
         }
         this._methods = methods;
         return this;
-    };
+    }
     /**
      * Sets the controller action of this route
      *
      * @param action
      */
-    Route.prototype.action = function (action) {
+    action(action) {
         this._action = action;
         return this;
-    };
+    }
     /**
      * Sets the name of this route
      *
      * @param name
      */
-    Route.prototype.name = function (name) {
+    name(name) {
         this._name = name;
         return this;
-    };
+    }
     /**
      * Sets the route group prefix
      *
      * @param path
      */
-    Route.prototype.prefix = function (path) {
+    prefix(path) {
         this._path = support_1.Str.path(path);
         return this;
-    };
+    }
     /**
      * Sets the domian of this route
      *
      * @param domain
      */
-    Route.prototype.domain = function (domain) {
+    domain(domain) {
         this._domain = Route.clearDomain(domain);
         return this;
-    };
+    }
     /**
      * Sets the route to allow http requests.
      *
      * @return this
      */
-    Route.prototype.http = function (httpRoute) {
-        if (httpRoute === void 0) { httpRoute = true; }
+    http(httpRoute = true) {
         this._httpRoute = httpRoute;
         return this;
-    };
+    }
     /**
      * Sets the middlewares to be used by this route or route group.
      *
      * @param middlewares
      */
-    Route.prototype.middleware = function () {
-        var middlewares = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            middlewares[_i] = arguments[_i];
-        }
+    middleware(...middlewares) {
         this._middlewares = middlewares;
         return this;
-    };
+    }
     /**
      * Sets the excluded middlewares of this route.
      *
      * @param middlewares
      */
-    Route.prototype.withoutMiddleware = function () {
-        var middlewares = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            middlewares[_i] = arguments[_i];
-        }
+    withoutMiddleware(...middlewares) {
         this._excludedMiddlewares = middlewares;
         return this;
-    };
+    }
     /**
      * Sets the parent route of this route
      *
      * @param route
      */
-    Route.prototype.setParent = function (route) {
+    setParent(route) {
         this._parentRoute = route;
-    };
+    }
     /**
      * Returns the methods of this route
      *
      * @return string
      */
-    Route.prototype.getMethods = function () {
+    getMethods() {
         return this._methods;
-    };
+    }
     /**
      * Returns the name of this route
      *
      * @return string
      */
-    Route.prototype.getName = function () {
+    getName() {
         return this._name;
-    };
+    }
     /**
      * Returns the route path
      *
      * @return string
      */
-    Route.prototype.getPath = function () {
+    getPath() {
         return this._path;
-    };
+    }
     /**
      * Returns the route request handler.
      *
      * @return IRequestHandler
      */
-    Route.prototype.getAction = function () {
+    getAction() {
         return this._action;
-    };
+    }
     /**
      * Returns the parent route.
      *
      * @return Route|null
      */
-    Route.prototype.getParent = function () {
+    getParent() {
         return this._parentRoute;
-    };
+    }
     /**
      * Returns the child routes.
      *
      * @return Route|null
      */
-    Route.prototype.getChildRoutes = function () {
+    getChildRoutes() {
         return this._routes;
-    };
+    }
     /**
      * Returns the uri components of this route.
      *
      * @return array
      */
-    Route.prototype.getUriComponents = function () {
+    getUriComponents() {
         if (this._uriComponents === null) {
             this._uriComponents = uriComponentFactory_1.ComponentFactory.createFromRoute(this);
         }
         return this._uriComponents;
-    };
+    }
     /**
      * Returns the excluded route middlewares.
      *
      * @returns array
      */
-    Route.prototype.getExcludedMiddlewares = function () {
+    getExcludedMiddlewares() {
         return this._excludedMiddlewares;
-    };
+    }
     /**
      * Checks if this is an endpoint
      *
      * @return boolean
      */
-    Route.prototype.isEndpoint = function () {
+    isEndpoint() {
         return this._methods.length > 0;
-    };
+    }
     /**
      * Checks if the route has any parent route.
      *
      * @return boolean
      */
-    Route.prototype.hasParent = function () {
+    hasParent() {
         return this.getParent() instanceof Route;
-    };
-    /**
-     * All of the verbs supported by the route.
-     *
-     * @var array
-     */
-    Route.verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-    return Route;
-}());
+    }
+}
 exports.Route = Route;
+/**
+ * All of the verbs supported by the route.
+ *
+ * @var array
+ */
+Route.verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];

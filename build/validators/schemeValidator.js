@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemeValidator = void 0;
-var helpers_1 = require("@rheas/support/helpers");
-var SchemeValidator = /** @class */ (function () {
+const helpers_1 = require("@rheas/support/helpers");
+class SchemeValidator {
     /**
      * Creates a scheme validator. Reads the dev mode status from app
      * configurations.
      *
      */
-    function SchemeValidator() {
+    constructor() {
         this._devMode = helpers_1.config('app.dev', false);
     }
     /**
@@ -19,12 +19,11 @@ var SchemeValidator = /** @class */ (function () {
      * @param route
      * @param request
      */
-    SchemeValidator.prototype.matches = function (route, request) {
+    matches(route, request) {
         if (!this._devMode && !request.isSecure()) {
             return route.isHttpRoute();
         }
         return true;
-    };
-    return SchemeValidator;
-}());
+    }
+}
 exports.SchemeValidator = SchemeValidator;

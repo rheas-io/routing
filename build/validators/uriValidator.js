@@ -1,22 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UriValidator = void 0;
-var UriValidator = /** @class */ (function () {
-    function UriValidator() {
-    }
+class UriValidator {
     /**
      * Validates whether the request uri matches the route uri
      *
      * @param route
      * @param request
      */
-    UriValidator.prototype.matches = function (route, request) {
-        var routeComponents = route.getUriComponents();
-        var reqComponents = request.getPathComponents();
+    matches(route, request) {
+        const routeComponents = route.getUriComponents();
+        const reqComponents = request.getPathComponents();
         if (reqComponents.length > routeComponents.length) {
             return false;
         }
-        for (var i = 0; i < routeComponents.length; i++) {
+        for (let i = 0; i < routeComponents.length; i++) {
             if (!routeComponents[i].equals(reqComponents[i])) {
                 return false;
             }
@@ -25,7 +23,6 @@ var UriValidator = /** @class */ (function () {
             reqComponents[i] && reqComponents[i].setComponent(routeComponents[i]);
         }
         return true;
-    };
-    return UriValidator;
-}());
+    }
+}
 exports.UriValidator = UriValidator;

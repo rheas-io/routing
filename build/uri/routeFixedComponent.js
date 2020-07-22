@@ -1,26 +1,11 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FixedComponent = void 0;
-var baseComponent_1 = require("./baseComponent");
-var FixedComponent = /** @class */ (function (_super) {
-    __extends(FixedComponent, _super);
-    function FixedComponent(component) {
-        var _this = _super.call(this, component) || this;
-        _this.mayBeEncoded = _this.isDecodingNeeded();
-        return _this;
+const baseComponent_1 = require("./baseComponent");
+class FixedComponent extends baseComponent_1.UriComponent {
+    constructor(component) {
+        super(component);
+        this.mayBeEncoded = this.isDecodingNeeded();
     }
     /**
      * Checks if the encoded version of the component and component
@@ -31,9 +16,9 @@ var FixedComponent = /** @class */ (function (_super) {
      *
      * @return boolean
      */
-    FixedComponent.prototype.isDecodingNeeded = function () {
+    isDecodingNeeded() {
         return encodeURIComponent(this.getSegment()) !== this.getSegment();
-    };
+    }
     /**
      * Returns true if the component values are matching. If it is not
      * matching, we check for the need of decoding. If decoding is required,
@@ -41,13 +26,12 @@ var FixedComponent = /** @class */ (function (_super) {
      *
      * @param uriComponent
      */
-    FixedComponent.prototype.equals = function (uriComponent) {
+    equals(uriComponent) {
         if (uriComponent === null || uriComponent === void 0) {
             return false;
         }
         return (this.getSegment() === uriComponent.getSegment() ||
             (this.mayBeEncoded && this.getSegment() === decodeURIComponent(uriComponent.getSegment())));
-    };
-    return FixedComponent;
-}(baseComponent_1.UriComponent));
+    }
+}
 exports.FixedComponent = FixedComponent;
