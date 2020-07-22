@@ -5,19 +5,20 @@ import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
 export class SchemeValidator implements IRouteValidator {
 
     /**
-     * Development mode flag
+     * Production mode flag
      * 
      * @var boolean
      */
-    protected _devMode: boolean;
+    protected _production: boolean;
 
     /**
-     * Creates a scheme validator. Reads the dev mode status from app
-     * configurations.
+     * Creates a scheme validator. Reads the production mode flag from app
+     * configurations. If the app is not in production mode, ie in debug
+     * mode, schema check is ignored.
      * 
      */
     constructor() {
-        this._devMode = config('app.dev', false);
+        this._production = config('app.production', true);
     }
 
     /**
@@ -29,7 +30,7 @@ export class SchemeValidator implements IRouteValidator {
      * @param request 
      */
     public matches(route: IRoute, request: IRequest): boolean {
-        if (!this._devMode && !request.isSecure()) {
+        if (this._production && !request.isSecure()) {
             return route.isHttpRoute();
         }
         return true;
