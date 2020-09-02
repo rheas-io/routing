@@ -1,21 +1,20 @@
-import { UriComponent } from "./baseComponent";
-import { StringObject } from "@rheas/contracts";
-import { ParamComponent } from "./routeParamComponent";
-import { IRequestComponent, IUriComponent } from "@rheas/contracts/routes/uri";
+import { UriComponent } from './baseComponent';
+import { StringObject } from '@rheas/contracts';
+import { ParamComponent } from './routeParamComponent';
+import { IRequestComponent, IUriComponent } from '@rheas/contracts/routes/uri';
 
 export class RequestComponent extends UriComponent implements IRequestComponent {
-
     /**
      * The matching route uri component of this uri component.
-     * 
+     *
      * @var IUriComponent
      */
     private _routeComponent: IUriComponent | undefined;
 
     /**
      * @inheritdoc
-     * 
-     * @param status 
+     *
+     * @param status
      */
     public setComponent(component: IUriComponent): IRequestComponent {
         this._routeComponent = component;
@@ -25,7 +24,7 @@ export class RequestComponent extends UriComponent implements IRequestComponent 
 
     /**
      * @inheritdoc
-     * 
+     *
      * @returns boolean
      */
     public isParam(): boolean {
@@ -34,7 +33,7 @@ export class RequestComponent extends UriComponent implements IRequestComponent 
 
     /**
      * @inheritdoc
-     * 
+     *
      * @return object
      */
     public getParam(): StringObject {

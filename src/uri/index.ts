@@ -1,3 +1,3 @@
-import { RequestComponent } from "./requestComponent";
+import { RequestComponent } from './requestComponent';
 
 export { RequestComponent };

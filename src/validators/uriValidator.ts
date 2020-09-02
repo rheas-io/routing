@@ -1,13 +1,12 @@
-import { IRequest } from "@rheas/contracts";
-import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
+import { IRequest } from '@rheas/contracts';
+import { IRouteValidator, IRoute } from '@rheas/contracts/routes';
 
 export class UriValidator implements IRouteValidator {
-
     /**
      * Validates whether the request uri matches the route uri
-     * 
-     * @param route 
-     * @param request 
+     *
+     * @param route
+     * @param request
      */
     public matches(route: IRoute, request: IRequest): boolean {
         const routeComponents = route.getUriComponents();

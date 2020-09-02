@@ -1,12 +1,11 @@
-import { IRequest } from "@rheas/contracts";
-import { config } from "@rheas/support/helpers";
-import { IRouteValidator, IRoute } from "@rheas/contracts/routes"
+import { IRequest } from '@rheas/contracts';
+import { config } from '@rheas/support/helpers';
+import { IRouteValidator, IRoute } from '@rheas/contracts/routes';
 
 export class SchemeValidator implements IRouteValidator {
-
     /**
      * Production mode flag
-     * 
+     *
      * @var boolean
      */
     protected _production: boolean;
@@ -15,7 +14,7 @@ export class SchemeValidator implements IRouteValidator {
      * Creates a scheme validator. Reads the production mode flag from app
      * configurations. If the app is not in production mode, ie in debug
      * mode, schema check is ignored.
-     * 
+     *
      */
     constructor() {
         this._production = config('app.production', true);
@@ -25,9 +24,9 @@ export class SchemeValidator implements IRouteValidator {
      * Checks if the request came through a secure channel if the
      * route accepts secure channel requests only. In all other cases,
      * return true.
-     * 
-     * @param route 
-     * @param request 
+     *
+     * @param route
+     * @param request
      */
     public matches(route: IRoute, request: IRequest): boolean {
         if (this._production && !request.isSecure()) {

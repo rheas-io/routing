@@ -1,10 +1,9 @@
-import { Str } from "@rheas/support";
-import { IUriComponent } from "@rheas/contracts/routes/uri";
-import { ComponentFactory } from "./uri/uriComponentFactory";
-import { IRoute, IRequestHandler } from "@rheas/contracts/routes";
+import { Str } from '@rheas/support';
+import { IUriComponent } from '@rheas/contracts/routes/uri';
+import { ComponentFactory } from './uri/uriComponentFactory';
+import { IRoute, IRequestHandler } from '@rheas/contracts/routes';
 
 export class Route implements IRoute {
-
     /**
      * All of the verbs supported by the route.
      *
@@ -14,78 +13,78 @@ export class Route implements IRoute {
 
     /**
      * Http methods this route handles.
-     * 
+     *
      * @var array
      */
     protected _methods: string[] = [];
 
     /**
-    * Route controller action
-    * 
-    * @var string
-    */
-    protected _action: string | IRequestHandler = "";
+     * Route controller action
+     *
+     * @var string
+     */
+    protected _action: string | IRequestHandler = '';
 
     /**
      * Name of this route
-     * 
+     *
      * @var string
      */
-    protected _name: string = "";
+    protected _name: string = '';
 
     /**
      * Uri path of this group of routes
-     * 
+     *
      * @var string
      */
-    protected _path: string = "";
+    protected _path: string = '';
 
     /**
      * Sub domain/domain of this route
-     * 
+     *
      * @var string
      */
-    protected _domain: string = "";
+    protected _domain: string = '';
 
     /**
      * Flag to set if this route or route group is for http
      * connections.
-     * 
+     *
      * @var boolean
      */
     protected _httpRoute: boolean = false;
 
     /**
      * Route specific middlewares
-     * 
+     *
      * @var array
      */
     protected _middlewares: string[] = [];
 
     /**
      * Middlewares that doesn't have to be run on this route.
-     * 
+     *
      * @var array
      */
     protected _excludedMiddlewares: string[] = [];
 
     /**
      * Returns the uri components of this route path
-     * 
+     *
      * @var array
      */
     private _uriComponents: IUriComponent[] | null = null;
 
     /**
      * Reference to parent route, if any
-     * 
+     *
      * @var Route
      */
     protected _parentRoute: IRoute | null = null;
 
     /**
      * A collection of child routes
-     * 
+     *
      * @var array
      */
     protected _routes: IRoute[] = [];
@@ -93,40 +92,40 @@ export class Route implements IRoute {
     /**
      * Creates a new route. The parent of this route
      * will be set wherever this route gets registered.
-     * 
-     * For eg, say a new route group is created in api routes like 
-     * 
+     *
+     * For eg, say a new route group is created in api routes like
+     *
      * Route::group('api').routes(
      *      Route::post('user','userController@create'),
      *      Route::group('user').routes(
      *          Route::get(':id','userController@index')
      *      ),
      * );
-     * 
+     *
      * In the above example, the inner route group will have the api route
      * as its parent and the route with :id param will have the user group as
      * parent.
-     * 
+     *
      * @return Route
      */
-    constructor(path: string = "") {
+    constructor(path: string = '') {
         this.prefix(path);
     }
 
     /**
      * Creates a new route group.
-     * 
-     * @param prefix 
+     *
+     * @param prefix
      */
-    public static group(prefix: string = ""): Route {
+    public static group(prefix: string = ''): Route {
         return new Route(prefix);
     }
 
     /**
      * Creates a new route for all methods
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static all(uri: string, controller: string | IRequestHandler) {
         return new Route(uri).methods([...Route.verbs]).action(controller);
@@ -134,83 +133,83 @@ export class Route implements IRoute {
 
     /**
      * Creates a new route for GET and HEAD requests
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static get(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["GET"]).action(controller);
+        return new Route(uri).methods(['GET']).action(controller);
     }
 
     /**
      * Creates a new route for PUT requests
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static put(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["PUT"]).action(controller);
+        return new Route(uri).methods(['PUT']).action(controller);
     }
 
     /**
      * Creates a new route for post requests
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static post(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["POST"]).action(controller);
+        return new Route(uri).methods(['POST']).action(controller);
     }
 
     /**
      * Creates a new route for PATCH requests
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static patch(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["PATCH"]).action(controller);
+        return new Route(uri).methods(['PATCH']).action(controller);
     }
 
     /**
      * Creates a new route for DELETE requests
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static delete(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["DELETE"]).action(controller);
+        return new Route(uri).methods(['DELETE']).action(controller);
     }
 
     /**
      * Creates a new route for OPTIONS requests
-     * 
-     * @param uri 
-     * @param controller 
+     *
+     * @param uri
+     * @param controller
      */
     public static options(uri: string, controller: string | IRequestHandler) {
-        return new Route(uri).methods(["OPTIONS"]).action(controller);
+        return new Route(uri).methods(['OPTIONS']).action(controller);
     }
 
     /**
      * Removes the domain scheme, leading and trailing slashes
-     * 
-     * @param domain 
+     *
+     * @param domain
      */
     public static clearDomain(domain: string): string {
-        domain = Str.trimStart(domain.trim(), ["http://", "https://"]);
+        domain = Str.trimStart(domain.trim(), ['http://', 'https://']);
 
-        return Str.trim(domain, "/");
+        return Str.trim(domain, '/');
     }
 
     /**
      * Adds the child routes of this route. Also sets the child
      * routes parent to this route.
-     * 
-     * @param routes 
+     *
+     * @param routes
      */
     public routes(...routes: IRoute[]) {
-        routes.forEach(route => {
+        routes.forEach((route) => {
             route.setParent(this);
         });
 
@@ -221,7 +220,7 @@ export class Route implements IRoute {
 
     /**
      * Middlewares to be used along with this route.
-     * 
+     *
      * @return array
      */
     public routeMiddlewares(): string[] {
@@ -235,7 +234,7 @@ export class Route implements IRoute {
 
         //Removes any excluded middlewares from the list
         if (this._excludedMiddlewares.length > 0) {
-            fullMiddlewares = fullMiddlewares.filter(middleware => {
+            fullMiddlewares = fullMiddlewares.filter((middleware) => {
                 return !this._excludedMiddlewares.includes(middleware);
             });
         }
@@ -245,7 +244,7 @@ export class Route implements IRoute {
     /**
      * Only these middlewares will be resolved when processing
      * requests.
-     * 
+     *
      * @returns array
      */
     public middlewaresToResolve(): string[] {
@@ -253,10 +252,10 @@ export class Route implements IRoute {
     }
 
     /**
-     * Returns the domain of this route. If no domain is defined for the route, 
-     * parent routes are checked for a domain and if it exists on parent, that 
+     * Returns the domain of this route. If no domain is defined for the route,
+     * parent routes are checked for a domain and if it exists on parent, that
      * value is returned.
-     * 
+     *
      * @return string
      */
     public routeDomain(): string {
@@ -272,7 +271,7 @@ export class Route implements IRoute {
     /**
      * Returns the complete route path including prefixes and
      * parent paths.
-     * 
+     *
      * @return string
      */
     public routePath(): string {
@@ -296,13 +295,13 @@ export class Route implements IRoute {
     /**
      * Returns all the child endpoints of this route. Endpoint is a route
      * with a valid method property.
-     * 
+     *
      * @return array
      */
     public routeEndpoints(): IRoute[] {
         let endpoints: IRoute[] = [];
 
-        this._routes.forEach(route => {
+        this._routes.forEach((route) => {
             endpoints.push(...route.routeEndpoints());
         });
 
@@ -316,7 +315,7 @@ export class Route implements IRoute {
      * Checks if this route accepts http connection requests. Https requests are
      * the default and this function returns true only if the httpRoute flag is set
      * for this route or any parent routes.
-     * 
+     *
      * @return string
      */
     public isHttpRoute(): boolean {
@@ -331,21 +330,24 @@ export class Route implements IRoute {
 
     /**
      * Sets the methods of this route
-     * 
-     * @param methods 
+     *
+     * @param methods
      */
     public methods(methods: string | string[]): IRoute {
         if (!Array.isArray(methods)) {
             methods = Array.from(arguments);
         }
 
-        if (!methods.every(method => Route.verbs.includes(method))) {
-            throw new Error(`Method not supported on route ${this._path}. Supported methods are: ` + Route.verbs);
+        if (!methods.every((method) => Route.verbs.includes(method))) {
+            throw new Error(
+                `Method not supported on route ${this._path}. Supported methods are: ` +
+                    Route.verbs,
+            );
         }
 
         // Add HEAD if methods contains GET and does not contain a HEAD
-        if (methods.includes("GET") && !methods.includes("HEAD")) {
-            methods.push("HEAD");
+        if (methods.includes('GET') && !methods.includes('HEAD')) {
+            methods.push('HEAD');
         }
 
         this._methods = methods;
@@ -355,7 +357,7 @@ export class Route implements IRoute {
 
     /**
      * Sets the controller action of this route
-     * 
+     *
      * @param action
      */
     public action(action: string | IRequestHandler): IRoute {
@@ -366,8 +368,8 @@ export class Route implements IRoute {
 
     /**
      * Sets the name of this route
-     * 
-     * @param name 
+     *
+     * @param name
      */
     public name(name: string): IRoute {
         this._name = name;
@@ -377,7 +379,7 @@ export class Route implements IRoute {
 
     /**
      * Sets the route group prefix
-     * 
+     *
      * @param path
      */
     public prefix(path: string): IRoute {
@@ -388,7 +390,7 @@ export class Route implements IRoute {
 
     /**
      * Sets the domian of this route
-     * 
+     *
      * @param domain
      */
     public domain(domain: string): IRoute {
@@ -399,7 +401,7 @@ export class Route implements IRoute {
 
     /**
      * Sets the route to allow http requests.
-     * 
+     *
      * @return this
      */
     public http(httpRoute: boolean = true): IRoute {
@@ -410,11 +412,10 @@ export class Route implements IRoute {
 
     /**
      * Sets the middlewares to be used by this route or route group.
-     * 
-     * @param middlewares 
+     *
+     * @param middlewares
      */
     public middleware(...middlewares: string[]): IRoute {
-
         this._middlewares = middlewares;
 
         return this;
@@ -422,11 +423,10 @@ export class Route implements IRoute {
 
     /**
      * Sets the excluded middlewares of this route.
-     * 
-     * @param middlewares 
+     *
+     * @param middlewares
      */
     public withoutMiddleware(...middlewares: string[]): IRoute {
-
         this._excludedMiddlewares = middlewares;
 
         return this;
@@ -434,8 +434,8 @@ export class Route implements IRoute {
 
     /**
      * Sets the parent route of this route
-     * 
-     * @param route 
+     *
+     * @param route
      */
     public setParent(route: IRoute) {
         this._parentRoute = route;
@@ -443,7 +443,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the methods of this route
-     * 
+     *
      * @return string
      */
     public getMethods(): string[] {
@@ -452,7 +452,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the name of this route
-     * 
+     *
      * @return string
      */
     public getName(): string {
@@ -461,7 +461,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the route path
-     * 
+     *
      * @return string
      */
     public getPath(): string {
@@ -470,7 +470,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the route request handler.
-     * 
+     *
      * @return IRequestHandler
      */
     public getAction(): string | IRequestHandler {
@@ -479,7 +479,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the parent route.
-     * 
+     *
      * @return Route|null
      */
     public getParent(): IRoute | null {
@@ -488,7 +488,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the child routes.
-     * 
+     *
      * @return Route|null
      */
     public getChildRoutes(): IRoute[] {
@@ -497,7 +497,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the uri components of this route.
-     * 
+     *
      * @return array
      */
     public getUriComponents(): IUriComponent[] {
@@ -509,7 +509,7 @@ export class Route implements IRoute {
 
     /**
      * Returns the excluded route middlewares.
-     * 
+     *
      * @returns array
      */
     public getExcludedMiddlewares(): string[] {
@@ -518,7 +518,7 @@ export class Route implements IRoute {
 
     /**
      * Checks if this is an endpoint
-     * 
+     *
      * @return boolean
      */
     public isEndpoint(): boolean {
@@ -527,7 +527,7 @@ export class Route implements IRoute {
 
     /**
      * Checks if the route has any parent route.
-     * 
+     *
      * @return boolean
      */
     public hasParent(): boolean {

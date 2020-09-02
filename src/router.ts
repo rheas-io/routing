@@ -1,24 +1,30 @@
-import path from "path";
-import { Route } from "./route";
-import { Str } from "@rheas/support";
-import { IApp } from "@rheas/contracts/core/app";
-import { Exception } from "@rheas/errors/exception";
-import { RequestPipeline } from "./requestPipeline";
-import { UriValidator } from "./validators/uriValidator";
-import { HostValidator } from "./validators/hostValidator";
-import { NotFoundException } from "@rheas/errors/notFound";
-import { MethodValidator } from "./validators/methodValidator";
-import { SchemeValidator } from "./validators/schemeValidator";
-import { KeyValue, IRequest, IResponse } from "@rheas/contracts";
-import { IExceptionHandler, IException } from "@rheas/contracts/errors";
-import { MethodNotAllowedException } from "@rheas/errors/methoNotAllowed";
-import { IRoute, IRouter, INameParams, IRouteValidator, IRequestHandler, IMiddleware } from "@rheas/contracts/routes";
+import path from 'path';
+import { Route } from './route';
+import { Str } from '@rheas/support';
+import { IApp } from '@rheas/contracts/core/app';
+import { Exception } from '@rheas/errors/exception';
+import { RequestPipeline } from './requestPipeline';
+import { UriValidator } from './validators/uriValidator';
+import { HostValidator } from './validators/hostValidator';
+import { NotFoundException } from '@rheas/errors/notFound';
+import { MethodValidator } from './validators/methodValidator';
+import { SchemeValidator } from './validators/schemeValidator';
+import { KeyValue, IRequest, IResponse } from '@rheas/contracts';
+import { IExceptionHandler, IException } from '@rheas/contracts/errors';
+import { MethodNotAllowedException } from '@rheas/errors/methoNotAllowed';
+import {
+    IRoute,
+    IRouter,
+    INameParams,
+    IRouteValidator,
+    IRequestHandler,
+    IMiddleware,
+} from '@rheas/contracts/routes';
 
 export class Router extends Route implements IRouter {
-
     /**
      * The application instance
-     * 
+     *
      * @var IApp
      */
     protected app: IApp;
@@ -26,48 +32,48 @@ export class Router extends Route implements IRouter {
     /**
      * The folder where controller files are located. The location
      * is respective to the root path.
-     * 
+     *
      * @var string
      */
-    protected controllerPath: string = "app/controllers";
+    protected controllerPath: string = 'app/controllers';
 
     /**
      * List of all the middlewares used in the application
-     * 
+     *
      * @var array
      */
     protected middlewares_list: KeyValue<IMiddleware> = {};
 
     /**
      * Cache of route by names.
-     * 
+     *
      * @var object
      */
     protected _namedEndpoints: KeyValue<IRoute> = {};
 
     /**
      * Cache of routes grouped by methods.
-     * 
+     *
      * @var object
      */
     protected _methodEndpoints: KeyValue<IRoute[]> = {};
 
     /**
      * All the route validators.
-     * 
+     *
      * @var array
      */
     private _routeValidators: IRouteValidator[] = [];
 
     /**
      * This is the parent route of the application or in general, the core
-     * router of Rheas application. All the other routes are registered 
+     * router of Rheas application. All the other routes are registered
      * under this route. This abstract router has to be extended in the
      * application routes folder or wherever the user finds it convenient.
-     * 
+     *
      * The derived route class has to register the apiRouteRegistrar and
      * webRouteRegistrar and set the router config to the derived class.
-     * 
+     *
      * Rheas will read the config and use the router as the application
      * router.
      */
@@ -82,20 +88,18 @@ export class Router extends Route implements IRouter {
      * sent to a pipeline of global middlewares (middlewares of this class). Once that's
      * done, they are forwarded to routeHandler, which checks for a matching route. If found
      * one, then the request is send through a pipeline of route middlewares.
-     * 
-     * @param request 
-     * @param response 
+     *
+     * @param request
+     * @param response
      */
     public async handle(request: IRequest, response: IResponse): Promise<IResponse> {
-
         try {
             // Sends request through the middlewares of this class, which are
             // global middlewares. Final destination will be the routeHandler
             // function of this object which will continue the request flow through
             // the route middleware pipeline, if required.
             response = await this.dispatchToRoute(this, request, response);
-        }
-        catch (err) {
+        } catch (err) {
             // Catch any exception occured when processing the request and
             // create a response from the exception. This error response should
             // be returned.
@@ -108,10 +112,10 @@ export class Router extends Route implements IRouter {
     /**
      * Handles the exceptions. Binds the exception to the response and logs the exception
      * if it has to be logged.
-     * 
-     * @param err 
-     * @param req 
-     * @param res 
+     *
+     * @param err
+     * @param req
+     * @param res
      */
     protected handleError(err: Error | IException, req: IRequest, res: IResponse): IResponse {
         const exceptionHandler: IExceptionHandler = this.app.get('error');
@@ -128,13 +132,16 @@ export class Router extends Route implements IRouter {
 
     /**
      * Dispatches the request to the route through middleware pipeline.
-     * 
-     * @param route 
-     * @param req 
-     * @param res 
+     *
+     * @param route
+     * @param req
+     * @param res
      */
-    protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse): Promise<IResponse> {
-
+    protected async dispatchToRoute(
+        route: IRoute,
+        req: IRequest,
+        res: IResponse,
+    ): Promise<IResponse> {
         const destination =
             this === route ? this.routeHandler.bind(this) : this.resolveDestination(route, req);
 
@@ -146,15 +153,14 @@ export class Router extends Route implements IRouter {
     /**
      * Requests are send here after flowing through a series of global middlewares, if no response
      * has been found.
-     * 
+     *
      * This handler finds a matching route for the request and continue the request flow through
      * the route middleware pipeline.
-     * 
-     * @param request 
-     * @param response 
+     *
+     * @param request
+     * @param response
      */
     private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
-
         const route = this.matchingRoute(request);
 
         return await this.dispatchToRoute(route, request, response);
@@ -164,45 +170,44 @@ export class Router extends Route implements IRouter {
      * Resolves middleware handlers for the route. Returns an array
      * of middleware handlers which executes the corresponding middleware
      * with the params.
-     * 
-     * @param route 
+     *
+     * @param route
      */
     private middlewarePipesOfRoute(route: IRoute): IMiddleware[] {
+        return route.middlewaresToResolve().reduce((prev: IMiddleware[], current: string) => {
+            const nameParam = this.routeRequiresMiddleware(route, current);
 
-        return route.middlewaresToResolve().reduce(
-            (prev: IMiddleware[], current: string) => {
-                const nameParam = this.routeRequiresMiddleware(route, current);
-
-                if (nameParam !== false) {
-                    prev.push(this.resolveMiddleware(nameParam));
-                }
-                return prev;
-            }, []);
+            if (nameParam !== false) {
+                prev.push(this.resolveMiddleware(nameParam));
+            }
+            return prev;
+        }, []);
     }
 
     /**
      * Returns middleware handler function.
-     * 
+     *
      * @param nameParam
      */
     private resolveMiddleware([name, params]: INameParams): IMiddleware {
-
         return async (req, res, next) => {
             const typeMiddleware = typeof this.middlewares_list[name];
 
             if (typeMiddleware !== 'function') {
-                throw new Exception(`Middleware ${name} has to be a function. Found: ${typeMiddleware}`);
+                throw new Exception(
+                    `Middleware ${name} has to be a function. Found: ${typeMiddleware}`,
+                );
             }
-            return await this.middlewares_list[name](req, res, next, ...params)
+            return await this.middlewares_list[name](req, res, next, ...params);
         };
     }
 
     /**
-     * Checks if the given middleware (by name) has to be executed or not. Returns 
+     * Checks if the given middleware (by name) has to be executed or not. Returns
      * [name, params[]] if the middleware is not present in the exclusion list of route.
-     * 
-     * @param route 
-     * @param middleware 
+     *
+     * @param route
+     * @param middleware
      */
     private routeRequiresMiddleware(route: IRoute, middleware: string): INameParams | false {
         const [name, params] = this.middlewareNameParams(middleware);
@@ -218,8 +223,8 @@ export class Router extends Route implements IRouter {
 
     /**
      * Returns middleware string as name and params array.
-     * 
-     * @param middleware 
+     *
+     * @param middleware
      */
     private middlewareNameParams(middleware: string): INameParams {
         let [name, ...others] = middleware.trim().split(':');
@@ -232,12 +237,11 @@ export class Router extends Route implements IRouter {
     /**
      * Returns the final request handler of the route which is a request handler
      * executing the route action/controller method.
-     * 
-     * @param route 
-     * @param req 
+     *
+     * @param route
+     * @param req
      */
     protected resolveDestination(route: IRoute, request: IRequest): IRequestHandler {
-
         return async (req, res) => {
             let controllerAction: string | IRequestHandler = route.getAction();
 
@@ -247,16 +251,15 @@ export class Router extends Route implements IRouter {
             const params = request.params();
 
             return await (<IRequestHandler>controllerAction)(req, res, ...params);
-        }
+        };
     }
 
     /**
      * Resolves controller function from route action string.
-     * 
-     * @param controller 
+     *
+     * @param controller
      */
     protected resolveController(controller: string): IRequestHandler {
-
         let [className, method] = controller.trim().split('@');
 
         return require(this.controllerScript(className))[method];
@@ -265,8 +268,8 @@ export class Router extends Route implements IRouter {
     /**
      * Returns path to the script. The path is respective to the root
      * path.
-     * 
-     * @param filename 
+     *
+     * @param filename
      */
     private controllerScript(filename: string) {
         const rootPath: string = this.app.get('path.root') || '';
@@ -279,14 +282,13 @@ export class Router extends Route implements IRouter {
 
     /**
      * Checks the request for a matching route.
-     * 
-     * @param request 
-     * @param response 
+     *
+     * @param request
+     * @param response
      */
     public matchingRoute(request: IRequest): IRoute {
-
         let req_method = request.getMethod();
-        req_method = (req_method === 'HEAD' ? 'GET' : req_method);
+        req_method = req_method === 'HEAD' ? 'GET' : req_method;
 
         const route = this.matchAgainstRoutes(this._methodEndpoints[req_method], request);
 
@@ -300,7 +302,9 @@ export class Router extends Route implements IRouter {
             //TODO options method.
             throw new MethodNotAllowedException(
                 _methods,
-                `Url path does not support ${req_method} method. Supported methods are: ${_methods.join(',')}`
+                `Url path does not support ${req_method} method. Supported methods are: ${_methods.join(
+                    ',',
+                )}`,
             );
         }
 
@@ -309,12 +313,11 @@ export class Router extends Route implements IRouter {
 
     /**
      * Checks if a request for any other verb is defined.
-     * 
-     * @param request 
-     * @param original_method 
+     *
+     * @param request
+     * @param original_method
      */
     private otherMethods(request: IRequest, original_method: string): string[] {
-
         const _methods = [];
         const _endpoints = Object.assign({}, this._methodEndpoints);
 
@@ -329,14 +332,13 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * Checks if a request matches against a set of routes. First match is 
+     * Checks if a request matches against a set of routes. First match is
      * returned if one exists and null otherwise.
-     * 
-     * @param routes 
-     * @param request 
+     *
+     * @param routes
+     * @param request
      */
     protected matchAgainstRoutes(routes: IRoute[], request: IRequest): IRoute | null {
-
         this._routeValidators = this.routeValidators();
 
         for (let route of routes) {
@@ -350,13 +352,16 @@ export class Router extends Route implements IRouter {
     /**
      * Checks if a route matches for the request. Match is done against the validators
      * submitted.
-     * 
-     * @param route 
-     * @param request 
-     * @param validators 
+     *
+     * @param route
+     * @param request
+     * @param validators
      */
-    protected routeMatches(route: IRoute, request: IRequest, validators: IRouteValidator[]): boolean {
-
+    protected routeMatches(
+        route: IRoute,
+        request: IRequest,
+        validators: IRouteValidator[],
+    ): boolean {
         for (let validator of validators) {
             if (!validator.matches(route, request)) {
                 return false;
@@ -368,31 +373,32 @@ export class Router extends Route implements IRouter {
     /**
      * Returns the validators that each request has to run to find a
      * route match.
-     * 
-     * @return array of route validators. 
+     *
+     * @return array of route validators.
      */
     protected routeValidators(): IRouteValidator[] {
-
         if (this._routeValidators.length === 0) {
             this._routeValidators = [
-                this.getMethodValidator(), this.getUriValidator(),
-                this.getHostValidator(), this.getSchemeValidator(),
+                this.getMethodValidator(),
+                this.getUriValidator(),
+                this.getHostValidator(),
+                this.getSchemeValidator(),
             ];
         }
         return this._routeValidators;
     }
 
     /**
-     * Router middlewares shouldn't be send to the routes. 
-     * 
-     * Middlewares of this router are global middlewares, that has to 
+     * Router middlewares shouldn't be send to the routes.
+     *
+     * Middlewares of this router are global middlewares, that has to
      * be executed no matter what and before finding the matching route.
-     * 
+     *
      * To eliminate having this added to the endpoint middleware list,
      * we simpley overrides it with an empty array.
-     * 
+     *
      * @override
-     * 
+     *
      * @return array
      */
     public routeMiddlewares(): string[] {
@@ -401,7 +407,7 @@ export class Router extends Route implements IRouter {
 
     /**
      * Only these middlewares will be resolved when processing requests.
-     * 
+     *
      * @returns array
      */
     public middlewaresToResolve(): string[] {
@@ -409,16 +415,15 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * Caches the routes by name and request methods. All these cache contains 
+     * Caches the routes by name and request methods. All these cache contains
      * only the final endpoint routes. Each endpoint route will traverse in
-     * reverse to match the request uri and to obtain the middlewares. 
-     * 
-     * Router will cache the endpoint routes by name and methods for faster 
+     * reverse to match the request uri and to obtain the middlewares.
+     *
+     * Router will cache the endpoint routes by name and methods for faster
      * route  matching.
      */
     public cacheRoutes(): void {
-
-        this.routeEndpoints().forEach(route => {
+        this.routeEndpoints().forEach((route) => {
             this.cacheNamedRoute(route);
             this.cacheMethodRoute(route);
         });
@@ -426,8 +431,8 @@ export class Router extends Route implements IRouter {
 
     /**
      * Caches the route by name if it has a non-empty name.
-     * 
-     * @param route 
+     *
+     * @param route
      */
     protected cacheNamedRoute(route: IRoute): void {
         const name = route.getName().trim();
@@ -438,22 +443,25 @@ export class Router extends Route implements IRouter {
     }
 
     /**
-     * Sorts the route method and cache them into the appropriate array. This allows 
+     * Sorts the route method and cache them into the appropriate array. This allows
      * quick retreival of request route by querying through the method array.
-     * 
-     * @param route 
+     *
+     * @param route
      */
     protected cacheMethodRoute(route: IRoute): void {
-        route.getMethods().filter(method => method !== 'HEAD').forEach(method => {
-            this._methodEndpoints[method] = this._methodEndpoints[method] || [];
+        route
+            .getMethods()
+            .filter((method) => method !== 'HEAD')
+            .forEach((method) => {
+                this._methodEndpoints[method] = this._methodEndpoints[method] || [];
 
-            this._methodEndpoints[method].push(route);
-        });
+                this._methodEndpoints[method].push(route);
+            });
     }
 
     /**
      * New host validator. Domain/subdomain checks.
-     * 
+     *
      * @return
      */
     protected getHostValidator(): IRouteValidator {
@@ -462,8 +470,8 @@ export class Router extends Route implements IRouter {
 
     /**
      * New scheme validator. http or https check
-     * 
-     * @return 
+     *
+     * @return
      */
     protected getSchemeValidator(): IRouteValidator {
         return new SchemeValidator();
@@ -471,7 +479,7 @@ export class Router extends Route implements IRouter {
 
     /**
      * New route method validator.
-     * 
+     *
      * @return
      */
     protected getMethodValidator(): IRouteValidator {
@@ -480,7 +488,7 @@ export class Router extends Route implements IRouter {
 
     /**
      * New uri validator. Checks if the request url and route path matches.
-     * 
+     *
      * @return
      */
     protected getUriValidator(): IRouteValidator {
@@ -489,8 +497,8 @@ export class Router extends Route implements IRouter {
 
     /**
      * Returns route if a route with the name exists or null.
-     * 
-     * @param name 
+     *
+     * @param name
      */
     public getNamedRoute(name: string): IRoute | null {
         return this._namedEndpoints[name] || null;

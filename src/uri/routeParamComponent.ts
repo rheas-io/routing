@@ -1,13 +1,12 @@
-import { Str } from "@rheas/support";
-import { UriComponent } from "./baseComponent";
-import { IUriComponent, IParamComponent } from "@rheas/contracts/routes/uri";
+import { Str } from '@rheas/support';
+import { UriComponent } from './baseComponent';
+import { IUriComponent, IParamComponent } from '@rheas/contracts/routes/uri';
 
 export class ParamComponent extends UriComponent implements IParamComponent {
-
     /**
-     * Flag that caches the optional status of this param 
+     * Flag that caches the optional status of this param
      * component.
-     * 
+     *
      * @var boolean
      */
     protected _optional: boolean;
@@ -15,8 +14,8 @@ export class ParamComponent extends UriComponent implements IParamComponent {
     /**
      * Creates a new parameter component of the route path. The particular
      * segment is passed as argument.
-     * 
-     * @param component 
+     *
+     * @param component
      */
     constructor(component: string) {
         super(component);
@@ -27,7 +26,7 @@ export class ParamComponent extends UriComponent implements IParamComponent {
     /**
      * Returns true if the parameter is optional ie has a ? at
      * the end of the path fragment.
-     * 
+     *
      * @returns boolean
      */
     public isOptional(): boolean {
@@ -37,23 +36,22 @@ export class ParamComponent extends UriComponent implements IParamComponent {
     /**
      * Returns the name of the parameter without any optional
      * symbol (?) or colon (:)
-     * 
+     *
      * @returns param name
      */
     public getName(): string {
-        return Str.trimEnd(Str.trimStart(this.getSegment(), ":"), '?');
+        return Str.trimEnd(Str.trimStart(this.getSegment(), ':'), '?');
     }
 
     /**
      * Returns true if the argument components value is not
-     * empty. Emptiness is checked by char length. We won't be 
+     * empty. Emptiness is checked by char length. We won't be
      * trimming any characters, so even blank spaces are counted
      * as valid.
-     * 
-     * @param uriComponent 
+     *
+     * @param uriComponent
      */
     public equals(uriComponent: IUriComponent): boolean {
-
         if (uriComponent === null || uriComponent === void 0) {
             return this.isOptional();
         }

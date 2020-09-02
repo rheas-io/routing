@@ -1,54 +1,53 @@
-import { Route } from "./route";
-import { Str } from "@rheas/support";
-import { config } from "@rheas/support/helpers";
-import { IRoute } from "@rheas/contracts/routes";
-import { AnyObject, KeyValue } from "@rheas/contracts";
-import { ParamComponent } from "./uri/routeParamComponent";
-import { ComponentFactory } from "./uri/uriComponentFactory";
-import { InvalidArgumentException } from "@rheas/errors/invalidArgument";
-import { IUriComponent, IParamComponent } from "@rheas/contracts/routes/uri";
+import { Route } from './route';
+import { Str } from '@rheas/support';
+import { config } from '@rheas/support/helpers';
+import { IRoute } from '@rheas/contracts/routes';
+import { AnyObject, KeyValue } from '@rheas/contracts';
+import { ParamComponent } from './uri/routeParamComponent';
+import { ComponentFactory } from './uri/uriComponentFactory';
+import { InvalidArgumentException } from '@rheas/errors/invalidArgument';
+import { IUriComponent, IParamComponent } from '@rheas/contracts/routes/uri';
 
 export class RouteUrlGenerator {
-
     /**
      * The route object.
-     * 
+     *
      * @var IRoute
      */
     protected _route: IRoute;
 
     /**
      * Cached route domain string
-     * 
+     *
      * @var string
      */
-    protected _domain: string = "";
+    protected _domain: string = '';
 
     /**
      * Caches the domain component.
-     * 
+     *
      * @var array
      */
     protected _domainComponents: IUriComponent[] | null = null;
 
     /**
      * Param components of this routes domain.
-     * 
+     *
      * @var object
      */
     protected _domainParams: KeyValue<IParamComponent> | null = null;
 
     /**
      * Param components of this routes paths.
-     * 
+     *
      * @var object
      */
     protected _pathParams: KeyValue<IParamComponent> | null = null;
 
     /**
      * Creates a new route url generator for the given route
-     * 
-     * @param route 
+     *
+     * @param route
      */
     constructor(route: IRoute) {
         this._route = route;
@@ -56,11 +55,10 @@ export class RouteUrlGenerator {
 
     /**
      * Creates a url for the route.
-     * 
-     * @param params 
+     *
+     * @param params
      */
     public generateUrl(params: AnyObject = {}, secure?: boolean): string {
-
         const protocol = this.getProtocolString(secure);
         const domain = this.getDomainString(params);
 
@@ -74,11 +72,10 @@ export class RouteUrlGenerator {
 
     /**
      * Returns the protocol string of the route
-     * 
-     * @param secure 
+     *
+     * @param secure
      */
     public getProtocolString(secure?: boolean) {
-
         if (secure == null) {
             return this._route.isHttpRoute() ? 'http://' : 'https://';
         }
@@ -87,33 +84,34 @@ export class RouteUrlGenerator {
 
     /**
      * Returns the domain part of this route (without the protocol part).
-     * 
-     * @param params 
+     *
+     * @param params
      */
     public getDomainString(params: AnyObject = {}): string {
-        return this.getDomainComponents().map(
-            (component) => this.getComponentValue(component, params)
-        ).join('.');
+        return this.getDomainComponents()
+            .map((component) => this.getComponentValue(component, params))
+            .join('.');
     }
 
     /**
      * Returns the route path after replacing any parameters.
-     * 
-     * @param params 
+     *
+     * @param params
      */
     public getPathString(params: AnyObject = {}): string {
-        return this._route.getUriComponents().map(
-            (component) => this.getComponentValue(component, params)
-        ).join('/');
+        return this._route
+            .getUriComponents()
+            .map((component) => this.getComponentValue(component, params))
+            .join('/');
     }
 
     /**
      * Returns the uri/domain component value. If the component is a param
      * component, then the submitted param valu is used or throws an error
      * if no param is provided.
-     * 
-     * @param component 
-     * @param params 
+     *
+     * @param component
+     * @param params
      */
     private getComponentValue(component: IUriComponent, params: AnyObject): string {
         let value = component.getSegment();
@@ -136,8 +134,8 @@ export class RouteUrlGenerator {
     /**
      * Returns a query string excluding the domain param and path param
      * names/keys.
-     * 
-     * @param params 
+     *
+     * @param params
      */
     public getQueryString(params: AnyObject = {}): string {
         const domainParams = this.getDomainParamComponents();
@@ -151,11 +149,10 @@ export class RouteUrlGenerator {
     /**
      * Returns parameter components in the route domain as key-value object
      * where key is the parameter name and value is the param component
-     * 
+     *
      * @returns array
      */
     public getDomainParamComponents(): KeyValue<IParamComponent> {
-
         if (this._domainParams === null) {
             this._domainParams = this.getParamComponents(this.getDomainComponents());
         }
@@ -164,7 +161,7 @@ export class RouteUrlGenerator {
 
     /**
      * Returns the domain components of this route.
-     * 
+     *
      * @returns array
      */
     public getDomainComponents(): IUriComponent[] {
@@ -177,14 +174,14 @@ export class RouteUrlGenerator {
     /**
      * Gets the route domain if it exists or reads the domain from the config
      * file. The domain will have no trailing slashes and no protocol section.
-     * 
+     *
      * @returns string
      */
     public domain(): string {
-
         if (!this._domain) {
-            this._domain = this._route.routeDomain() ||
-                // If route domain is empty, read the domain from app 
+            this._domain =
+                this._route.routeDomain() ||
+                // If route domain is empty, read the domain from app
                 // config file.
                 Route.clearDomain(config('app.domain', ''));
         }
@@ -195,11 +192,10 @@ export class RouteUrlGenerator {
     /**
      * Returns parameter components in the route path as key-value object
      * where key is the parameter name and value is the param component
-     * 
+     *
      * @returns array
      */
     public getPathParamComponents(): KeyValue<IParamComponent> {
-
         if (this._pathParams === null) {
             this._pathParams = this.getParamComponents(this._route.getUriComponents());
         }
@@ -209,13 +205,13 @@ export class RouteUrlGenerator {
     /**
      * Returns a key-value collection of param components in
      * the submitted components list
-     * 
-     * @param components 
+     *
+     * @param components
      */
     public getParamComponents(components: IUriComponent[]): KeyValue<IParamComponent> {
         const paramComponents: KeyValue<IParamComponent> = {};
 
-        components.forEach(uriComponent => {
+        components.forEach((uriComponent) => {
             if (uriComponent instanceof ParamComponent) {
                 paramComponents[uriComponent.getName()] = uriComponent;
             }
