@@ -9,7 +9,17 @@ export class Route implements IRoute {
      *
      * @var array
      */
-    public static verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+    public static verbs = [
+        'GET',
+        'HEAD',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS',
+        'CONNECT',
+        'TRACE',
+    ];
 
     /**
      * Http methods this route handles.
