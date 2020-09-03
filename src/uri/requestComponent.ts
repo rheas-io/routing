@@ -1,5 +1,4 @@
 import { UriComponent } from './baseComponent';
-import { StringObject } from '@rheas/contracts';
 import { ParamComponent } from './routeParamComponent';
 import { IRequestComponent, IUriComponent } from '@rheas/contracts/routes/uri';
 
@@ -32,16 +31,24 @@ export class RequestComponent extends UriComponent implements IRequestComponent 
     }
 
     /**
+     * Returns the route uri parameter name for this segment, if it is a 
+     * parameterized segment or null.
+     *
+     * @return
+     */
+    public getParamName(): string | null {
+        if (this._routeComponent instanceof ParamComponent) {
+            return this._routeComponent.getName();
+        }
+        return null;
+    }
+
+    /**
      * @inheritdoc
      *
      * @return object
      */
-    public getParam(): StringObject {
-        const param: StringObject = {};
-
-        if (this._routeComponent instanceof ParamComponent) {
-            param[this._routeComponent.getName()] = decodeURIComponent(this.getSegment());
-        }
-        return param;
+    public getParam(): string {
+        return decodeURIComponent(this.getSegment());
     }
 }
