@@ -1,14 +1,15 @@
 import { IApp } from '@rheas/contracts/core';
 import { UrlGenerator } from './urlGenerator';
 import { ServiceProvider } from '@rheas/services';
+import { InstanceHandler } from '@rheas/contracts/container';
 
 export class UrlServiceProvider extends ServiceProvider {
     /**
-     * Registers the url generator service of the
+     * Returns the url generator service resolver.
+     *
+     * @returns
      */
-    public register() {
-        this.container.singleton(this.name, (app) => {
-            return new UrlGenerator(app.get('router'));
-        });
+    public serviceResolver(): InstanceHandler {
+        return (app) => new UrlGenerator(app.get('router'));
     }
 }
