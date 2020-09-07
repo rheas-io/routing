@@ -12,14 +12,8 @@ import { SchemeValidator } from './validators/schemeValidator';
 import { KeyValue, IRequest, IResponse } from '@rheas/contracts';
 import { IExceptionHandler, IException } from '@rheas/contracts/errors';
 import { MethodNotAllowedException } from '@rheas/errors/methoNotAllowed';
-import {
-    IRoute,
-    IRouter,
-    INameParams,
-    IRouteValidator,
-    IRequestHandler,
-    IMiddleware,
-} from '@rheas/contracts/routes';
+import { IRoute, IRouter, IRouteValidator } from '@rheas/contracts/routes';
+import { INameParams, IRequestHandler, IMiddleware } from '@rheas/contracts/routes';
 
 export class Router extends Route implements IRouter {
     /**
@@ -133,15 +127,21 @@ export class Router extends Route implements IRouter {
     /**
      * Dispatches the request to the route through middleware pipeline.
      *
+     * This is a recursive function. Initially as a request is obtained, the
+     * `routeHandler()` of this router is set as the destination and the request
+     * passes through the middlewares of this class ie the global middlewares.
+     *
+     * The `routeHandler()` calls this function again with the matched route and
+     * is responsible for creating a new pipeline with route action as the
+     * destination. This pipeline consists of the route middlewares.The request
+     * reaches the route action aka pipeline destination after flowing through all
+     * the route pipelines.
+     *
      * @param route
      * @param req
      * @param res
      */
-    protected async dispatchToRoute(
-        route: IRoute,
-        req: IRequest,
-        res: IResponse,
-    ): Promise<IResponse> {
+    protected async dispatchToRoute(route: IRoute, req: IRequest, res: IResponse) {
         const destination =
             this === route ? this.routeHandler.bind(this) : this.resolveDestination(route, req);
 
@@ -162,6 +162,8 @@ export class Router extends Route implements IRouter {
      */
     private async routeHandler(request: IRequest, response: IResponse): Promise<IResponse> {
         const route = this.matchingRoute(request);
+
+        request.setRoute(route);
 
         return await this.dispatchToRoute(route, request, response);
     }
@@ -357,11 +359,7 @@ export class Router extends Route implements IRouter {
      * @param request
      * @param validators
      */
-    protected routeMatches(
-        route: IRoute,
-        request: IRequest,
-        validators: IRouteValidator[],
-    ): boolean {
+    protected routeMatches(route: IRoute, request: IRequest, validators: IRouteValidator[]) {
         for (let validator of validators) {
             if (!validator.matches(route, request)) {
                 return false;
