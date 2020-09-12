@@ -133,7 +133,7 @@ export class Router extends Route implements IRouter {
      *
      * The `routeHandler()` calls this function again with the matched route and
      * is responsible for creating a new pipeline with route action as the
-     * destination. This pipeline consists of the route middlewares.The request
+     * destination. This pipeline consists of the route middlewares. The request
      * reaches the route action aka pipeline destination after flowing through all
      * the route pipelines.
      *

@@ -47,7 +47,7 @@ export class RequestPipeline {
     /**
      * Returns a request handler that executes the current pipe on call.
      *
-     * @param prev
+     * @param next
      * @param current
      */
     protected pipelineReducer(next: IRequestHandler, current: IMiddleware): IRequestHandler {
