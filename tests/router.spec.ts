@@ -29,7 +29,7 @@ describe("router", () => {
     //Route validators
     it("route_validators", () => { router.assertValidators(); });
 
-    //Route middlewares check. router.routeMiddleware should always
+    // Route middlewares check. router.routeMiddleware should always
     // return an empty array and middlewaresToResolve should return the
     // global middlewares.
     it("route_middlewares", () => {
