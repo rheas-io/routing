@@ -74,7 +74,7 @@ export class Router extends Route implements IRouter {
     constructor(app: IApp) {
         super();
 
-        this.app = app;
+        this.app = app;        
     }
 
     /**
@@ -97,7 +97,6 @@ export class Router extends Route implements IRouter {
             // Catch any exception occured when processing the request and
             // create a response from the exception. This error response should
             // be returned.
-            console.log(err);
             response = this.handleError(err, request, response);
         }
         return response;
