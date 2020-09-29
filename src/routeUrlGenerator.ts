@@ -1,5 +1,4 @@
-import { Route } from './route';
-import { Str } from '@rheas/support';
+import { Str } from '@rheas/support/str';
 import { config } from '@rheas/support/helpers';
 import { IRoute } from '@rheas/contracts/routes';
 import { AnyObject, KeyValue } from '@rheas/contracts';
@@ -180,10 +179,10 @@ export class RouteUrlGenerator {
     public domain(): string {
         if (!this._domain) {
             this._domain =
-                this._route.routeDomain() ||
+                this._route.getDomain() ||
                 // If route domain is empty, read the domain from app
                 // config file.
-                Route.clearDomain(config('app.domain', ''));
+                Str.domainWithoutSchema(config('app.domain', ''));
         }
 
         return this._domain;

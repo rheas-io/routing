@@ -33,7 +33,7 @@ export class ComponentFactory {
      * @param uri
      */
     public static createFromRoute(route: IRoute): IUriComponent[] {
-        const uri = route.routePath();
+        const uri = route.getPath();
 
         return uri.split('/').map((component) => ComponentFactory.createFromComponent(component));
     }

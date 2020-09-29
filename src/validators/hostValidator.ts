@@ -9,9 +9,9 @@ export class HostValidator implements IRouteValidator {
      * @param request
      */
     public matches(route: IRoute, request: IRequest): boolean {
-        if ('' === route.routeDomain()) {
+        if ('' === route.getDomain()) {
             return true;
         }
-        return route.routeDomain() === request.getHost();
+        return route.getDomain() === request.getHost();
     }
 }

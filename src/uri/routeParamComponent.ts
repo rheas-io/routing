@@ -1,4 +1,4 @@
-import { Str } from '@rheas/support';
+import { Str } from '@rheas/support/str';
 import { UriComponent } from './baseComponent';
 import { IUriComponent, IParamComponent } from '@rheas/contracts/routes/uri';
 

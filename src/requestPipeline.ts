@@ -1,5 +1,6 @@
 import { IRequest, IResponse } from '@rheas/contracts';
-import { IMiddleware, IRequestHandler } from '@rheas/contracts/routes';
+import { IRequestHandler } from '@rheas/contracts/routes';
+import { IMiddleware } from '@rheas/contracts/middlewares';
 
 export class RequestPipeline {
     /**

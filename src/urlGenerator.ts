@@ -1,6 +1,5 @@
 import { Route } from './route';
-import { Str } from '@rheas/support';
-import { IApp } from '@rheas/contracts/core/app';
+import { Str } from '@rheas/support/str';
 import { AnyObject, IRequest } from '@rheas/contracts';
 import { RouteUrlGenerator } from './routeUrlGenerator';
 import { InvalidArgumentException } from '@rheas/errors/invalidArgument';
