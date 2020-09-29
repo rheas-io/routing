@@ -205,11 +205,8 @@ export class Route extends RouteBase implements IRoute {
      */
     public setGroupProperties(group: IRouteGroup): IRoute {
         // Prepend the group prefix to the route path.
-        const groupPrefix = Str.path(group.getPrefix());
+        this._path = Str.path(Str.path(group.getPrefix()) + '/' + this.getPath());
 
-        if (groupPrefix) {
-            this._path = groupPrefix + '/' + this.getPath();
-        }
         // Add middlewares from the group at the beginning of the
         // middleware list.
         this._middlewares.unshift(...group.getMiddlewares());

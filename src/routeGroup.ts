@@ -49,6 +49,21 @@ export class RouteGroup extends RouteBase implements IRouteGroup {
     }
 
     /**
+     * Registers the routes on this route group.
+     *
+     * This function sets a new list of routes and does not keep any previously
+     * registered routes, if called multiple times. In short, acts like a route
+     * list reset.
+     *
+     * @param routes
+     */
+    public routes(...routes: (IRoute | RouteGroup)[]): IRouteGroup {
+        this._routes = routes;
+
+        return this;
+    }
+
+    /**
      * Returns all the routes with group properties prepended to it.
      *
      * @returns
