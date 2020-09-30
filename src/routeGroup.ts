@@ -2,7 +2,7 @@ import { RouteBase } from './routeBase';
 import { Str } from '@rheas/support/str';
 import { IRoute, IRouteGroup } from '@rheas/contracts/routes';
 
-export class RouteGroup extends RouteBase implements IRouteGroup {
+export class RouteGroup extends RouteBase<IRouteGroup> implements IRouteGroup {
     /**
      * Uri prefix of this route group
      *

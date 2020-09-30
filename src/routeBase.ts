@@ -1,7 +1,7 @@
 import { Str } from '@rheas/support/str';
 import { IRouteBase } from '@rheas/contracts/routes/routeBase';
 
-export class RouteBase implements IRouteBase {
+export class RouteBase<T extends IRouteBase<T>> implements IRouteBase<T> {
     /**
      * Sub domain/domain of this route/group
      *
@@ -36,10 +36,10 @@ export class RouteBase implements IRouteBase {
      *
      * @param domain
      */
-    public domain(domain: string): IRouteBase {
+    public domain(domain: string): T {
         this._domain = Str.domainWithoutSchema(domain);
 
-        return this;
+        return (this as unknown) as T;
     }
 
     /**
@@ -47,10 +47,10 @@ export class RouteBase implements IRouteBase {
      *
      * @return this
      */
-    public http(httpRoute: boolean = true): IRouteBase {
+    public http(httpRoute: boolean = true): T {
         this._httpRoute = httpRoute;
 
-        return this;
+        return (this as unknown) as T;
     }
 
     /**
@@ -58,10 +58,10 @@ export class RouteBase implements IRouteBase {
      *
      * @param middlewares
      */
-    public middleware(...middlewares: string[]): IRouteBase {
+    public middleware(...middlewares: string[]): T {
         this._middlewares = middlewares;
 
-        return this;
+        return (this as unknown) as T;
     }
 
     /**
@@ -69,10 +69,10 @@ export class RouteBase implements IRouteBase {
      *
      * @param middlewares
      */
-    public withoutMiddleware(...middlewares: string[]): IRouteBase {
+    public withoutMiddleware(...middlewares: string[]): T {
         middlewares.forEach(this._excludedMiddlewares.add);
 
-        return this;
+        return (this as unknown) as T;
     }
 
     /**

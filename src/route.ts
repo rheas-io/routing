@@ -5,7 +5,7 @@ import { IUriComponent } from '@rheas/contracts/routes/uri';
 import { ComponentFactory } from './uri/uriComponentFactory';
 import { IRequestHandler, IRoute, IRouteGroup } from '@rheas/contracts/routes';
 
-export class Route extends RouteBase implements IRoute {
+export class Route extends RouteBase<IRoute> implements IRoute {
     /**
      * All of the verbs supported by the route.
      *
