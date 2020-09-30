@@ -1,5 +1,4 @@
 import { IRequest } from '@rheas/contracts';
-import { config } from '@rheas/support/helpers';
 import { IRouteValidator, IRoute } from '@rheas/contracts/routes';
 
 export class SchemeValidator implements IRouteValidator {
@@ -15,9 +14,10 @@ export class SchemeValidator implements IRouteValidator {
      * configurations. If the app is not in production mode, ie in debug
      * mode, schema check is ignored.
      *
+     * @param inProduction
      */
-    constructor() {
-        this._production = config('app.production', true);
+    constructor(inProduction: boolean) {
+        this._production = inProduction;
     }
 
     /**
