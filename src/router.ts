@@ -1,5 +1,6 @@
 import path from 'path';
 import { Str } from '@rheas/support/str';
+import { RouteGroup } from './routeGroup';
 import { IApp } from '@rheas/contracts/core/app';
 import { RequestPipeline } from './requestPipeline';
 import { UriValidator } from './validators/uriValidator';
@@ -8,7 +9,7 @@ import { NotFoundException } from '@rheas/errors/notFound';
 import { SchemeValidator } from './validators/schemeValidator';
 import { MethodValidator } from './validators/methodValidator';
 import { IRequest, IResponse, KeyValue } from '@rheas/contracts';
-import { IRequestHandler } from '@rheas/contracts/routes';
+import { IRequestHandler, IRouteGroup } from '@rheas/contracts/routes';
 import { MethodNotAllowedException } from '@rheas/errors/methoNotAllowed';
 import { IRoute, IRouter, IRouteValidator } from '@rheas/contracts/routes';
 import { INameParams, IMiddleware, IMiddlewareManager } from '@rheas/contracts/middlewares';
@@ -303,8 +304,13 @@ export class Router implements IRouter {
      *
      * @param routes
      */
-    public registerRoutes(routes: IRoute[]): IRouter {
-        routes.forEach(this.registerRoute);
+    public registerRoutes(...routes: (IRoute | IRouteGroup)[]): IRouter {
+        routes.forEach((routeOrGroup) => {
+            if (routeOrGroup instanceof RouteGroup) {
+                return this.registerRoutes(...routeOrGroup.getRoutes());
+            }
+            return this.registerRoute(routeOrGroup as IRoute);
+        });
 
         return this;
     }
@@ -404,7 +410,7 @@ export class Router implements IRouter {
      * @return
      */
     protected getSchemeValidator(): IRouteValidator {
-        return new SchemeValidator();
+        return new SchemeValidator(this._app.configs().get('app.production', true));
     }
 
     /**

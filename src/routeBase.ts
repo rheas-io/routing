@@ -70,7 +70,7 @@ export class RouteBase<T extends IRouteBase<T>> implements IRouteBase<T> {
      * @param middlewares
      */
     public withoutMiddleware(...middlewares: string[]): T {
-        middlewares.forEach(this._excludedMiddlewares.add);
+        middlewares.forEach((middleware) => this._excludedMiddlewares.add(middleware));
 
         return (this as unknown) as T;
     }
