@@ -30,12 +30,12 @@ describe('route methods check', () => {
         expect(route.getMethods()).toContain('DELETE');
         expect(route.getMethods()).not.toContain('HEAD');
 
-        route = new Route().methods('GET');
+        route = new Route('').methods('GET');
         expect(route.getMethods()).toContain('HEAD');
 
         // Throw error when invalid method is used
         expect(() => {
-            route = new Route().methods('ANY');
+            route = new Route('').methods('ANY');
         }).toThrow();
     });
 });

@@ -1,53 +1,56 @@
 import { FixedComponent } from '../../src/uri/routeFixedComponent';
 import { ParamComponent } from '../../src/uri/routeParamComponent';
+import { faqRoute, pricingRoute, namedRoutes } from '../testRoutes';
 import { ComponentFactory } from '../../src/uri/uriComponentFactory';
-import { apiRoutes, faqRoute, pricingRoute, namedRoutes } from '../testRoutes';
 
 describe('others', () => {
-    /**
-     * Check if the route is an http route.
-     */
-    it('isHttp route', () => {
+    it('should be false by default - the http flag of `pricingRoute` and `faqRoute`', () => {
         expect(pricingRoute.isHttpRoute()).toEqual(false);
-
-        pricingRoute.http();
-        expect(pricingRoute.isHttpRoute()).toBe(true);
-
-        pricingRoute.http(false);
-        expect(pricingRoute.isHttpRoute()).toBe(false);
-
         expect(faqRoute.isHttpRoute()).toBe(false);
     });
 
-    /**
-     * Endpoint routes action check.
-     */
-    it('getAction', () => {
-        expect(apiRoutes.getAction()).toBe('');
+    it('should be an http route after setting', () => {
+        pricingRoute.http();
+        expect(pricingRoute.isHttpRoute()).toBe(true);
+    });
+
+    it('should not be an http route after reset', () => {
+        pricingRoute.http(false);
+        expect(pricingRoute.isHttpRoute()).toBe(false);
+    });
+
+    it('should return the correct controller action on `getAction()`', () => {
         expect(pricingRoute.getAction()).toBe('pricingController@get');
         expect(namedRoutes['article_1'].getAction()).toBe('articleController@get');
     });
 
-    /**
-     * Uri componet match tests.
-     */
-    it('uriComponents', () => {
-        expect(namedRoutes['article_1'].getUriComponents()).toStrictEqual([
+    it('should match the uri components of the test route `article_1`', () => {
+        let components = [
             new FixedComponent('blog'),
             new FixedComponent('article1'),
             new ParamComponent(':slug?'),
-        ]);
-        expect(faqRoute.getUriComponents()).toStrictEqual(
-            ComponentFactory.createFromRoute(faqRoute),
-        );
-        expect(faqRoute.getUriComponents()).toStrictEqual([
-            new FixedComponent('api'),
-            new FixedComponent('faq'),
-        ]);
-        expect(namedRoutes['project_rheas'].getUriComponents()).toStrictEqual([
+        ];
+        expect(namedRoutes['article_1'].getUriComponents()).toStrictEqual(components);
+    });
+
+    it('should match the uri components of the test route named `project_rheas`', () => {
+        let components = [
             new FixedComponent('api'),
             new FixedComponent('projects'),
             new FixedComponent('rheas'),
-        ]);
+        ];
+        expect(namedRoutes['project_rheas'].getUriComponents()).toStrictEqual(components);
+    });
+
+    it('should match the uri components of the test route named `faqRoute`', () => {
+        let components = [new FixedComponent('api'), new FixedComponent('faq')];
+
+        expect(faqRoute.getUriComponents()).toStrictEqual(components);
+    });
+
+    it('should match `route.getUriComponents` and components from factory', () => {
+        expect(faqRoute.getUriComponents()).toStrictEqual(
+            ComponentFactory.createFromRoute(faqRoute),
+        );
     });
 });

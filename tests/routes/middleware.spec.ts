@@ -1,32 +1,28 @@
 import { blogRoutes, faqRoute, pricingRoute } from '../testRoutes';
 
-describe('route middleware check', () => {
-    // Middleware check
-    it('middlewares_check', () => {
-        expect(faqRoute.routeMiddlewares()).toContainEqual('api');
-        expect(pricingRoute.routeMiddlewares()).toContainEqual('auth');
-        expect(pricingRoute.routeMiddlewares()).toContainEqual('throttle:60,1');
-        expect(blogRoutes.routeMiddlewares()).not.toContain('api');
+describe('route middlewares', () => {
+    it('should return the middlewares of the route on calling `getMiddlewares()`', () => {
+        expect(faqRoute.getMiddlewares()).toContainEqual('api');
+        expect(pricingRoute.getMiddlewares()).toContainEqual('auth');
+        expect(pricingRoute.getMiddlewares()).toContainEqual('throttle:60,1');
 
-        expect(pricingRoute.middlewaresToResolve()).toEqual(
+        expect(blogRoutes.getMiddlewares()).not.toContain('api');
+        expect(pricingRoute.getMiddlewares()).toEqual(
             expect.arrayContaining(['auth', 'api', 'throttle:60,1']),
         );
     });
 
-    //withoutMiddleware
-    //TODO
-    it('withoutMiddleware', () => {
-        pricingRoute.withoutMiddleware('auth');
-        expect(pricingRoute.routeMiddlewares()).not.toContainEqual('auth');
-
-        pricingRoute.withoutMiddleware('auth', 'api');
-        expect(pricingRoute.routeMiddlewares()).not.toContainEqual('api');
-        expect(pricingRoute.getExcludedMiddlewares()).toEqual(
-            expect.arrayContaining(['auth', 'api']),
-        );
-
+    it('should not contain any middleware in exclusion list', () => {
         pricingRoute.withoutMiddleware();
-        expect(pricingRoute.getExcludedMiddlewares()).toEqual([]);
-        expect(faqRoute.getExcludedMiddlewares()).toEqual([]);
+
+        expect(Array.from(pricingRoute.excludedMiddlewares().values())).toEqual([]);
+        expect(Array.from(faqRoute.excludedMiddlewares().values())).toEqual([]);
+    });
+
+    it('should contain `auth` and `api` in the exclusion list after excluding', () => {
+        pricingRoute.withoutMiddleware('auth', 'api');
+
+        const excludedList = Array.from(pricingRoute.excludedMiddlewares().values());
+        expect(excludedList).toEqual(expect.arrayContaining(['auth', 'api']));
     });
 });
