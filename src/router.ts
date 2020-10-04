@@ -145,7 +145,7 @@ export class Router implements IRouter {
             const nameParam = this.routeRequiresMiddleware(route, current);
 
             if (nameParam !== false) {
-                prev.push(this._middlewares.resolveMiddleware(nameParam));
+                prev.push(...this._middlewares.resolveMiddlewares(nameParam));
             }
             return prev;
         }, []);
