@@ -223,7 +223,7 @@ export class Router implements IRouter {
         let req_method = request.getMethod();
         req_method = req_method === 'HEAD' ? 'GET' : req_method;
 
-        const route = this.matchAgainstRoutes(this._methodEndpoints[req_method], request);
+        const route = this.matchAgainstRoutes(this._methodEndpoints[req_method] || [], request);
 
         if (route !== null) {
             return route;
@@ -256,7 +256,7 @@ export class Router implements IRouter {
         delete _endpoints[original_method];
 
         for (let method in _endpoints) {
-            if (this.matchAgainstRoutes(_endpoints[method], request) !== null) {
+            if (this.matchAgainstRoutes(_endpoints[method] || [], request) !== null) {
                 _methods.push(method);
             }
         }
