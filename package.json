@@ -1,6 +1,6 @@
 {
   "name": "@rheas/routing",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Rheas router and route handlers",
   "main": "index.js",
   "publishConfig": {
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@rheas/contracts": "^0.0.4",
-    "@rheas/errors": "^0.0.3",
+    "@rheas/errors": "^0.0.4",
     "@rheas/services": "^0.0.1",
     "@rheas/support": "^0.0.4",
     "@types/jest": "^25.2.1",
