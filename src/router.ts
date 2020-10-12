@@ -68,9 +68,18 @@ export class Router implements IRouter {
     /**
      * All the route validators.
      *
-     * @var array
+     * @var object
      */
-    private _routeValidators: IRouteValidator[] = [];
+    protected _routeValidators: KeyValue<IRouteValidator> = {};
+
+    /**
+     * Cache of all the resolved controller functions for string route actions.
+     * We don't cache the function route action which are already cached in the
+     * route.
+     *
+     * @var object
+     */
+    protected _cachedControllers: KeyValue<IRequestHandler> = {};
 
     /**
      * This is the parent route of the application or in general, the core
@@ -196,9 +205,14 @@ export class Router implements IRouter {
      * @param controller The controller action in `filePath@method` format
      */
     protected resolveController(controller: string): IRequestHandler {
-        let [className, method] = controller.trim().split('@');
+        if (!this._cachedControllers[controller]) {
+            const [className, method] = controller.trim().split('@');
+            const controllerPath = this.controllerAbsolutePath(className);
 
-        return require(this.controllerAbsolutePath(className))[method];
+            this._cachedControllers[controller] = require(controllerPath)[method];
+        }
+
+        return this._cachedControllers[controller];
     }
 
     /**
@@ -239,7 +253,6 @@ export class Router implements IRouter {
                     `Supported methods are: ${_methods.join(',')}`,
             );
         }
-
         throw new NotFoundException();
     }
 
@@ -256,7 +269,7 @@ export class Router implements IRouter {
         delete _endpoints[original_method];
 
         for (let method in _endpoints) {
-            if (this.matchAgainstRoutes(_endpoints[method] || [], request) !== null) {
+            if (this.matchAgainstRoutes(_endpoints[method] || [], request, false) !== null) {
                 _methods.push(method);
             }
         }
@@ -269,12 +282,15 @@ export class Router implements IRouter {
      *
      * @param routes
      * @param request
+     * @param method
      */
-    protected matchAgainstRoutes(routes: IRoute[], request: IRequest): IRoute | null {
-        this._routeValidators = this.routeValidators();
+    protected matchAgainstRoutes(routes: IRoute[], req: IRequest, method = true): IRoute | null {
+        const validators = Object.assign({}, this.routeValidators());
+
+        !method && delete validators['method'];
 
         for (let route of routes) {
-            if (this.routeMatches(route, request, this._routeValidators)) {
+            if (this.routeMatches(route, req, Object.values(validators))) {
                 return route;
             }
         }
@@ -383,14 +399,14 @@ export class Router implements IRouter {
      *
      * @return array of route validators.
      */
-    protected routeValidators(): IRouteValidator[] {
-        if (this._routeValidators.length === 0) {
-            this._routeValidators = [
-                this.getMethodValidator(),
-                this.getUriValidator(),
-                this.getHostValidator(),
-                this.getSchemeValidator(),
-            ];
+    protected routeValidators(): KeyValue<IRouteValidator> {
+        if (Object.keys(this._routeValidators).length === 0) {
+            this._routeValidators = {
+                method: this.getMethodValidator(),
+                uri: this.getUriValidator(),
+                host: this.getHostValidator(),
+                schema: this.getSchemeValidator(),
+            };
         }
         return this._routeValidators;
     }
